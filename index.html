@@ -126,35 +126,6 @@
             width: min(180px, 45vw);
             height: auto;
             object-fit: contain;
-            opacity: 0;
-            transform: scale(0.86);
-            animation: openingLogoIn 0.9s ease forwards;
-        }
-
-        .opening-content {
-            animation: openingContentIn 0.9s ease both;
-        }
-
-        @keyframes openingLogoIn {
-            from {
-                opacity: 0;
-                transform: scale(0.86);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes openingContentIn {
-            from {
-                opacity: 0;
-                transform: translateY(18px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .opening-title {
@@ -164,136 +135,6 @@
             letter-spacing: 4px;
             color: #111827;
         }
-
-        /* =========================================================
-           IN-APP PDF VIEWER
-        ========================================================== */
-
-        #pdf-viewer-modal {
-            position: fixed;
-            inset: 0;
-            z-index: 100000;
-            display: none;
-            flex-direction: column;
-            background: var(--bg-main);
-        }
-
-        #pdf-viewer-modal.active {
-            display: flex;
-        }
-
-        .pdf-viewer-toolbar {
-            min-height: 68px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 10px 16px;
-            background: var(--header-bg);
-            border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(14px);
-        }
-
-        .pdf-viewer-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 10px 14px;
-            background: var(--bg-card);
-            color: var(--text-primary);
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .pdf-viewer-back:hover {
-            background: var(--bg-card-hover);
-        }
-
-        .pdf-viewer-title {
-            min-width: 0;
-            flex: 1;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            color: var(--text-primary);
-            font-weight: 700;
-        }
-
-        #pdf-viewer-frame {
-            width: 100%;
-            flex: 1;
-            border: 0;
-            background: #e5e7eb;
-        }
-
-        .pdf-upload-group {
-            margin-top: 18px;
-        }
-
-        .pdf-upload-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px dashed var(--border);
-            border-radius: 12px;
-            background: var(--input-bg);
-            color: var(--text-primary);
-        }
-
-        .admin-paper-list {
-            display: grid;
-            gap: 14px;
-            margin-top: 18px;
-        }
-
-        .admin-paper-item {
-            padding: 18px;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            background: var(--bg-card);
-        }
-
-        .admin-paper-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 14px;
-        }
-
-        .btn-danger {
-            border: 0;
-            border-radius: 10px;
-            padding: 10px 14px;
-            background: var(--danger);
-            color: #ffffff;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .btn-secondary {
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 14px;
-            background: var(--bg-card);
-            color: var(--text-primary);
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        @media (max-width: 700px) {
-            .pdf-viewer-toolbar {
-                min-height: 58px;
-                padding: 8px 10px;
-                gap: 10px;
-            }
-
-            .pdf-viewer-back {
-                padding: 9px 11px;
-                font-size: 12px;
-            }
-        }
-
 
         /* =========================================================
            AUTH
@@ -1075,7 +916,202 @@
                 padding: 22px 14px;
             }
         }
-    </style>
+    
+        .opening-subtitle {
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #6b7280;
+        }
+
+        .content-card-actions,
+        .admin-paper-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .btn-danger {
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 16px;
+            background: var(--danger, #dc2626);
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .btn-danger:hover { opacity: .88; }
+
+        .content-type-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0 18px;
+        }
+
+        .type-filter {
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .type-filter.active {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+
+        .otp-step {
+            display: none;
+        }
+
+        .otp-step.active {
+            display: block;
+            animation: card-in 280ms ease both;
+        }
+
+        .otp-boxes {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin: 10px 0 15px;
+        }
+
+        .otp-box {
+            width: 100%;
+            min-height: 54px;
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            outline: none;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .otp-box:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(6,182,212,.12);
+        }
+
+        .otp-destination {
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: var(--accent-glow);
+            color: var(--accent-cyan);
+            font-size: 12px;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        .otp-helper {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .text-button {
+            border: 0;
+            padding: 0;
+            background: transparent;
+            color: var(--accent-cyan);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .text-button:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        #pdf-viewer-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100001;
+            display: none;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        #pdf-viewer-modal.active { display: flex; }
+
+        .pdf-viewer-toolbar {
+            min-height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            background: #030712;
+            color: #fff;
+        }
+
+        .pdf-viewer-toolbar button {
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 14px;
+            background: #fff;
+            color: #030712;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        #pdf-viewer-title {
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 800;
+        }
+
+        #pdf-viewer-frame {
+            width: 100%;
+            flex: 1;
+            border: 0;
+            background: #e5e7eb;
+        }
+
+        .upload-progress-wrap {
+            display: none;
+            margin-top: 14px;
+        }
+
+        .upload-progress-wrap.active { display: block; }
+
+        .upload-progress {
+            width: 100%;
+            height: 10px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(148,163,184,.25);
+        }
+
+        .upload-progress-bar {
+            width: 0%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg,#06b6d4,#8b5cf6);
+            transition: width .15s ease;
+        }
+
+        .upload-progress-label {
+            margin-top: 7px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+</style>
 </head>
 
 <body>
@@ -1095,53 +1131,10 @@
             <div class="opening-title">
                 ZWITTERION
             </div>
-
-            <div
-                style="
-                    margin-top:8px;
-                    color:#6b7280;
-                    font-family:'Inter',system-ui,sans-serif;
-                    font-size:12px;
-                    letter-spacing:2px;
-                    font-weight:700;
-                "
-            >
+            <div class="opening-subtitle">
                 EDUNOVA • V1
             </div>
         </div>
-    </div>
-
-
-    <!-- =========================================================
-         IN-APP PDF VIEWER
-    ========================================================== -->
-
-    <div
-        id="pdf-viewer-modal"
-        aria-hidden="true"
-    >
-        <div class="pdf-viewer-toolbar">
-            <button
-                type="button"
-                class="pdf-viewer-back"
-                onclick="closePdfInApp()"
-            >
-                <i class="fa-solid fa-arrow-left"></i>
-                Back to ZWITTERION
-            </button>
-
-            <div
-                id="pdf-viewer-title"
-                class="pdf-viewer-title"
-            >
-                Question Paper
-            </div>
-        </div>
-
-        <iframe
-            id="pdf-viewer-frame"
-            title="ZWITTERION PDF Viewer"
-        ></iframe>
     </div>
 
 
@@ -1388,7 +1381,7 @@
 
 
     <!-- =========================================================
-         STUDENT LOGIN
+         STUDENT LOGIN — OTP
     ========================================================== -->
 
     <section
@@ -1399,84 +1392,120 @@
         <div class="auth-card">
 
             <div class="logo-badge">
-                <img
-                    src="logo.png"
-                    alt="ZWITTERION Logo"
-                >
+                <img src="logo.png" alt="ZWITTERION Logo">
             </div>
 
-            <h1>
-                STUDENT LOGIN
-            </h1>
+            <h1>STUDENT LOGIN</h1>
 
             <p
                 id="student-login-subtitle"
                 class="subtitle"
             >
-                Class 11 • CBSE • BRS
+                Class 11 • CBSE • School
             </p>
 
-            <form id="student-login-form">
+            <div
+                id="student-identifier-step"
+                class="otp-step active"
+            >
 
                 <div class="form-group">
-
-                    <label>
-                        Student ID
-                    </label>
+                    <label>Email or Mobile Number</label>
 
                     <input
-                        id="student-id"
+                        id="student-identifier"
                         type="text"
-                        placeholder="BRS1234"
+                        inputmode="email"
                         autocomplete="username"
-                        autocapitalize="characters"
-                        spellcheck="false"
+                        placeholder="you@example.com or 9876543210"
                         required
                     >
-
                 </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        PIN
-                    </label>
-
-                    <input
-                        id="student-pin"
-                        type="password"
-                        placeholder="Enter PIN"
-                        inputmode="numeric"
-                        autocomplete="current-password"
-                        required
-                    >
-
-                </div>
-
 
                 <div
-                    id="student-login-error"
+                    id="student-otp-error"
                     class="error-message hidden"
-                >
-                    Invalid Student ID or PIN.
-                    <br><br>
-                    Demo:
-                    <strong>
-                        BRS1234 / 8163
-                    </strong>
-                </div>
-
+                ></div>
 
                 <button
-                    type="submit"
+                    id="send-student-otp"
+                    type="button"
                     class="btn-primary"
+                    onclick="sendStudentOtp()"
                 >
-                    Authenticate
+                    <i class="fa-solid fa-paper-plane"></i>
+                    Send OTP
                 </button>
 
-            </form>
+            </div>
 
+            <div
+                id="student-otp-step"
+                class="otp-step"
+            >
+
+                <div
+                    id="student-otp-destination"
+                    class="otp-destination"
+                >
+                    OTP sent successfully.
+                </div>
+
+                <div class="form-group">
+                    <label>6-Digit OTP</label>
+
+                    <div
+                        class="otp-boxes"
+                        id="student-otp-boxes"
+                    >
+                        <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+                        <input class="otp-box" maxlength="1" inputmode="numeric">
+                        <input class="otp-box" maxlength="1" inputmode="numeric">
+                        <input class="otp-box" maxlength="1" inputmode="numeric">
+                        <input class="otp-box" maxlength="1" inputmode="numeric">
+                        <input class="otp-box" maxlength="1" inputmode="numeric">
+                    </div>
+                </div>
+
+                <div class="otp-helper">
+                    <span id="otp-countdown">Resend available in 60s</span>
+
+                    <button
+                        id="resend-otp-button"
+                        type="button"
+                        class="text-button"
+                        onclick="resendStudentOtp()"
+                        disabled
+                    >
+                        Resend OTP
+                    </button>
+                </div>
+
+                <div
+                    id="student-verify-error"
+                    class="error-message hidden"
+                ></div>
+
+                <button
+                    id="verify-student-otp"
+                    type="button"
+                    class="btn-primary"
+                    onclick="verifyStudentOtp()"
+                >
+                    <i class="fa-solid fa-shield-check"></i>
+                    Verify OTP
+                </button>
+
+                <button
+                    type="button"
+                    class="back-btn"
+                    onclick="backToStudentIdentifier()"
+                >
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Change Email / Mobile
+                </button>
+
+            </div>
 
             <button
                 type="button"
@@ -1491,8 +1520,8 @@
 
     </section>
 
-
-    <!-- =========================================================
+    
+<!-- =========================================================
          ADMIN LOGIN
     ========================================================== -->
 
@@ -2254,139 +2283,448 @@
 
 
         /* =========================================================
-           STUDENT LOGIN
+           STUDENT OTP LOGIN
         ========================================================== */
 
-        document
-            .getElementById(
-                "student-login-form"
-            )
-            .addEventListener(
-                "submit",
-                function(event) {
+        let studentOtpCountdownTimer = null;
+        let studentOtpIdentifier = "";
 
-                    event.preventDefault();
+        function setStudentOtpStep(step) {
 
+            const identifierStep =
+                byId("student-identifier-step");
 
-                    const id =
-                        document
-                            .getElementById(
-                                "student-id"
-                            )
-                            .value
-                            .trim()
-                            .toUpperCase();
+            const otpStep =
+                byId("student-otp-step");
 
+            if (step === "otp") {
+                identifierStep.classList.remove("active");
+                otpStep.classList.add("active");
+            } else {
+                otpStep.classList.remove("active");
+                identifierStep.classList.add("active");
+            }
 
-                    const pin =
-                        document
-                            .getElementById(
-                                "student-pin"
-                            )
-                            .value
-                            .trim();
+        }
 
+        function normalizeIdentifier(value) {
+            return String(value || "").trim();
+        }
 
-                    if (
-                        id === TEST_STUDENT.id &&
-                        pin === TEST_STUDENT.pin
-                    ) {
+        function looksLikeEmail(value) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        }
 
-                        hide(
-                            "student-login-error"
-                        );
+        function looksLikePhone(value) {
+            return /^\+?[0-9]{10,15}$/.test(
+                value.replace(/[\s-]/g, "")
+            );
+        }
 
+        function startOtpCountdown() {
 
-                        appState.currentUser =
-                            TEST_STUDENT.id;
+            let seconds = 60;
 
+            const countdown =
+                byId("otp-countdown");
 
-                        appState.currentRole =
-                            "STUDENT";
+            const resend =
+                byId("resend-otp-button");
 
+            resend.disabled = true;
 
-                        launchApp();
+            countdown.textContent =
+                `Resend available in ${seconds}s`;
 
-                    }
-
-                    else {
-
-                        show(
-                            "student-login-error"
-                        );
-
-                    }
-
-                }
+            clearInterval(
+                studentOtpCountdownTimer
             );
 
+            studentOtpCountdownTimer =
+                setInterval(function() {
 
-        /* =========================================================
+                    seconds -= 1;
+
+                    if (seconds <= 0) {
+
+                        clearInterval(
+                            studentOtpCountdownTimer
+                        );
+
+                        countdown.textContent =
+                            "You can resend the OTP";
+
+                        resend.disabled = false;
+
+                        return;
+                    }
+
+                    countdown.textContent =
+                        `Resend available in ${seconds}s`;
+
+                }, 1000);
+
+        }
+
+        function clearOtpBoxes() {
+            document
+                .querySelectorAll("#student-otp-boxes .otp-box")
+                .forEach(function(input) {
+                    input.value = "";
+                });
+
+            const first =
+                document.querySelector(
+                    "#student-otp-boxes .otp-box"
+                );
+
+            if (first) first.focus();
+        }
+
+        function getEnteredOtp() {
+            return Array.from(
+                document.querySelectorAll(
+                    "#student-otp-boxes .otp-box"
+                )
+            )
+                .map(function(input) {
+                    return input.value;
+                })
+                .join("");
+        }
+
+        async function sendStudentOtp() {
+
+            const identifierInput =
+                byId("student-identifier");
+
+            const button =
+                byId("send-student-otp");
+
+            const errorBox =
+                byId("student-otp-error");
+
+            const identifier =
+                normalizeIdentifier(
+                    identifierInput.value
+                );
+
+            errorBox.classList.add("hidden");
+
+            if (!looksLikeEmail(identifier) && !looksLikePhone(identifier)) {
+                errorBox.textContent =
+                    "Enter a valid email address or mobile number.";
+                errorBox.classList.remove("hidden");
+                identifierInput.focus();
+                return;
+            }
+
+            button.disabled = true;
+            button.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> Sending OTP...';
+
+            try {
+
+                const response =
+                    await fetch("/api/student/send-otp", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify({
+                            identifier,
+                            className: appState.selectedClass || "",
+                            board: appState.selectedBoard || "",
+                            school: appState.selectedSchool || ""
+                        })
+                    });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        result.error ||
+                        "Could not send OTP."
+                    );
+                }
+
+                studentOtpIdentifier = identifier;
+
+                byId(
+                    "student-otp-destination"
+                ).textContent =
+                    result.message ||
+                    `OTP sent to ${identifier}`;
+
+                setStudentOtpStep("otp");
+                clearOtpBoxes();
+                startOtpCountdown();
+
+            } catch (error) {
+
+                console.error(
+                    "Send student OTP error:",
+                    error
+                );
+
+                errorBox.textContent =
+                    error.message ||
+                    "Could not send OTP.";
+
+                errorBox.classList.remove("hidden");
+
+            } finally {
+
+                button.disabled = false;
+                button.innerHTML =
+                    '<i class="fa-solid fa-paper-plane"></i> Send OTP';
+
+            }
+        }
+
+        async function resendStudentOtp() {
+            if (!studentOtpIdentifier) return;
+            byId("student-identifier").value =
+                studentOtpIdentifier;
+            await sendStudentOtp();
+        }
+
+        async function verifyStudentOtp() {
+
+            const otp =
+                getEnteredOtp();
+
+            const button =
+                byId("verify-student-otp");
+
+            const errorBox =
+                byId("student-verify-error");
+
+            errorBox.classList.add("hidden");
+
+            if (!/^[0-9]{6}$/.test(otp)) {
+                errorBox.textContent =
+                    "Enter the complete 6-digit OTP.";
+                errorBox.classList.remove("hidden");
+                return;
+            }
+
+            button.disabled = true;
+            button.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
+
+            try {
+
+                const response =
+                    await fetch("/api/student/verify-otp", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify({
+                            identifier: studentOtpIdentifier,
+                            otp,
+                            className: appState.selectedClass || "",
+                            board: appState.selectedBoard || "",
+                            school: appState.selectedSchool || ""
+                        })
+                    });
+
+                const result =
+                    await response.json();
+
+                if (!response.ok || !result.token) {
+                    throw new Error(
+                        result.error ||
+                        "Invalid or expired OTP."
+                    );
+                }
+
+                sessionStorage.setItem(
+                    "zwitterion_student_token",
+                    result.token
+                );
+
+                appState.currentUser =
+                    result.email ||
+                    result.phone ||
+                    studentOtpIdentifier;
+
+                appState.currentRole =
+                    "STUDENT";
+
+                launchApp();
+
+            } catch (error) {
+
+                console.error(
+                    "Verify student OTP error:",
+                    error
+                );
+
+                errorBox.textContent =
+                    error.message ||
+                    "Invalid or expired OTP.";
+
+                errorBox.classList.remove("hidden");
+
+            } finally {
+
+                button.disabled = false;
+                button.innerHTML =
+                    '<i class="fa-solid fa-shield-check"></i> Verify OTP';
+
+            }
+        }
+
+        function backToStudentIdentifier() {
+            clearInterval(studentOtpCountdownTimer);
+            setStudentOtpStep("identifier");
+
+            byId("student-otp-error")
+                .classList.add("hidden");
+
+            byId("student-verify-error")
+                .classList.add("hidden");
+
+        }
+
+        document
+            .querySelectorAll(
+                "#student-otp-boxes .otp-box"
+            )
+            .forEach(function(input, index, inputs) {
+
+                input.addEventListener(
+                    "input",
+                    function() {
+
+                        this.value =
+                            this.value
+                                .replace(/\D/g, "")
+                                .slice(0, 1);
+
+                        if (this.value && inputs[index + 1]) {
+                            inputs[index + 1].focus();
+                        }
+
+                    }
+                );
+
+                input.addEventListener(
+                    "keydown",
+                    function(event) {
+
+                        if (
+                            event.key === "Backspace" &&
+                            !this.value &&
+                            inputs[index - 1]
+                        ) {
+                            inputs[index - 1].focus();
+                        }
+
+                    }
+                );
+
+                input.addEventListener(
+                    "paste",
+                    function(event) {
+
+                        const pasted =
+                            (
+                                event.clipboardData ||
+                                window.clipboardData
+                            )
+                                .getData("text")
+                                .replace(/\D/g, "")
+                                .slice(0, 6);
+
+                        if (!pasted) return;
+
+                        event.preventDefault();
+
+                        pasted
+                            .split("")
+                            .forEach(function(char, i) {
+                                if (inputs[i]) {
+                                    inputs[i].value = char;
+                                }
+                            });
+
+                        if (inputs[Math.min(pasted.length, 6) - 1]) {
+                            inputs[Math.min(pasted.length, 6) - 1].focus();
+                        }
+
+                    }
+                );
+
+            });
+
+        
+        
+/* =========================================================
            ADMIN LOGIN
         ========================================================== */
 
         document
-            .getElementById(
-                "admin-login-form"
-            )
-            .addEventListener(
-                "submit",
-                function(event) {
+            .getElementById("admin-login-form")
+            .addEventListener("submit", async function(event) {
+                event.preventDefault();
 
-                    event.preventDefault();
+                const email =
+                    document.getElementById("admin-email")
+                        .value
+                        .trim()
+                        .toLowerCase();
 
+                const password =
+                    document.getElementById("admin-password")
+                        .value;
 
-                    const email =
-                        document
-                            .getElementById(
-                                "admin-email"
-                            )
-                            .value
-                            .trim()
-                            .toLowerCase();
+                const errorBox =
+                    document.getElementById("admin-login-error");
 
+                errorBox.classList.add("hidden");
 
-                    const password =
-                        document.getElementById(
-                            "admin-password"
-                        ).value;
+                try {
+                    const response = await fetch("/api/admin-auth", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
 
+                    const result = await response.json();
 
-                    if (
-                        email ===
-                            TEST_ADMIN.email &&
-                        password ===
-                            TEST_ADMIN.password
-                    ) {
-
-                        hide(
-                            "admin-login-error"
+                    if (!response.ok || !result.token) {
+                        throw new Error(
+                            result.error || "Invalid admin details."
                         );
-
-
-                        appState.currentUser =
-                            TEST_ADMIN.email;
-
-
-                        appState.currentRole =
-                            "SCHOOL_ADMIN";
-
-
-                        launchApp();
-
                     }
 
-                    else {
+                    sessionStorage.setItem(
+                        "zwitterion_admin_token",
+                        result.token
+                    );
 
-                        show(
-                            "admin-login-error"
-                        );
+                    appState.currentUser =
+                        result.email || email;
 
-                    }
+                    appState.currentRole =
+                        "SCHOOL_ADMIN";
 
+                    launchApp();
+                } catch (error) {
+                    console.error("Admin login error:", error);
+                    errorBox.innerHTML =
+                        "Invalid admin details.<br><br>" +
+                        "Set your admin credentials in Vercel Environment Variables.";
+                    errorBox.classList.remove("hidden");
                 }
-            );
-
+            });
 
         /* =========================================================
            LAUNCH
@@ -2841,881 +3179,245 @@
 
 
         /* =========================================================
-           QUESTION PAPERS
+           CLOUD CONTENT LIBRARY
         ========================================================== */
 
-        async function renderQuestionPapers() {
+        const ZWITTERION_CONTENT_TYPES = {
+            "question-papers": "question-papers",
+            "notes": "notes",
+            "pyqs": "pyqs",
+            "sample-papers": "sample-papers",
+            "suggestions": "suggestions",
+            "results": "results"
+        };
 
-            const viewport =
-                getViewport();
+        function adminToken() {
+            return sessionStorage.getItem("zwitterion_admin_token") || "";
+        }
+
+        async function fetchContent(type) {
+            const response = await fetch(
+                "/api/content?type=" + encodeURIComponent(type),
+                { cache: "no-store" }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Could not load content.");
+            }
+
+            const selectedClass = String(appState.selectedClass || "");
+            const selectedBoard = String(appState.selectedBoard || "");
+            const selectedSchool = String(appState.selectedSchool || "");
+
+            return (result.items || []).filter(function(item) {
+                const classOK =
+                    !item.className ||
+                    item.className === selectedClass;
+
+                const boardOK =
+                    !item.board ||
+                    item.board === selectedBoard;
+
+                const schoolOK =
+                    !item.school ||
+                    item.school === selectedSchool;
+
+                return classOK && boardOK && schoolOK;
+            });
+        }
+
+        function contentTypeLabel(type) {
+            const labels = {
+                "question-papers": "Question Paper",
+                "notes": "Notes",
+                "pyqs": "PYQ",
+                "sample-papers": "Sample Paper",
+                "suggestions": "Suggestion",
+                "results": "Result"
+            };
+            return labels[type] || type;
+        }
+
+        function renderCloudLibrary(type, title, subtitle, icon) {
+            const viewport = getViewport();
 
             viewport.innerHTML = `
-
                 <div class="page-header">
-
-                    <h2>
-                        Question Papers
-                    </h2>
-
-                    <p>
-                        Class
-                        ${escapeHtml(
-                            appState.selectedClass
-                        )}
-
-                        •
-
-                        ${escapeHtml(
-                            appState.selectedBoard
-                        )}
-
-                        •
-
-                        ${escapeHtml(
-                            appState.selectedSchool
-                        )}
-
-                    </p>
-
+                    <h2>${escapeHtml(title)}</h2>
+                    <p>${escapeHtml(subtitle)}</p>
                 </div>
-
-                <div
-                    id="papers-container"
-                    class="paper-list"
-                >
-
+                <div id="cloud-filter-badges" class="content-type-badges"></div>
+                <div id="cloud-content-list" class="paper-list">
                     <div class="empty-state">
-
-                        <i
-                            class="
-                                fa-solid
-                                fa-spinner
-                                fa-spin
-                            "
-                        ></i>
-
-                        Loading papers...
-
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        Loading content...
                     </div>
-
                 </div>
-
             `;
 
-            const container =
-                document.getElementById(
-                    "papers-container"
-                );
+            const list = document.getElementById("cloud-content-list");
+            const filter = document.getElementById("cloud-filter-badges");
 
-            try {
+            filter.innerHTML = `
+                <span class="paper-tag">
+                    <i class="fa-solid ${escapeHtml(icon)}"></i>
+                    ${escapeHtml(contentTypeLabel(type))}
+                </span>
+                <span class="paper-tag">Class ${escapeHtml(appState.selectedClass || "")}</span>
+                <span class="paper-tag">${escapeHtml(appState.selectedBoard || "")}</span>
+                <span class="paper-tag">${escapeHtml(appState.selectedSchool || "")}</span>
+            `;
 
-                const papers =
-                    await getStoredPapers();
+            fetchContent(type)
+                .then(function(items) {
+                    if (!items.length) {
+                        list.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fa-solid fa-file-circle-xmark"></i>
+                                <p>No ${escapeHtml(contentTypeLabel(type).toLowerCase())} files published yet.</p>
+                            </div>
+                        `;
+                        return;
+                    }
 
-                const selectedClass =
-                    appState.selectedClass ||
-                    "";
+                    list.innerHTML = items.map(function(item) {
+                        return `
+                            <article class="paper-card">
+                                <div class="paper-title">
+                                    ${escapeHtml(item.title || item.fileName || "Untitled")}
+                                </div>
 
-                const filteredPapers =
-                    papers.filter(
-                        function(paper) {
-                            return (
-                                !selectedClass ||
-                                !paper.className ||
-                                paper.className === selectedClass
-                            );
-                        }
-                    );
+                                <div class="paper-meta">
+                                    <span class="paper-tag">${escapeHtml(item.subject || "General")}</span>
+                                    ${item.examType ? `<span class="paper-tag">${escapeHtml(item.examType)}</span>` : ""}
+                                    ${item.topic ? `<span class="paper-tag">${escapeHtml(item.topic)}</span>` : ""}
+                                </div>
 
-                if (
-                    filteredPapers.length === 0
-                ) {
+                                <div class="paper-description">
+                                    ${escapeHtml(item.description || "Published by ZWITTERION Admin.")}
+                                </div>
 
-                    showDemoPaper(
-                        container,
-                        true
-                    );
-
-                    return;
-
-                }
-
-                container.innerHTML =
-                    filteredPapers
-                        .map(
-                            function(paper) {
-
-                                return `
-
-                                    <article
-                                        class="paper-card"
+                                <div class="content-card-actions">
+                                    <button
+                                        type="button"
+                                        class="paper-open"
+                                        onclick="openCloudPdf(${JSON.stringify(item.url)}, ${JSON.stringify(item.title || item.fileName || 'PDF')})"
                                     >
-
-                                        <div
-                                            class="paper-title"
-                                        >
-                                            ${escapeHtml(
-                                                paper.title ||
-                                                paper.fileName ||
-                                                "Untitled Paper"
-                                            )}
-                                        </div>
-
-                                        <div
-                                            class="paper-meta"
-                                        >
-
-                                            <span
-                                                class="paper-tag"
-                                            >
-                                                Class
-                                                ${escapeHtml(
-                                                    paper.className ||
-                                                    appState.selectedClass ||
-                                                    ""
-                                                )}
-                                            </span>
-
-                                            <span
-                                                class="paper-tag"
-                                            >
-                                                ${escapeHtml(
-                                                    paper.subject ||
-                                                    "Chemistry"
-                                                )}
-                                            </span>
-
-                                            <span
-                                                class="paper-tag"
-                                            >
-                                                ${escapeHtml(
-                                                    paper.examType ||
-                                                    "Test"
-                                                )}
-                                            </span>
-
-                                        </div>
-
-                                        <div
-                                            class="paper-description"
-                                        >
-                                            ${escapeHtml(
-                                                paper.description ||
-                                                "Question paper"
-                                            )}
-                                        </div>
-
-                                        <button
-                                            type="button"
-                                            class="paper-open"
-                                            onclick="openStoredPaper(${Number(paper.id)})"
-                                        >
-                                            <i
-                                                class="
-                                                    fa-solid
-                                                    fa-file-pdf
-                                                "
-                                            ></i>
-                                            Open Paper
-                                        </button>
-
-                                    </article>
-
-                                `;
-
-                            }
-                        )
-                        .join(
-                            ""
-                        );
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Question papers:",
-                    error
-                );
-
-                container.innerHTML = `
-                    <div class="empty-state">
-                        Could not load question papers.
-                    </div>
-                `;
-
-            }
-
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                        Open
+                                    </button>
+                                </div>
+                            </article>
+                        `;
+                    }).join("");
+                })
+                .catch(function(error) {
+                    console.error("Content library error:", error);
+                    list.innerHTML = `
+                        <div class="empty-state">
+                            Could not load published content.
+                        </div>
+                    `;
+                });
         }
 
-
-        async function getStoredPapers() {
-
-            const db =
-                await openPaperDatabase();
-
-            return new Promise(
-                function(resolve, reject) {
-
-                    const transaction =
-                        db.transaction(
-                            PAPER_STORE_NAME,
-                            "readonly"
-                        );
-
-                    const store =
-                        transaction.objectStore(
-                            PAPER_STORE_NAME
-                        );
-
-                    const request =
-                        store.getAll();
-
-                    request.onsuccess =
-                        function() {
-
-                            const result =
-                                request.result ||
-                                [];
-
-                            result.sort(
-                                function(a, b) {
-                                    return (
-                                        new Date(b.createdAt) -
-                                        new Date(a.createdAt)
-                                    );
-                                }
-                            );
-
-                            resolve(result);
-
-                        };
-
-                    request.onerror =
-                        function() {
-                        reject(
-                            request.error
-                        );
-                    };
-
-                }
+        function renderQuestionPapers() {
+            renderCloudLibrary(
+                "question-papers",
+                "Question Papers",
+                `Class ${appState.selectedClass} • ${appState.selectedBoard} • ${appState.selectedSchool}`,
+                "fa-file-lines"
             );
-
         }
-
-
-        async function openStoredPaper(id) {
-
-            try {
-
-                const db =
-                    await openPaperDatabase();
-
-                const paper =
-                    await new Promise(
-                        function(resolve, reject) {
-
-                            const transaction =
-                                db.transaction(
-                                    PAPER_STORE_NAME,
-                                    "readonly"
-                                );
-
-                            const store =
-                                transaction.objectStore(
-                                    PAPER_STORE_NAME
-                                );
-
-                            const request =
-                                store.get(
-                                    Number(id)
-                                );
-
-                            request.onsuccess =
-                                function() {
-                                resolve(
-                                    request.result
-                                );
-                            };
-
-                            request.onerror =
-                                function() {
-                                reject(
-                                    request.error
-                                );
-                            };
-
-                        }
-                    );
-
-                if (
-                    !paper ||
-                    !paper.blob
-                ) {
-                    alert(
-                        "This PDF is not available."
-                    );
-                    return;
-                }
-
-                const objectUrl =
-                    URL.createObjectURL(
-                        paper.blob
-                    );
-
-                openPdfInApp(
-                    objectUrl,
-                    paper.title ||
-                    paper.fileName ||
-                    "Question Paper",
-                    objectUrl
-                );
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Open stored paper error:",
-                    error
-                );
-
-                alert(
-                    "Could not open this PDF."
-                );
-
-            }
-
-        }
-
-
-        function openPdfInApp(
-            url,
-            title,
-            objectUrl = ""
-        ) {
-
-            const modal =
-                document.getElementById(
-                    "pdf-viewer-modal"
-                );
-
-            const frame =
-                document.getElementById(
-                    "pdf-viewer-frame"
-                );
-
-            const titleElement =
-                document.getElementById(
-                    "pdf-viewer-title"
-                );
-
-            if (
-                !modal ||
-                !frame
-            ) {
-                return;
-            }
-
-            const oldObjectUrl =
-                frame.dataset.objectUrl;
-
-            if (
-                oldObjectUrl &&
-                oldObjectUrl !== objectUrl
-            ) {
-                URL.revokeObjectURL(
-                    oldObjectUrl
-                );
-            }
-
-            frame.dataset.objectUrl =
-                objectUrl ||
-                "";
-
-            titleElement.textContent =
-                title ||
-                "Question Paper";
-
-            frame.src = url;
-
-            modal.classList.add(
-                "active"
-            );
-
-            modal.setAttribute(
-                "aria-hidden",
-                "false"
-            );
-
-            document.body.style.overflow =
-                "hidden";
-
-        }
-
-
-        function closePdfInApp() {
-
-            const modal =
-                document.getElementById(
-                    "pdf-viewer-modal"
-                );
-
-            const frame =
-                document.getElementById(
-                    "pdf-viewer-frame"
-                );
-
-            if (
-                !modal ||
-                !frame
-            ) {
-                return;
-            }
-
-            const objectUrl =
-                frame.dataset.objectUrl;
-
-            if (objectUrl) {
-                URL.revokeObjectURL(
-                    objectUrl
-                );
-            }
-
-            frame.dataset.objectUrl =
-                "";
-
-            frame.src =
-                "about:blank";
-
-            modal.classList.remove(
-                "active"
-            );
-
-            modal.setAttribute(
-                "aria-hidden",
-                "true"
-            );
-
-            document.body.style.overflow =
-                "";
-
-        }
-
-
-        document.addEventListener(
-            "keydown",
-            function(event) {
-
-                if (
-                    event.key === "Escape"
-                ) {
-                    closePdfInApp();
-                }
-
-            }
-        );
-
-
-        function showDemoPaper(
-            container,
-            databaseEmpty = false
-        ) {
-
-            container.innerHTML = `
-
-                <article
-                    class="paper-card"
-                >
-
-                    <div
-                        class="paper-title"
-                    >
-                        Class
-                        ${escapeHtml(
-                            appState.selectedClass
-                        )}
-                        Chemistry Test 1
-                    </div>
-
-                    <div
-                        class="paper-meta"
-                    >
-
-                        <span
-                            class="paper-tag"
-                        >
-                            Class
-                            ${escapeHtml(
-                                appState.selectedClass
-                            )}
-                        </span>
-
-                        <span
-                            class="paper-tag"
-                        >
-                            Chemistry
-                        </span>
-
-                        <span
-                            class="paper-tag"
-                        >
-                            Test 1
-                        </span>
-
-                    </div>
-
-                    <div
-                        class="paper-description"
-                    >
-                        ${
-                            databaseEmpty
-                                ?
-                            "No uploaded question papers yet."
-                                :
-                            "Demo question paper."
-                        }
-                    </div>
-
-                    <div
-                        class="empty-state"
-                        style="margin-top:16px;"
-                    >
-                        <i
-                            class="fa-solid fa-file-pdf"
-                        ></i>
-                        Upload a PDF from the Admin Dashboard to make it available here.
-                    </div>
-
-                </article>
-
-            `;
-
-        }
-
-
-        /* =========================================================
-           NOTES
-        ========================================================== */
 
         function renderNotes() {
-
-            const viewport =
-                getViewport();
-
-
-            viewport.innerHTML = `
-
-                <div class="page-header">
-
-                    <h2>
-                        Chemistry Notes
-                    </h2>
-
-                    <p>
-                        Class
-                        ${escapeHtml(
-                            appState.selectedClass
-                        )}
-
-                        •
-
-                        ${escapeHtml(
-                            appState.selectedBoard
-                        )}
-                    </p>
-
-                </div>
-
-
-                <div class="cards-grid">
-
-                    ${contentCard(
-                        "Some Basic Concepts",
-                        "Mole concept, atomic mass and stoichiometry.",
-                        "fa-flask"
-                    )}
-
-
-                    ${contentCard(
-                        "Structure of Atom",
-                        "Atomic models, orbitals and electronic configuration.",
-                        "fa-atom"
-                    )}
-
-
-                    ${contentCard(
-                        "Periodic Classification",
-                        "Periodic table and periodic trends.",
-                        "fa-table-cells-large"
-                    )}
-
-
-                    ${contentCard(
-                        "Chemical Bonding",
-                        "Ionic, covalent and coordinate bonding.",
-                        "fa-link"
-                    )}
-
-                </div>
-
-            `;
-
+            renderCloudLibrary(
+                "notes",
+                "Notes",
+                `Class ${appState.selectedClass} • ${appState.selectedBoard} • ${appState.selectedSchool}`,
+                "fa-book-open"
+            );
         }
-
-
-        /* =========================================================
-           PYQS
-        ========================================================== */
 
         function renderPYQs() {
-
-            const viewport =
-                getViewport();
-
-
-            viewport.innerHTML = `
-
-                <div class="page-header">
-
-                    <h2>
-                        Previous Year Questions
-                    </h2>
-
-                    <p>
-                        Class
-                        ${escapeHtml(
-                            appState.selectedClass
-                        )}
-                    </p>
-
-                </div>
-
-
-                <div class="cards-grid">
-
-                    ${contentCard(
-                        "Chapter-wise PYQs",
-                        "Practice questions chapter by chapter.",
-                        "fa-list-check"
-                    )}
-
-
-                    ${contentCard(
-                        "Exam-wise PYQs",
-                        "Practice previous-year papers.",
-                        "fa-file-lines"
-                    )}
-
-
-                    ${contentCard(
-                        "Important PYQs",
-                        "High-priority questions for revision.",
-                        "fa-star"
-                    )}
-
-                </div>
-
-            `;
-
+            renderCloudLibrary(
+                "pyqs",
+                "Previous Year Questions",
+                `Class ${appState.selectedClass} • ${appState.selectedBoard} • ${appState.selectedSchool}`,
+                "fa-clock-rotate-left"
+            );
         }
-
-
-        /* =========================================================
-           SAMPLE PAPERS
-        ========================================================== */
 
         function renderSamplePapers() {
-
-            const viewport =
-                getViewport();
-
-
-            viewport.innerHTML = `
-
-                <div class="page-header">
-
-                    <h2>
-                        Sample Papers
-                    </h2>
-
-                    <p>
-                        Class
-                        ${escapeHtml(
-                            appState.selectedClass
-                        )}
-                    </p>
-
-                </div>
-
-
-                <div class="paper-list">
-
-                    ${sampleCard(
-                        "Chemistry Sample Paper 1"
-                    )}
-
-
-                    ${sampleCard(
-                        "Chemistry Sample Paper 2"
-                    )}
-
-
-                    ${sampleCard(
-                        "Chemistry Sample Paper 3"
-                    )}
-
-                </div>
-
-            `;
-
+            renderCloudLibrary(
+                "sample-papers",
+                "Sample Papers",
+                `Class ${appState.selectedClass} • ${appState.selectedBoard} • ${appState.selectedSchool}`,
+                "fa-file-circle-check"
+            );
         }
 
-
-        function sampleCard(
-            title
-        ) {
-
-            return `
-
-                <article class="paper-card">
-
-                    <div
-                        class="
-                            paper-title
-                        "
-                    >
-                        ${escapeHtml(title)}
-                    </div>
-
-
-                    <div
-                        class="
-                            paper-meta
-                        "
-                    >
-
-                        <span
-                            class="
-                                paper-tag
-                            "
-                        >
-                            Class
-                            ${escapeHtml(
-                                appState.selectedClass
-                            )}
-                        </span>
-
-
-                        <span
-                            class="
-                                paper-tag
-                            "
-                        >
-                            Chemistry
-                        </span>
-
-                    </div>
-
-
-                    <div
-                        class="
-                            paper-description
-                        "
-                    >
-                        Practice assessment.
-                    </div>
-
-
-                    <button
-                        type="button"
-                        class="paper-open"
-                        onclick="
-                            alert(
-                                '${escapeJs(title)} will be connected to a PDF later.'
-                            )
-                        "
-                    >
-
-                        <i
-                            class="
-                                fa-solid
-                                fa-play
-                            "
-                        ></i>
-
-                        Open
-
-                    </button>
-
-                </article>
-
-            `;
-
+        function renderResults() {
+            renderCloudLibrary(
+                "results",
+                "Results",
+                `Published results • ${appState.selectedSchool}`,
+                "fa-square-poll-vertical"
+            );
         }
 
+        function renderSuggestions() {
+            renderCloudLibrary(
+                "suggestions",
+                "Suggestions",
+                `Study guidance • Class ${appState.selectedClass}`,
+                "fa-lightbulb"
+            );
+        }
+
+        /* =========================================================
+           IN-APP PDF VIEWER
+        ========================================================== */
+
+        function openCloudPdf(url, title) {
+            const modal = document.getElementById("pdf-viewer-modal");
+            const frame = document.getElementById("pdf-viewer-frame");
+            const heading = document.getElementById("pdf-viewer-title");
+
+            if (!modal || !frame || !heading) return;
+
+            heading.textContent = title || "PDF";
+            frame.src = url;
+            modal.classList.add("active");
+            modal.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeCloudPdf() {
+            const modal = document.getElementById("pdf-viewer-modal");
+            const frame = document.getElementById("pdf-viewer-frame");
+
+            if (!modal || !frame) return;
+
+            frame.src = "";
+            modal.classList.remove("active");
+            modal.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
+        }
 
         /* =========================================================
            SUGGESTIONS
         ========================================================== */
 
         function renderSuggestions() {
-
-            const viewport =
-                getViewport();
-
-
-            viewport.innerHTML = `
-
-                <div class="page-header">
-
-                    <h2>
-                        Suggestions
-                    </h2>
-
-                    <p>
-                        Revision guidance for Class
-                        ${escapeHtml(
-                            appState.selectedClass
-                        )}
-                    </p>
-
-                </div>
-
-
-                <div class="cards-grid">
-
-                    ${contentCard(
-                        "Revise Core Concepts",
-                        "Focus on definitions, formulas and fundamentals.",
-                        "fa-bullseye"
-                    )}
-
-
-                    ${contentCard(
-                        "Practice Numericals",
-                        "Solve calculation-based problems regularly.",
-                        "fa-calculator"
-                    )}
-
-
-                    ${contentCard(
-                        "Use PYQs",
-                        "Practice previous-year questions before exams.",
-                        "fa-check-double"
-                    )}
-
-
-                    ${contentCard(
-                        "Revision Plan",
-                        "Review difficult chapters before the exam.",
-                        "fa-calendar-check"
-                    )}
-
-                </div>
-
-            `;
-
+            renderCloudLibrary(
+                "suggestions",
+                "Suggestions",
+                `Study guidance • Class ${appState.selectedClass} • ${appState.selectedSchool}`,
+                "fa-lightbulb"
+            );
         }
 
 
@@ -3724,97 +3426,61 @@
         ========================================================== */
 
         function renderResults() {
-
-            const viewport =
-                getViewport();
-
-
-            viewport.innerHTML = `
-
-                <div class="page-header">
-
-                    <h2>
-                        Results
-                    </h2>
-
-                    <p>
-                        Published assessment results.
-                    </p>
-
-                </div>
-
-
-                <div class="empty-state">
-
-                    <i
-                        class="
-                            fa-solid
-                            fa-square-poll-vertical
-                        "
-                    ></i>
-
-                    No results published yet.
-
-                </div>
-
-            `;
-
+            renderCloudLibrary(
+                "results",
+                "Results",
+                `Published results • ${appState.selectedSchool}`,
+                "fa-square-poll-vertical"
+            );
         }
 
 
         /* =========================================================
-           ADMIN DASHBOARD
+           ADMIN CONTENT MANAGER
         ========================================================== */
 
         function renderAdminDashboard() {
-
-            const viewport =
-                getViewport();
+            const viewport = getViewport();
 
             viewport.innerHTML = `
-
                 <div class="page-header">
-
-                    <h2>
-                        Admin Dashboard
-                    </h2>
-
+                    <h2>Admin Dashboard</h2>
                     <p>
-                        ${escapeHtml(
-                            appState.selectedSchool
-                        )}
-                        •
-                        Class
-                        ${escapeHtml(
-                            appState.selectedClass
-                        )}
-                        •
-                        ${escapeHtml(
-                            appState.selectedBoard
-                        )}
+                        ${escapeHtml(appState.selectedSchool)}
+                        • Class ${escapeHtml(appState.selectedClass)}
+                        • ${escapeHtml(appState.selectedBoard)}
                     </p>
-
                 </div>
 
                 <div class="admin-form">
-
                     <div
                         id="admin-success"
                         class="success-message hidden"
                     >
-                        PDF uploaded successfully.
+                        Content published successfully.
                     </div>
 
                     <h3 style="margin-bottom:20px;">
-                        Add Question Paper
+                        Upload Content
                     </h3>
 
                     <form id="paper-form">
-
                         <div class="admin-grid">
 
                             <div class="form-group">
-                                <label>Paper Title</label>
+                                <label>Content Type</label>
+                                <select id="content-type" required>
+                                    <option value="question-papers">Question Papers</option>
+                                    <option value="notes">Notes</option>
+                                    <option value="pyqs">PYQs</option>
+                                    <option value="sample-papers">Sample Papers</option>
+                                    <option value="suggestions">Suggestions</option>
+                                    <option value="results">Results</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Title</label>
                                 <input
                                     id="paper-title"
                                     type="text"
@@ -3824,23 +3490,10 @@
                             </div>
 
                             <div class="form-group">
-                                <label>Exam Type</label>
-                                <select id="paper-exam-type">
-                                    <option>Test 1</option>
-                                    <option>Test 2</option>
-                                    <option>Test 3</option>
-                                    <option>Half Yearly</option>
-                                    <option>Final Exam</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
                                 <label>Class</label>
                                 <input
                                     type="text"
-                                    value="${escapeAttribute(
-                                        appState.selectedClass
-                                    )}"
+                                    value="${escapeAttribute(appState.selectedClass)}"
                                     disabled
                                 >
                             </div>
@@ -3854,72 +3507,73 @@
                                 >
                             </div>
 
-                            <div
-                                class="form-group admin-grid-full"
-                            >
+                            <div class="form-group">
+                                <label>Exam / Paper Type</label>
+                                <select id="paper-exam-type">
+                                    <option>Test 1</option>
+                                    <option>Test 2</option>
+                                    <option>Test 3</option>
+                                    <option>Half Yearly</option>
+                                    <option>Final Exam</option>
+                                    <option>General</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Topic / Chapter</label>
+                                <input
+                                    id="paper-topic"
+                                    type="text"
+                                    placeholder="Chapter 1 • Mole Concept"
+                                >
+                            </div>
+
+                            <div class="form-group admin-grid-full">
                                 <label>Description</label>
                                 <textarea
                                     id="paper-description"
-                                    placeholder="Chapters 1 to 3"
+                                    placeholder="Add a short description..."
                                 ></textarea>
                             </div>
 
-                            <div
-                                class="form-group admin-grid-full pdf-upload-group"
-                            >
+                            <div class="form-group admin-grid-full">
                                 <label>PDF File</label>
                                 <input
                                     id="paper-file"
-                                    class="pdf-upload-input"
                                     type="file"
                                     accept="application/pdf,.pdf"
                                     required
                                 >
-                                <small
-                                    style="
-                                        display:block;
-                                        margin-top:8px;
-                                        color:var(--text-secondary);
-                                    "
-                                >
-                                    PDF only • maximum 25 MB
+                                <small style="display:block;margin-top:8px;color:var(--text-secondary);">
+                                    PDF only • direct cloud upload • up to 100 MB
                                 </small>
                             </div>
 
                         </div>
 
+                        <div class="upload-progress-wrap" id="upload-progress-wrap">
+                            <div class="upload-progress">
+                                <div class="upload-progress-bar" id="upload-progress-bar"></div>
+                            </div>
+                            <div class="upload-progress-label" id="upload-progress-label">
+                                Preparing upload...
+                            </div>
+                        </div>
+
                         <button
                             type="submit"
                             class="btn-primary"
+                            id="upload-submit-button"
                         >
-                            <i
-                                class="fa-solid fa-file-arrow-up"
-                            ></i>
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
                             Upload &amp; Publish
                         </button>
-
                     </form>
-
                 </div>
 
-                <div
-                    class="admin-form"
-                    style="margin-top:20px;"
-                >
-                    <div
-                        style="
-                            display:flex;
-                            align-items:center;
-                            justify-content:space-between;
-                            gap:12px;
-                            margin-bottom:14px;
-                            flex-wrap:wrap;
-                        "
-                    >
-                        <h3>
-                            Uploaded Papers
-                        </h3>
-
+                <div class="admin-form" style="margin-top:20px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+                        <h3>Published Content</h3>
                         <button
                             type="button"
                             class="btn-secondary"
@@ -3930,534 +3584,304 @@
                         </button>
                     </div>
 
-                    <div
-                        id="admin-uploaded-papers"
-                        class="admin-paper-list"
-                    >
+                    <div id="admin-uploaded-papers" class="admin-paper-list">
                         <div class="empty-state">
-                            Loading uploaded papers...
+                            Loading published content...
                         </div>
                     </div>
                 </div>
-
             `;
 
-            document.getElementById(
-                "paper-form"
-            ).addEventListener(
-                "submit",
-                saveQuestionPaper
-            );
+            document
+                .getElementById("paper-form")
+                .addEventListener("submit", saveQuestionPaper);
 
             renderAdminUploadedPapers();
-
         }
 
-
-        async function saveQuestionPaper(
-            event
-        ) {
-
+        async function saveQuestionPaper(event) {
             event.preventDefault();
 
-            const title =
-                document.getElementById(
-                    "paper-title"
-                ).value.trim();
+            const token = adminToken();
 
-            const examType =
-                document.getElementById(
-                    "paper-exam-type"
-                ).value;
+            if (!token) {
+                alert("Admin session expired. Please log in again.");
+                return;
+            }
 
-            const subject =
-                document.getElementById(
-                    "paper-subject"
-                ).value.trim() ||
-                "Chemistry";
-
-            const description =
-                document.getElementById(
-                    "paper-description"
-                ).value.trim();
-
-            const fileInput =
-                document.getElementById(
-                    "paper-file"
-                );
-
-            const file =
-                fileInput &&
-                fileInput.files &&
-                fileInput.files[0];
+            const title = document.getElementById("paper-title").value.trim();
+            const type = document.getElementById("content-type").value;
+            const examType = document.getElementById("paper-exam-type").value;
+            const subject = document.getElementById("paper-subject").value.trim() || "General";
+            const topic = document.getElementById("paper-topic").value.trim();
+            const description = document.getElementById("paper-description").value.trim();
+            const fileInput = document.getElementById("paper-file");
+            const file = fileInput?.files?.[0];
+            const progressWrap = document.getElementById("upload-progress-wrap");
+            const progressBar = document.getElementById("upload-progress-bar");
+            const progressLabel = document.getElementById("upload-progress-label");
+            const submitButton = document.getElementById("upload-submit-button");
 
             if (!title) {
-                alert(
-                    "Please enter a paper title."
-                );
+                alert("Please enter a title.");
                 return;
             }
 
             if (!file) {
-                alert(
-                    "Please select a PDF file."
-                );
+                alert("Please select a PDF file.");
                 return;
             }
 
-            if (
-                file.type !==
-                    "application/pdf" &&
-                !file.name
-                    .toLowerCase()
-                    .endsWith(".pdf")
-            ) {
-                alert(
-                    "Only PDF files are allowed."
-                );
+            const isPdf =
+                file.type === "application/pdf" ||
+                file.name.toLowerCase().endsWith(".pdf");
+
+            if (!isPdf) {
+                alert("Only PDF files are allowed.");
                 return;
             }
 
-            if (
-                file.size >
-                25 * 1024 * 1024
-            ) {
-                alert(
-                    "PDF must be 25 MB or smaller."
-                );
+            if (file.size > 100 * 1024 * 1024) {
+                alert("PDF must be 100 MB or smaller.");
                 return;
             }
+
+            submitButton.disabled = true;
+            progressWrap.classList.add("active");
+            progressBar.style.width = "0%";
+            progressLabel.textContent = "Uploading PDF...";
+
+            const contentId =
+                "cnt_" +
+                Date.now().toString(36) +
+                "_" +
+                Math.random().toString(36).slice(2, 9);
 
             try {
+                if (typeof window.zwitterionBlobUpload !== "function") {
+                    throw new Error("Blob upload module is not ready. Refresh the page and try again.");
+                }
 
-                await savePaperToIndexedDB(
+                const uploadPayload = {
+                    contentId,
+                    type,
+                    title,
+                    examType,
+                    subject,
+                    topic,
+                    description,
+                    className: appState.selectedClass || "",
+                    board: appState.selectedBoard || "",
+                    school: appState.selectedSchool || ""
+                };
+
+                const blob = await window.zwitterionBlobUpload(
                     file,
-                    {
-                        title: title,
-                        examType: examType,
-                        subject: subject,
-                        className:
-                            appState.selectedClass ||
-                            "",
-                        board:
-                            appState.selectedBoard ||
-                            "",
-                        school:
-                            appState.selectedSchool ||
-                            "",
-                        description: description
+                    uploadPayload,
+                    function(progress) {
+                        const pct = Math.round(progress);
+                        progressBar.style.width = pct + "%";
+                        progressLabel.textContent = "Uploading PDF... " + pct + "%";
                     }
                 );
 
-                const success =
-                    document.getElementById(
-                        "admin-success"
-                    );
+                progressBar.style.width = "100%";
+                progressLabel.textContent = "Saving content metadata...";
 
-                if (success) {
-                    success.classList.remove(
-                        "hidden"
+                const saveResponse = await fetch("/api/content", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({
+                        id: contentId,
+                        type,
+                        title,
+                        examType,
+                        subject,
+                        topic,
+                        description,
+                        className: appState.selectedClass || "",
+                        board: appState.selectedBoard || "",
+                        school: appState.selectedSchool || "",
+                        fileName: file.name,
+                        fileSize: file.size,
+                        blob: blob
+                    })
+                });
+
+                const saveResult = await saveResponse.json();
+
+                if (!saveResponse.ok) {
+                    await fetch("/api/delete", {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + token
+                        },
+                        body: JSON.stringify({
+                            urls: [blob.url]
+                        })
+                    }).catch(() => {});
+
+                    throw new Error(
+                        saveResult.error || "Could not save content metadata."
                     );
                 }
 
-                document.getElementById(
-                    "paper-form"
-                ).reset();
+                const success = document.getElementById("admin-success");
+                success.textContent = "Content published successfully.";
+                success.classList.remove("hidden");
 
-                document.getElementById(
-                    "paper-subject"
-                ).value =
-                    "Chemistry";
+                document.getElementById("paper-form").reset();
+                document.getElementById("paper-subject").value = "Chemistry";
+                progressLabel.textContent = "Published successfully.";
 
                 await renderAdminUploadedPapers();
-
+            } catch (error) {
+                console.error("Publish content error:", error);
+                alert(error.message || "Could not publish the content.");
+                progressLabel.textContent = "Upload failed.";
+            } finally {
+                submitButton.disabled = false;
             }
-
-            catch (error) {
-
-                console.error(
-                    "Save question paper error:",
-                    error
-                );
-
-                alert(
-                    error.message ||
-                    "Could not save the PDF."
-                );
-
-            }
-
         }
-
-
-        async function savePaperToIndexedDB(
-            file,
-            metadata
-        ) {
-
-            const db =
-                await openPaperDatabase();
-
-            return new Promise(
-                function(resolve, reject) {
-
-                    const transaction =
-                        db.transaction(
-                            PAPER_STORE_NAME,
-                            "readwrite"
-                        );
-
-                    const store =
-                        transaction.objectStore(
-                            PAPER_STORE_NAME
-                        );
-
-                    const record = {
-                        title:
-                            metadata.title ||
-                            file.name,
-
-                        examType:
-                            metadata.examType ||
-                            "",
-
-                        subject:
-                            metadata.subject ||
-                            "Chemistry",
-
-                        className:
-                            metadata.className ||
-                            "",
-
-                        board:
-                            metadata.board ||
-                            "",
-
-                        school:
-                            metadata.school ||
-                            "",
-
-                        description:
-                            metadata.description ||
-                            "",
-
-                        fileName:
-                            file.name,
-
-                        fileSize:
-                            file.size,
-
-                        fileType:
-                            file.type ||
-                            "application/pdf",
-
-                        blob:
-                            file,
-
-                        createdAt:
-                            new Date().toISOString()
-                    };
-
-                    const request =
-                        store.add(record);
-
-                    request.onsuccess =
-                        function() {
-                        resolve(
-                            request.result
-                        );
-                    };
-
-                    request.onerror =
-                        function() {
-                        reject(
-                            request.error
-                        );
-                    };
-
-                }
-            );
-
-        }
-
-
-        async function openPaperDatabase() {
-
-            return new Promise(
-                function(resolve, reject) {
-
-                    const request =
-                        indexedDB.open(
-                            PAPER_DB_NAME,
-                            PAPER_DB_VERSION
-                        );
-
-                    request.onupgradeneeded =
-                        function(event) {
-
-                            const db =
-                                event.target.result;
-
-                            if (
-                                !db.objectStoreNames.contains(
-                                    PAPER_STORE_NAME
-                                )
-                            ) {
-
-                                const store =
-                                    db.createObjectStore(
-                                        PAPER_STORE_NAME,
-                                        {
-                                            keyPath: "id",
-                                            autoIncrement: true
-                                        }
-                                    );
-
-                                store.createIndex(
-                                    "createdAt",
-                                    "createdAt",
-                                    {
-                                        unique: false
-                                    }
-                                );
-                            }
-
-                        };
-
-                    request.onsuccess =
-                        function() {
-                        resolve(
-                            request.result
-                        );
-                    };
-
-                    request.onerror =
-                        function() {
-                        reject(
-                            request.error
-                        );
-                    };
-
-                }
-            );
-
-        }
-
-
-        const PAPER_DB_NAME =
-            "ZWITTERION_V1_PDF_DATABASE";
-
-        const PAPER_DB_VERSION =
-            1;
-
-        const PAPER_STORE_NAME =
-            "question_papers";
-
 
         async function renderAdminUploadedPapers() {
+            const container = document.getElementById("admin-uploaded-papers");
 
-            const container =
-                document.getElementById(
-                    "admin-uploaded-papers"
-                );
-
-            if (!container) {
-                return;
-            }
+            if (!container) return;
 
             try {
+                const response = await fetch("/api/content", {
+                    cache: "no-store"
+                });
 
-                const papers =
-                    await getStoredPapers();
+                const result = await response.json();
 
-                if (!papers.length) {
+                if (!response.ok) {
+                    throw new Error(result.error || "Could not load content.");
+                }
 
+                const items = result.items || [];
+
+                if (!items.length) {
                     container.innerHTML = `
                         <div class="empty-state">
                             <i class="fa-solid fa-file-circle-xmark"></i>
-                            No PDFs uploaded yet.
+                            No content published yet.
                         </div>
                     `;
-
                     return;
                 }
 
-                container.innerHTML =
-                    papers
-                        .map(
-                            function(paper) {
+                container.innerHTML = items.map(function(item) {
+                    const sizeMb =
+                        item.fileSize
+                            ? (item.fileSize / (1024 * 1024)).toFixed(2)
+                            : "";
 
-                                const sizeMb =
-                                    (paper.fileSize /
-                                    (1024 * 1024))
-                                    .toFixed(2);
+                    return `
+                        <div class="admin-paper-item">
+                            <div class="paper-title">
+                                ${escapeHtml(item.title || item.fileName || "Untitled")}
+                            </div>
 
-                                return `
-                                    <div class="admin-paper-item">
+                            <div class="paper-meta">
+                                <span class="paper-tag">
+                                    ${escapeHtml(contentTypeLabel(item.type))}
+                                </span>
+                                <span class="paper-tag">
+                                    ${escapeHtml(item.subject || "General")}
+                                </span>
+                                <span class="paper-tag">
+                                    Class ${escapeHtml(item.className || "")}
+                                </span>
+                            </div>
 
-                                        <div class="paper-title">
-                                            ${escapeHtml(
-                                                paper.title ||
-                                                paper.fileName
-                                            )}
-                                        </div>
+                            <div class="paper-description">
+                                ${escapeHtml(item.description || item.fileName || "PDF")}
+                                ${sizeMb ? ` • ${escapeHtml(sizeMb)} MB` : ""}
+                            </div>
 
-                                        <div class="paper-meta">
-                                            <span class="paper-tag">
-                                                ${escapeHtml(
-                                                    paper.subject ||
-                                                    "Chemistry"
-                                                )}
-                                            </span>
+                            <div class="admin-paper-actions">
+                                <button
+                                    type="button"
+                                    class="btn-primary"
+                                    onclick="openCloudPdf(${JSON.stringify(item.url)}, ${JSON.stringify(item.title || item.fileName || 'PDF')})"
+                                >
+                                    <i class="fa-solid fa-eye"></i>
+                                    Open
+                                </button>
 
-                                            <span class="paper-tag">
-                                                ${escapeHtml(
-                                                    paper.examType ||
-                                                    "Test"
-                                                )}
-                                            </span>
-
-                                            <span class="paper-tag">
-                                                ${escapeHtml(
-                                                    paper.className ||
-                                                    ""
-                                                )}
-                                            </span>
-                                        </div>
-
-                                        <div class="paper-description">
-                                            ${escapeHtml(
-                                                paper.description ||
-                                                paper.fileName ||
-                                                "PDF"
-                                            )}
-                                            • ${escapeHtml(sizeMb)} MB
-                                        </div>
-
-                                        <div class="admin-paper-actions">
-
-                                            <button
-                                                type="button"
-                                                class="btn-primary"
-                                                onclick="openStoredPaper(${Number(paper.id)})"
-                                            >
-                                                <i class="fa-solid fa-eye"></i>
-                                                Open
-                                            </button>
-
-                                            <button
-                                                type="button"
-                                                class="btn-danger"
-                                                onclick="deleteStoredPaper(${Number(paper.id)})"
-                                            >
-                                                <i class="fa-solid fa-trash"></i>
-                                                Delete
-                                            </button>
-
-                                        </div>
-
-                                    </div>
-                                `;
-
-                            }
-                        )
-                        .join(
-                            ""
-                        );
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Admin papers:",
-                    error
-                );
-
+                                <button
+                                    type="button"
+                                    class="btn-danger"
+                                    onclick="deleteCloudContent(${JSON.stringify(item.id)}, ${JSON.stringify(item.blobPath)}, ${JSON.stringify(item.metadataPath)}, ${JSON.stringify(item.url)})"
+                                >
+                                    <i class="fa-solid fa-trash"></i>
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+            } catch (error) {
+                console.error("Admin content list error:", error);
                 container.innerHTML = `
                     <div class="empty-state">
-                        Could not load uploaded papers.
+                        Could not load published content.
                     </div>
                 `;
-
             }
-
         }
 
+        async function deleteCloudContent(id, blobPath, metadataPath, url) {
+            const token = adminToken();
 
-        async function deleteStoredPaper(id) {
+            if (!token) {
+                alert("Admin session expired. Please log in again.");
+                return;
+            }
 
-            const confirmed =
-                confirm(
-                    "Delete this PDF permanently from this browser?"
-                );
-
-            if (!confirmed) {
+            if (!confirm("Remove this content from ZWITTERION?")) {
                 return;
             }
 
             try {
+                const response = await fetch("/api/delete", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({
+                        id,
+                        blobPath,
+                        metadataPath,
+                        urls: [url]
+                    })
+                });
 
-                const db =
-                    await openPaperDatabase();
+                const result = await response.json();
 
-                await new Promise(
-                    function(resolve, reject) {
-
-                        const transaction =
-                            db.transaction(
-                                PAPER_STORE_NAME,
-                                "readwrite"
-                            );
-
-                        const store =
-                            transaction.objectStore(
-                                PAPER_STORE_NAME
-                            );
-
-                        const request =
-                            store.delete(
-                                Number(id)
-                            );
-
-                        request.onsuccess =
-                            function() {
-                            resolve();
-                        };
-
-                        request.onerror =
-                            function() {
-                            reject(
-                                request.error
-                            );
-                        };
-
-                    }
-                );
+                if (!response.ok) {
+                    throw new Error(result.error || "Could not remove content.");
+                }
 
                 await renderAdminUploadedPapers();
-
-                alert(
-                    "PDF deleted successfully."
-                );
-
+            } catch (error) {
+                console.error("Delete content error:", error);
+                alert(error.message || "Could not remove content.");
             }
-
-            catch (error) {
-
-                console.error(
-                    "Delete paper error:",
-                    error
-                );
-
-                alert(
-                    "Could not delete the PDF."
-                );
-
-            }
-
         }
 
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "Escape") {
+                closeCloudPdf();
+            }
+        });
 
         /* =========================================================
            CONTENT CARD
@@ -4838,9 +4262,67 @@
                 }
 
             },
-            3200
+            2600
         );
 
+    </script>
+
+
+
+    <!-- =========================================================
+         IN-APP PDF VIEWER
+    ========================================================== -->
+    <div
+        id="pdf-viewer-modal"
+        aria-hidden="true"
+    >
+        <div class="pdf-viewer-toolbar">
+            <button
+                type="button"
+                onclick="closeCloudPdf()"
+            >
+                ← Back to ZWITTERION
+            </button>
+
+            <div id="pdf-viewer-title">
+                PDF Viewer
+            </div>
+        </div>
+
+        <iframe
+            id="pdf-viewer-frame"
+            title="ZWITTERION PDF Viewer"
+        ></iframe>
+    </div>
+
+
+    <script type="module">
+        import { upload } from "https://esm.sh/@vercel/blob@2.8.0/client?bundle";
+
+        window.zwitterionBlobUpload = async function(file, metadata, onProgress) {
+            const pathname =
+                "zwitterion/pdfs/" +
+                metadata.contentId + "/" +
+                file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+
+            const result = await upload(
+                pathname,
+                file,
+                {
+                    access: "public",
+                    handleUploadUrl: "/api/upload",
+                    multipart: true,
+                    clientPayload: JSON.stringify(metadata),
+                    onUploadProgress: function(event) {
+                        if (typeof onProgress === "function" && event.total) {
+                            onProgress((event.loaded / event.total) * 100);
+                        }
+                    }
+                }
+            );
+
+            return result;
+        };
     </script>
 
 </body>
