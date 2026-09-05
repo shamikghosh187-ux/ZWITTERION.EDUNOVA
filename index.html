@@ -943,7 +943,9 @@
             cursor: pointer;
         }
 
-        .btn-danger:hover { opacity: .88; }
+        .btn-danger:hover {
+            opacity: .88;
+        }
 
         .content-type-badges {
             display: flex;
@@ -967,75 +969,6 @@
             box-shadow: 0 0 0 2px var(--accent-glow);
         }
 
-        .otp-step {
-            display: none;
-        }
-
-        .otp-step.active {
-            display: block;
-            animation: card-in 280ms ease both;
-        }
-
-        .otp-boxes {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-            margin: 10px 0 15px;
-        }
-
-        .otp-box {
-            width: 100%;
-            min-height: 54px;
-            padding: 8px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: var(--input-bg);
-            color: var(--text-primary);
-            outline: none;
-            text-align: center;
-            font-size: 20px;
-            font-weight: 800;
-        }
-
-        .otp-box:focus {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 0 3px rgba(6,182,212,.12);
-        }
-
-        .otp-destination {
-            margin-bottom: 12px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            background: var(--accent-glow);
-            color: var(--accent-cyan);
-            font-size: 12px;
-            font-weight: 700;
-            text-align: left;
-        }
-
-        .otp-helper {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 15px;
-            color: var(--text-secondary);
-            font-size: 11px;
-        }
-
-        .text-button {
-            border: 0;
-            padding: 0;
-            background: transparent;
-            color: var(--accent-cyan);
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .text-button:disabled {
-            opacity: .5;
-            cursor: not-allowed;
-        }
-
         #pdf-viewer-modal {
             position: fixed;
             inset: 0;
@@ -1045,7 +978,9 @@
             background: #fff;
         }
 
-        #pdf-viewer-modal.active { display: flex; }
+        #pdf-viewer-modal.active {
+            display: flex;
+        }
 
         .pdf-viewer-toolbar {
             min-height: 64px;
@@ -1068,17 +1003,15 @@
         }
 
         #pdf-viewer-title {
-            min-width: 0;
-            flex: 1;
+            font-weight: 800;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            font-weight: 800;
         }
 
         #pdf-viewer-frame {
-            width: 100%;
             flex: 1;
+            width: 100%;
             border: 0;
             background: #e5e7eb;
         }
@@ -1088,21 +1021,23 @@
             margin-top: 14px;
         }
 
-        .upload-progress-wrap.active { display: block; }
+        .upload-progress-wrap.active {
+            display: block;
+        }
 
         .upload-progress {
             width: 100%;
             height: 10px;
             border-radius: 999px;
             overflow: hidden;
-            background: rgba(148,163,184,.25);
+            background: rgba(148, 163, 184, .25);
         }
 
         .upload-progress-bar {
             width: 0%;
             height: 100%;
             border-radius: inherit;
-            background: linear-gradient(90deg,#06b6d4,#8b5cf6);
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6);
             transition: width .15s ease;
         }
 
@@ -1111,7 +1046,128 @@
             font-size: 12px;
             color: var(--text-secondary);
         }
+
+    
+
+        /* =========================================================
+           OTP LOGIN
+        ========================================================== */
+
+        .otp-method-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .otp-method-btn {
+            min-height: 42px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-weight: 700;
+            cursor: pointer;
+            transition: 180ms ease;
+        }
+
+        .otp-method-btn:hover,
+        .otp-method-btn.active {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            background: var(--accent-glow);
+        }
+
+        .otp-step-title {
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .otp-step-text {
+            margin-bottom: 18px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .otp-input-row {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 7px;
+            margin: 16px 0;
+        }
+
+        .otp-input {
+            width: 100%;
+            height: 52px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            text-align: center;
+            font-size: 20px;
+            font-weight: 800;
+            outline: none;
+        }
+
+        .otp-input:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(6,182,212,.12);
+        }
+
+        .otp-secondary-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .otp-timer {
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .otp-resend {
+            border: 0;
+            background: transparent;
+            color: var(--accent-cyan);
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .otp-resend:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        .otp-email-note {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 9px;
+            background: var(--accent-glow);
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        @media (max-width: 500px) {
+            .otp-input-row {
+                gap: 5px;
+            }
+
+            .otp-input {
+                height: 46px;
+                font-size: 18px;
+            }
+        }
+
 </style>
+
 </head>
 
 <body>
@@ -1381,7 +1437,7 @@
 
 
     <!-- =========================================================
-         STUDENT LOGIN — OTP
+         STUDENT LOGIN
     ========================================================== -->
 
     <section
@@ -1392,117 +1448,209 @@
         <div class="auth-card">
 
             <div class="logo-badge">
-                <img src="logo.png" alt="ZWITTERION Logo">
+                <img
+                    src="logo.png"
+                    alt="ZWITTERION Logo"
+                >
             </div>
 
-            <h1>STUDENT LOGIN</h1>
+            <h1>
+                STUDENT LOGIN
+            </h1>
 
             <p
                 id="student-login-subtitle"
                 class="subtitle"
             >
-                Class 11 • CBSE • School
+                Verify your account with OTP
             </p>
 
-            <div
-                id="student-identifier-step"
-                class="otp-step active"
-            >
+            <div id="student-otp-request-step">
 
-                <div class="form-group">
-                    <label>Email or Mobile Number</label>
+                <div class="otp-method-row">
 
-                    <input
-                        id="student-identifier"
-                        type="text"
-                        inputmode="email"
-                        autocomplete="username"
-                        placeholder="you@example.com or 9876543210"
-                        required
+                    <button
+                        type="button"
+                        id="student-method-email"
+                        class="otp-method-btn active"
+                        onclick="setStudentOtpMethod('email')"
                     >
+                        <i class="fa-solid fa-envelope"></i>
+                        Email
+                    </button>
+
+                    <button
+                        type="button"
+                        id="student-method-phone"
+                        class="otp-method-btn"
+                        onclick="setStudentOtpMethod('phone')"
+                    >
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                        Phone
+                    </button>
+
                 </div>
 
-                <div
-                    id="student-otp-error"
-                    class="error-message hidden"
-                ></div>
-
-                <button
-                    id="send-student-otp"
-                    type="button"
-                    class="btn-primary"
-                    onclick="sendStudentOtp()"
+                <form
+                    id="student-otp-request-form"
                 >
-                    <i class="fa-solid fa-paper-plane"></i>
-                    Send OTP
-                </button>
+
+                    <div class="form-group">
+
+                        <label
+                            id="student-otp-identifier-label"
+                        >
+                            Email Address
+                        </label>
+
+                        <input
+                            id="student-otp-identifier"
+                            type="email"
+                            inputmode="email"
+                            placeholder="student@example.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                    <div
+                        id="student-otp-request-error"
+                        class="error-message hidden"
+                    ></div>
+
+                    <button
+                        id="student-send-otp"
+                        type="submit"
+                        class="btn-primary"
+                    >
+                        <i
+                            class="fa-solid fa-paper-plane"
+                        ></i>
+                        Send OTP
+                    </button>
+
+                </form>
 
             </div>
 
             <div
-                id="student-otp-step"
-                class="otp-step"
+                id="student-otp-verify-step"
+                class="hidden"
             >
+
+                <div class="otp-step-title">
+                    Verify OTP
+                </div>
 
                 <div
                     id="student-otp-destination"
-                    class="otp-destination"
+                    class="otp-step-text"
                 >
-                    OTP sent successfully.
+                    Enter the 6-digit OTP we sent you.
                 </div>
 
-                <div class="form-group">
-                    <label>6-Digit OTP</label>
+                <form
+                    id="student-otp-verify-form"
+                >
 
                     <div
-                        class="otp-boxes"
-                        id="student-otp-boxes"
+                        class="otp-input-row"
+                        id="student-otp-input-row"
                     >
-                        <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
-                        <input class="otp-box" maxlength="1" inputmode="numeric">
-                        <input class="otp-box" maxlength="1" inputmode="numeric">
-                        <input class="otp-box" maxlength="1" inputmode="numeric">
-                        <input class="otp-box" maxlength="1" inputmode="numeric">
-                        <input class="otp-box" maxlength="1" inputmode="numeric">
-                    </div>
-                </div>
 
-                <div class="otp-helper">
-                    <span id="otp-countdown">Resend available in 60s</span>
+                        <input
+                            class="otp-input"
+                            maxlength="1"
+                            inputmode="numeric"
+                            autocomplete="one-time-code"
+                            aria-label="OTP digit 1"
+                        >
+
+                        <input
+                            class="otp-input"
+                            maxlength="1"
+                            inputmode="numeric"
+                            aria-label="OTP digit 2"
+                        >
+
+                        <input
+                            class="otp-input"
+                            maxlength="1"
+                            inputmode="numeric"
+                            aria-label="OTP digit 3"
+                        >
+
+                        <input
+                            class="otp-input"
+                            maxlength="1"
+                            inputmode="numeric"
+                            aria-label="OTP digit 4"
+                        >
+
+                        <input
+                            class="otp-input"
+                            maxlength="1"
+                            inputmode="numeric"
+                            aria-label="OTP digit 5"
+                        >
+
+                        <input
+                            class="otp-input"
+                            maxlength="1"
+                            inputmode="numeric"
+                            aria-label="OTP digit 6"
+                        >
+
+                    </div>
+
+                    <div
+                        id="student-otp-verify-error"
+                        class="error-message hidden"
+                    ></div>
 
                     <button
-                        id="resend-otp-button"
+                        id="student-verify-otp"
+                        type="submit"
+                        class="btn-primary"
+                    >
+                        <i
+                            class="fa-solid fa-shield-check"
+                        ></i>
+                        Verify OTP
+                    </button>
+
+                </form>
+
+                <div class="otp-secondary-row">
+
+                    <span
+                        id="student-otp-timer"
+                        class="otp-timer"
+                    >
+                        Resend available in 60s
+                    </span>
+
+                    <button
                         type="button"
-                        class="text-button"
-                        onclick="resendStudentOtp()"
+                        id="student-otp-resend"
+                        class="otp-resend"
                         disabled
                     >
                         Resend OTP
                     </button>
+
                 </div>
-
-                <div
-                    id="student-verify-error"
-                    class="error-message hidden"
-                ></div>
-
-                <button
-                    id="verify-student-otp"
-                    type="button"
-                    class="btn-primary"
-                    onclick="verifyStudentOtp()"
-                >
-                    <i class="fa-solid fa-shield-check"></i>
-                    Verify OTP
-                </button>
 
                 <button
                     type="button"
                     class="back-btn"
-                    onclick="backToStudentIdentifier()"
+                    onclick="resetStudentOtpLogin()"
                 >
-                    <i class="fa-solid fa-arrow-left"></i>
-                    Change Email / Mobile
+                    <i
+                        class="fa-solid fa-arrow-left"
+                    ></i>
+                    Change Email / Phone
                 </button>
 
             </div>
@@ -1512,7 +1660,9 @@
                 class="back-btn"
                 onclick="goBackToAccess()"
             >
-                <i class="fa-solid fa-arrow-left"></i>
+                <i
+                    class="fa-solid fa-arrow-left"
+                ></i>
                 Return
             </button>
 
@@ -1520,8 +1670,8 @@
 
     </section>
 
-    
-<!-- =========================================================
+
+    <!-- =========================================================
          ADMIN LOGIN
     ========================================================== -->
 
@@ -1924,6 +2074,10 @@
            HELPERS
         ========================================================== */
 
+        function byId(id) {
+            return document.getElementById(id);
+        }
+
         function show(id) {
 
             const element =
@@ -2286,385 +2440,890 @@
            STUDENT OTP LOGIN
         ========================================================== */
 
-        let studentOtpCountdownTimer = null;
+        let studentOtpMethod = "email";
         let studentOtpIdentifier = "";
+        let studentOtpChallengeId = "";
+        let studentOtpResendTimer = null;
+        let studentOtpSecondsRemaining = 0;
 
-        function setStudentOtpStep(step) {
+        function setStudentOtpMethod(method) {
 
-            const identifierStep =
-                byId("student-identifier-step");
+            studentOtpMethod =
+                method === "phone"
+                    ? "phone"
+                    : "email";
 
-            const otpStep =
-                byId("student-otp-step");
+            const input =
+                byId("student-otp-identifier");
 
-            if (step === "otp") {
-                identifierStep.classList.remove("active");
-                otpStep.classList.add("active");
+            const label =
+                byId("student-otp-identifier-label");
+
+            const emailButton =
+                byId("student-method-email");
+
+            const phoneButton =
+                byId("student-method-phone");
+
+            const form =
+                byId("student-otp-request-form");
+
+            if (studentOtpMethod === "phone") {
+
+                label.textContent =
+                    "Mobile Number";
+
+                input.type =
+                    "tel";
+
+                input.inputMode =
+                    "tel";
+
+                input.autocomplete =
+                    "tel";
+
+                input.placeholder =
+                    "+91 9876543210";
+
+                input.pattern =
+                    "[+]?[0-9 ()-]{8,18}";
+
+                emailButton.classList.remove("active");
+                phoneButton.classList.add("active");
+
             } else {
-                otpStep.classList.remove("active");
-                identifierStep.classList.add("active");
+
+                label.textContent =
+                    "Email Address";
+
+                input.type =
+                    "email";
+
+                input.inputMode =
+                    "email";
+
+                input.autocomplete =
+                    "email";
+
+                input.placeholder =
+                    "student@example.com";
+
+                input.removeAttribute("pattern");
+
+                phoneButton.classList.remove("active");
+                emailButton.classList.add("active");
+
             }
 
+            form.reset();
+            input.type =
+                studentOtpMethod === "phone"
+                    ? "tel"
+                    : "email";
+
         }
 
-        function normalizeIdentifier(value) {
-            return String(value || "").trim();
+        function normalizePhone(value) {
+
+            return String(value || "")
+                .replace(/[^0-9+]/g, "")
+                .replace(/(?!^)\+/g, "");
+
         }
 
-        function looksLikeEmail(value) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-        }
+        function validateStudentOtpIdentifier(value) {
 
-        function looksLikePhone(value) {
-            return /^\+?[0-9]{10,15}$/.test(
-                value.replace(/[\s-]/g, "")
+            if (studentOtpMethod === "phone") {
+
+                const normalized =
+                    normalizePhone(value);
+
+                return /^\+?[0-9]{8,15}$/.test(
+                    normalized
+                );
+
+            }
+
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+                value
+                    .trim()
+                    .toLowerCase()
             );
+
         }
 
-        function startOtpCountdown() {
+        function setOtpRequestLoading(loading) {
 
-            let seconds = 60;
+            const button =
+                byId("student-send-otp");
 
-            const countdown =
-                byId("otp-countdown");
+            if (!button) {
+                return;
+            }
 
-            const resend =
-                byId("resend-otp-button");
+            button.disabled =
+                loading;
 
-            resend.disabled = true;
+            button.innerHTML = loading
+                ? `
+                    <i
+                        class="fa-solid fa-spinner fa-spin"
+                    ></i>
+                    Sending OTP...
+                `
+                : `
+                    <i
+                        class="fa-solid fa-paper-plane"
+                    ></i>
+                    Send OTP
+                `;
 
-            countdown.textContent =
-                `Resend available in ${seconds}s`;
+        }
 
-            clearInterval(
-                studentOtpCountdownTimer
-            );
+        function setOtpVerifyLoading(loading) {
 
-            studentOtpCountdownTimer =
-                setInterval(function() {
+            const button =
+                byId("student-verify-otp");
 
-                    seconds -= 1;
+            if (!button) {
+                return;
+            }
 
-                    if (seconds <= 0) {
+            button.disabled =
+                loading;
 
-                        clearInterval(
-                            studentOtpCountdownTimer
-                        );
+            button.innerHTML = loading
+                ? `
+                    <i
+                        class="fa-solid fa-spinner fa-spin"
+                    ></i>
+                    Verifying...
+                `
+                : `
+                    <i
+                        class="fa-solid fa-shield-check"
+                    ></i>
+                    Verify OTP
+                `;
 
-                        countdown.textContent =
-                            "You can resend the OTP";
+        }
 
-                        resend.disabled = false;
+        function getStudentOtpCode() {
 
-                        return;
+            return Array.from(
+                document.querySelectorAll(
+                    "#student-otp-input-row .otp-input"
+                )
+            )
+                .map(
+                    function(input) {
+                        return input.value.trim();
                     }
-
-                    countdown.textContent =
-                        `Resend available in ${seconds}s`;
-
-                }, 1000);
+                )
+                .join("");
 
         }
 
-        function clearOtpBoxes() {
+        function clearStudentOtpInputs() {
+
             document
-                .querySelectorAll("#student-otp-boxes .otp-box")
-                .forEach(function(input) {
-                    input.value = "";
-                });
+                .querySelectorAll(
+                    "#student-otp-input-row .otp-input"
+                )
+                .forEach(
+                    function(input) {
+                        input.value = "";
+                    }
+                );
+
+        }
+
+        function focusFirstStudentOtpInput() {
 
             const first =
                 document.querySelector(
-                    "#student-otp-boxes .otp-box"
+                    "#student-otp-input-row .otp-input"
                 );
 
-            if (first) first.focus();
-        }
-
-        function getEnteredOtp() {
-            return Array.from(
-                document.querySelectorAll(
-                    "#student-otp-boxes .otp-box"
-                )
-            )
-                .map(function(input) {
-                    return input.value;
-                })
-                .join("");
-        }
-
-        async function sendStudentOtp() {
-
-            const identifierInput =
-                byId("student-identifier");
-
-            const button =
-                byId("send-student-otp");
-
-            const errorBox =
-                byId("student-otp-error");
-
-            const identifier =
-                normalizeIdentifier(
-                    identifierInput.value
-                );
-
-            errorBox.classList.add("hidden");
-
-            if (!looksLikeEmail(identifier) && !looksLikePhone(identifier)) {
-                errorBox.textContent =
-                    "Enter a valid email address or mobile number.";
-                errorBox.classList.remove("hidden");
-                identifierInput.focus();
-                return;
+            if (first) {
+                first.focus();
             }
 
-            button.disabled = true;
-            button.innerHTML =
-                '<i class="fa-solid fa-spinner fa-spin"></i> Sending OTP...';
+        }
 
-            try {
+        function startStudentOtpTimer(seconds) {
 
-                const response =
-                    await fetch("/api/student/send-otp", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json"
-                        },
-                        body: JSON.stringify({
-                            identifier,
-                            className: appState.selectedClass || "",
-                            board: appState.selectedBoard || "",
-                            school: appState.selectedSchool || ""
-                        })
-                    });
+            if (studentOtpResendTimer) {
 
-                const result = await response.json();
+                clearInterval(
+                    studentOtpResendTimer
+                );
 
-                if (!response.ok) {
-                    throw new Error(
-                        result.error ||
-                        "Could not send OTP."
+            }
+
+            studentOtpSecondsRemaining =
+                Number(seconds) || 60;
+
+            const timer =
+                byId("student-otp-timer");
+
+            const resend =
+                byId("student-otp-resend");
+
+            resend.disabled = true;
+
+            function tick() {
+
+                if (
+                    studentOtpSecondsRemaining <= 0
+                ) {
+
+                    clearInterval(
+                        studentOtpResendTimer
                     );
+
+                    studentOtpResendTimer =
+                        null;
+
+                    timer.textContent =
+                        "You can resend the OTP now.";
+
+                    resend.disabled =
+                        false;
+
+                    return;
                 }
 
-                studentOtpIdentifier = identifier;
+                timer.textContent =
+                    `Resend available in ${studentOtpSecondsRemaining}s`;
+
+                studentOtpSecondsRemaining -= 1;
+
+            }
+
+            tick();
+
+            studentOtpResendTimer =
+                setInterval(
+                    tick,
+                    1000
+                );
+
+        }
+
+        function resetStudentOtpLogin() {
+
+            if (studentOtpResendTimer) {
+
+                clearInterval(
+                    studentOtpResendTimer
+                );
+
+                studentOtpResendTimer =
+                    null;
+
+            }
+
+            studentOtpIdentifier = "";
+            studentOtpChallengeId = "";
+            studentOtpSecondsRemaining =
+                0;
+
+            clearStudentOtpInputs();
+
+            hide(
+                "student-otp-verify-step"
+            );
+
+            show(
+                "student-otp-request-step"
+            );
+
+            byId(
+                "student-otp-request-form"
+            ).reset();
+
+            byId(
+                "student-otp-request-error"
+            ).classList.add("hidden");
+
+            byId(
+                "student-otp-verify-error"
+            ).classList.add("hidden");
+
+        }
+
+        function maskStudentIdentifier() {
+
+            if (
+                studentOtpMethod === "email"
+            ) {
+
+                const parts =
+                    studentOtpIdentifier.split("@");
+
+                if (parts.length !== 2) {
+                    return studentOtpIdentifier;
+                }
+
+                const name =
+                    parts[0];
+
+                const visible =
+                    name.slice(0, 2);
+
+                return (
+                    visible +
+                    "***@" +
+                    parts[1]
+                );
+
+            }
+
+            const digits =
+                normalizePhone(
+                    studentOtpIdentifier
+                );
+
+            if (digits.length < 4) {
+                return "your mobile number";
+            }
+
+            return (
+                "******" +
+                digits.slice(-4)
+            );
+
+        }
+
+        byId(
+            "student-otp-request-form"
+        ).addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+                const errorBox =
+                    byId(
+                        "student-otp-request-error"
+                    );
+
+                errorBox.classList.add(
+                    "hidden"
+                );
+
+                let value =
+                    byId(
+                        "student-otp-identifier"
+                    ).value.trim();
+
+                if (
+                    studentOtpMethod === "email"
+                ) {
+
+                    value =
+                        value.toLowerCase();
+
+                } else {
+
+                    value =
+                        normalizePhone(value);
+
+                }
+
+                if (
+                    !validateStudentOtpIdentifier(
+                        value
+                    )
+                ) {
+
+                    errorBox.textContent =
+                        studentOtpMethod === "phone"
+                            ? "Enter a valid mobile number."
+                            : "Enter a valid email address.";
+
+                    errorBox.classList.remove(
+                        "hidden"
+                    );
+
+                    return;
+                }
+
+                studentOtpIdentifier =
+                    value;
+
+                setOtpRequestLoading(
+                    true
+                );
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/student/send-otp",
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type":
+                                        "application/json",
+                                    "Accept":
+                                        "application/json"
+                                },
+                                body:
+                                    JSON.stringify({
+                                        method:
+                                            studentOtpMethod,
+                                        identifier:
+                                            studentOtpIdentifier,
+                                        className:
+                                            appState.selectedClass ||
+                                            "",
+                                        board:
+                                            appState.selectedBoard ||
+                                            "",
+                                        school:
+                                            appState.selectedSchool ||
+                                            ""
+                                    })
+                            }
+                        );
+
+                    const result =
+                        await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(
+                            typeof result.error === "string"
+                                ? result.error
+                                : result.error
+                                    ? JSON.stringify(result.error)
+                                    : "Could not send OTP."
+                        );
+                    }
+
+                    studentOtpChallengeId =
+                        result.challengeId ||
+                        "";
+
+                    byId(
+                        "student-otp-destination"
+                    ).textContent =
+                        result.message ||
+                        `A 6-digit OTP was sent to ${maskStudentIdentifier()}.`;
+
+                    hide(
+                        "student-otp-request-step"
+                    );
+
+                    show(
+                        "student-otp-verify-step"
+                    );
+
+                    clearStudentOtpInputs();
+
+                    startStudentOtpTimer(
+                        result.resendAfter ||
+                        60
+                    );
+
+                    focusFirstStudentOtpInput();
+
+                } catch (error) {
+
+                    console.error(
+                        "Send student OTP error:",
+                        error
+                    );
+
+                    errorBox.textContent =
+                        error.message ||
+                        "Could not send OTP.";
+
+                    errorBox.classList.remove(
+                        "hidden"
+                    );
+
+                } finally {
+
+                    setOtpRequestLoading(
+                        false
+                    );
+
+                }
+
+            }
+        );
+
+        byId(
+            "student-otp-verify-form"
+        ).addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+                const errorBox =
+                    byId(
+                        "student-otp-verify-error"
+                    );
+
+                errorBox.classList.add(
+                    "hidden"
+                );
+
+                const otp =
+                    getStudentOtpCode();
+
+                if (
+                    !/^\d{6}$/.test(otp)
+                ) {
+
+                    errorBox.textContent =
+                        "Enter the complete 6-digit OTP.";
+
+                    errorBox.classList.remove(
+                        "hidden"
+                    );
+
+                    focusFirstStudentOtpInput();
+
+                    return;
+                }
+
+                setOtpVerifyLoading(
+                    true
+                );
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/student/verify-otp",
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type":
+                                        "application/json",
+                                    "Accept":
+                                        "application/json"
+                                },
+                                body:
+                                    JSON.stringify({
+                                        challengeId:
+                                            studentOtpChallengeId,
+                                        method:
+                                            studentOtpMethod,
+                                        identifier:
+                                            studentOtpIdentifier,
+                                        otp,
+                                        className:
+                                            appState.selectedClass ||
+                                            "",
+                                        board:
+                                            appState.selectedBoard ||
+                                            "",
+                                        school:
+                                            appState.selectedSchool ||
+                                            ""
+                                    })
+                            }
+                        );
+
+                    const result =
+                        await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(
+                            typeof result.error === "string"
+                                ? result.error
+                                : result.error
+                                    ? JSON.stringify(result.error)
+                                    : "OTP verification failed."
+                        );
+                    }
+
+                    if (
+                        result.token
+                    ) {
+
+                        sessionStorage.setItem(
+                            "zwitterion_student_token",
+                            result.token
+                        );
+
+                    }
+
+                    appState.currentUser =
+                        result.studentName ||
+                        result.email ||
+                        result.phone ||
+                        studentOtpIdentifier;
+
+                    appState.currentRole =
+                        "STUDENT";
+
+                    if (studentOtpResendTimer) {
+
+                        clearInterval(
+                            studentOtpResendTimer
+                        );
+
+                        studentOtpResendTimer =
+                            null;
+
+                    }
+
+                    launchApp();
+
+                } catch (error) {
+
+                    console.error(
+                        "Verify student OTP error:",
+                        error
+                    );
+
+                    errorBox.textContent =
+                        error.message ||
+                        "OTP verification failed.";
+
+                    errorBox.classList.remove(
+                        "hidden"
+                    );
+
+                } finally {
+
+                    setOtpVerifyLoading(
+                        false
+                    );
+
+                }
+
+            }
+        );
+
+        byId(
+            "student-otp-resend"
+        ).addEventListener(
+            "click",
+            async function() {
+
+                if (
+                    studentOtpSecondsRemaining > 0
+                ) {
+                    return;
+                }
 
                 byId(
-                    "student-otp-destination"
-                ).textContent =
-                    result.message ||
-                    `OTP sent to ${identifier}`;
+                    "student-send-otp"
+                ).disabled = true;
 
-                setStudentOtpStep("otp");
-                clearOtpBoxes();
-                startOtpCountdown();
+                try {
 
-            } catch (error) {
+                    const response =
+                        await fetch(
+                            "/api/student/send-otp",
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type":
+                                        "application/json",
+                                    "Accept":
+                                        "application/json"
+                                },
+                                body:
+                                    JSON.stringify({
+                                        method:
+                                            studentOtpMethod,
+                                        identifier:
+                                            studentOtpIdentifier,
+                                        challengeId:
+                                            studentOtpChallengeId,
+                                        className:
+                                            appState.selectedClass ||
+                                            "",
+                                        board:
+                                            appState.selectedBoard ||
+                                            "",
+                                        school:
+                                            appState.selectedSchool ||
+                                            ""
+                                    })
+                            }
+                        );
 
-                console.error(
-                    "Send student OTP error:",
-                    error
-                );
+                    const result =
+                        await response.json();
 
-                errorBox.textContent =
-                    error.message ||
-                    "Could not send OTP.";
+                    if (!response.ok) {
+                        throw new Error(
+                            typeof result.error === "string"
+                                ? result.error
+                                : result.error
+                                    ? JSON.stringify(result.error)
+                                    : "Could not resend OTP."
+                        );
+                    }
 
-                errorBox.classList.remove("hidden");
+                    studentOtpChallengeId =
+                        result.challengeId ||
+                        studentOtpChallengeId;
 
-            } finally {
+                    clearStudentOtpInputs();
 
-                button.disabled = false;
-                button.innerHTML =
-                    '<i class="fa-solid fa-paper-plane"></i> Send OTP';
+                    byId(
+                        "student-otp-destination"
+                    ).textContent =
+                        result.message ||
+                        `A new OTP was sent to ${maskStudentIdentifier()}.`;
 
-            }
-        }
-
-        async function resendStudentOtp() {
-            if (!studentOtpIdentifier) return;
-            byId("student-identifier").value =
-                studentOtpIdentifier;
-            await sendStudentOtp();
-        }
-
-        async function verifyStudentOtp() {
-
-            const otp =
-                getEnteredOtp();
-
-            const button =
-                byId("verify-student-otp");
-
-            const errorBox =
-                byId("student-verify-error");
-
-            errorBox.classList.add("hidden");
-
-            if (!/^[0-9]{6}$/.test(otp)) {
-                errorBox.textContent =
-                    "Enter the complete 6-digit OTP.";
-                errorBox.classList.remove("hidden");
-                return;
-            }
-
-            button.disabled = true;
-            button.innerHTML =
-                '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
-
-            try {
-
-                const response =
-                    await fetch("/api/student/verify-otp", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json"
-                        },
-                        body: JSON.stringify({
-                            identifier: studentOtpIdentifier,
-                            otp,
-                            className: appState.selectedClass || "",
-                            board: appState.selectedBoard || "",
-                            school: appState.selectedSchool || ""
-                        })
-                    });
-
-                const result =
-                    await response.json();
-
-                if (!response.ok || !result.token) {
-                    throw new Error(
-                        result.error ||
-                        "Invalid or expired OTP."
+                    startStudentOtpTimer(
+                        result.resendAfter ||
+                        60
                     );
+
+                    focusFirstStudentOtpInput();
+
+                } catch (error) {
+
+                    console.error(
+                        "Resend OTP error:",
+                        error
+                    );
+
+                    byId(
+                        "student-otp-verify-error"
+                    ).textContent =
+                        error.message ||
+                        "Could not resend OTP.";
+
+                    byId(
+                        "student-otp-verify-error"
+                    ).classList.remove(
+                        "hidden"
+                    );
+
+                } finally {
+
+                    byId(
+                        "student-send-otp"
+                    ).disabled = false;
+
                 }
 
-                sessionStorage.setItem(
-                    "zwitterion_student_token",
-                    result.token
-                );
-
-                appState.currentUser =
-                    result.email ||
-                    result.phone ||
-                    studentOtpIdentifier;
-
-                appState.currentRole =
-                    "STUDENT";
-
-                launchApp();
-
-            } catch (error) {
-
-                console.error(
-                    "Verify student OTP error:",
-                    error
-                );
-
-                errorBox.textContent =
-                    error.message ||
-                    "Invalid or expired OTP.";
-
-                errorBox.classList.remove("hidden");
-
-            } finally {
-
-                button.disabled = false;
-                button.innerHTML =
-                    '<i class="fa-solid fa-shield-check"></i> Verify OTP';
-
             }
-        }
-
-        function backToStudentIdentifier() {
-            clearInterval(studentOtpCountdownTimer);
-            setStudentOtpStep("identifier");
-
-            byId("student-otp-error")
-                .classList.add("hidden");
-
-            byId("student-verify-error")
-                .classList.add("hidden");
-
-        }
+        );
 
         document
             .querySelectorAll(
-                "#student-otp-boxes .otp-box"
+                "#student-otp-input-row .otp-input"
             )
-            .forEach(function(input, index, inputs) {
+            .forEach(
+                function(input, index, inputs) {
 
-                input.addEventListener(
-                    "input",
-                    function() {
+                    input.addEventListener(
+                        "input",
+                        function() {
 
-                        this.value =
-                            this.value
-                                .replace(/\D/g, "")
-                                .slice(0, 1);
+                            this.value =
+                                this.value
+                                    .replace(/\D/g, "")
+                                    .slice(0, 1);
 
-                        if (this.value && inputs[index + 1]) {
-                            inputs[index + 1].focus();
+                            if (
+                                this.value &&
+                                inputs[index + 1]
+                            ) {
+
+                                inputs[index + 1]
+                                    .focus();
+
+                            }
+
+                            if (
+                                getStudentOtpCode()
+                                    .length === 6
+                            ) {
+
+                                byId(
+                                    "student-otp-verify-form"
+                                ).requestSubmit();
+
+                            }
+
                         }
+                    );
 
-                    }
-                );
+                    input.addEventListener(
+                        "keydown",
+                        function(event) {
 
-                input.addEventListener(
-                    "keydown",
-                    function(event) {
+                            if (
+                                event.key ===
+                                    "Backspace" &&
+                                !this.value &&
+                                inputs[index - 1]
+                            ) {
 
-                        if (
-                            event.key === "Backspace" &&
-                            !this.value &&
-                            inputs[index - 1]
-                        ) {
-                            inputs[index - 1].focus();
+                                inputs[index - 1]
+                                    .focus();
+
+                            }
+
                         }
+                    );
 
-                    }
-                );
+                    input.addEventListener(
+                        "paste",
+                        function(event) {
 
-                input.addEventListener(
-                    "paste",
-                    function(event) {
+                            const pasted =
+                                (
+                                    event.clipboardData ||
+                                    window.clipboardData
+                                )
+                                    .getData("text")
+                                    .replace(/\D/g, "")
+                                    .slice(0, 6);
 
-                        const pasted =
-                            (
-                                event.clipboardData ||
-                                window.clipboardData
-                            )
-                                .getData("text")
-                                .replace(/\D/g, "")
-                                .slice(0, 6);
+                            if (!pasted) {
+                                return;
+                            }
 
-                        if (!pasted) return;
+                            event.preventDefault();
 
-                        event.preventDefault();
+                            pasted
+                                .split("")
+                                .forEach(
+                                    function(char, i) {
 
-                        pasted
-                            .split("")
-                            .forEach(function(char, i) {
-                                if (inputs[i]) {
-                                    inputs[i].value = char;
-                                }
-                            });
+                                        if (inputs[i]) {
+                                            inputs[i].value =
+                                                char;
+                                        }
 
-                        if (inputs[Math.min(pasted.length, 6) - 1]) {
-                            inputs[Math.min(pasted.length, 6) - 1].focus();
+                                    }
+                                );
+
+                            const target =
+                                inputs[
+                                    Math.min(
+                                        pasted.length,
+                                        inputs.length
+                                    ) - 1
+                                ];
+
+                            if (target) {
+                                target.focus();
+                            }
+
                         }
+                    );
 
-                    }
-                );
+                }
+            );
 
-            });
-
-        
-        
-/* =========================================================
+        /* =========================================================
            ADMIN LOGIN
         ========================================================== */
 
@@ -4117,6 +4776,8 @@
         ========================================================== */
 
         function handleLogout() {
+
+            sessionStorage.removeItem("zwitterion_student_token");
 
             hide(
                 "app-workspace"
