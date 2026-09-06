@@ -1,236 +1,471 @@
 const crypto = require("crypto");
 
 module.exports = async function handler(req, res) {
-    if (req.method !== "POST") {
-        return res.status(405).json({
-            error: "Method not allowed"
-        });
-    }
-
     try {
+        // --------------------------------
+        // METHOD CHECK
+        // --------------------------------
+
+        if (req.method !== "POST") {
+            return res.status(405).json({
+                error: "Method not allowed"
+            });
+        }
+
+        // --------------------------------
+        // READ REQUEST
+        // --------------------------------
+
         const body = req.body || {};
 
-        const challengeId = body.challengeId;
-        const method = body.method;
-        const identifier = body.identifier;
-        const otp = body.otp;
+        const challengeId =
+            typeof body.challengeId === "string"
+                ? body.challengeId
+                : "";
 
-        const className = body.className || "";
-        const board = body.board || "";
-        const school = body.school || "";
+        const method =
+            typeof body.method === "string"
+                ? body.method
+                : "";
 
-        if (!challengeId || !identifier || !otp) {
+        const identifier =
+            typeof body.identifier === "string"
+                ? body.identifier
+                : "";
+
+        const otp =
+            typeof body.otp === "string"
+                ? body.otp.trim()
+                : "";
+
+        const className =
+            typeof body.className === "string"
+                ? body.className
+                : "";
+
+        const board =
+            typeof body.board === "string"
+                ? body.board
+                : "";
+
+        const school =
+            typeof body.school === "string"
+                ? body.school
+                : "";
+
+        // --------------------------------
+        // BASIC VALIDATION
+        // --------------------------------
+
+        if (!challengeId) {
             return res.status(400).json({
-                error: "Challenge ID, email, and OTP are required."
+                error: "OTP challenge is missing."
+            });
+        }
+
+        if (!identifier) {
+            return res.status(400).json({
+                error: "Email address is missing."
+            });
+        }
+
+        if (!otp) {
+            return res.status(400).json({
+                error: "OTP is missing."
             });
         }
 
         if (method !== "email") {
             return res.status(400).json({
-                error: "SMS verification is not enabled yet."
+                error: "Only email OTP verification is enabled."
             });
         }
 
-        const email = String(identifier)
-            .trim()
-            .toLowerCase();
+        const email =
+            identifier.trim().toLowerCase();
 
-        const enteredOtp = String(otp).trim();
+        // --------------------------------
+        // OTP FORMAT
+        // --------------------------------
 
-        const otpSecret = process.env.OTP_SECRET;
+        if (!/^\d{6}$/.test(otp)) {
+            return res.status(400).json({
+                error: "OTP must contain exactly 6 digits."
+            });
+        }
 
-        if (!otpSecret) {
-            console.error("OTP_SECRET is missing.");
+        // --------------------------------
+        // SECRET
+        // --------------------------------
+
+        const otpSecret =
+            process.env.OTP_SECRET;
+
+        if (
+            !otpSecret ||
+            typeof otpSecret !== "string"
+        ) {
+            console.error(
+                "OTP_SECRET is missing."
+            );
 
             return res.status(500).json({
-                error: "OTP security is not configured."
+                error:
+                    "OTP security is not configured."
             });
         }
 
-        if (!/^\d{6}$/.test(enteredOtp)) {
-            return res.status(400).json({
-                error: "OTP must be 6 digits."
-            });
-        }
+        // --------------------------------
+        // DECODE CHALLENGE
+        // --------------------------------
 
         let challenge;
 
         try {
-            const decoded = Buffer
-                .from(String(challengeId), "base64url")
-                .toString("utf8");
+            const decoded =
+                Buffer
+                    .from(
+                        challengeId,
+                        "base64url"
+                    )
+                    .toString("utf8");
 
-            challenge = JSON.parse(decoded);
+            challenge =
+                JSON.parse(decoded);
 
-        } catch (error) {
+        } catch (decodeError) {
             console.error(
                 "Challenge decode error:",
-                error
+                decodeError
             );
 
             return res.status(400).json({
-                error: "Invalid OTP challenge."
+                error:
+                    "The OTP challenge is invalid or corrupted."
             });
         }
+
+        // --------------------------------
+        // CHECK CHALLENGE STRUCTURE
+        // --------------------------------
 
         if (
             !challenge ||
             typeof challenge !== "object" ||
             !challenge.payload ||
-            !challenge.signature
-        ) {
-            return res.status(400).json({
-                error: "Invalid OTP challenge."
-            });
-        }
-
-        const payload = challenge.payload;
-        const signature = challenge.signature;
-
-        const expectedSignature = crypto
-            .createHmac("sha256", otpSecret)
-            .update(JSON.stringify(payload))
-            .digest("hex");
-
-        if (
-            typeof signature !== "string" ||
-            signature.length !== expectedSignature.length
-        ) {
-            return res.status(400).json({
-                error: "Invalid OTP challenge."
-            });
-        }
-
-        const signatureMatches =
-            crypto.timingSafeEqual(
-                Buffer.from(signature, "utf8"),
-                Buffer.from(expectedSignature, "utf8")
-            );
-
-        if (!signatureMatches) {
-            return res.status(400).json({
-                error: "Invalid OTP challenge."
-            });
-        }
-
-        if (
-            !payload.email ||
-            String(payload.email).toLowerCase() !== email
+            typeof challenge.payload !== "object" ||
+            typeof challenge.signature !== "string"
         ) {
             return res.status(400).json({
                 error:
-                    "This OTP was not requested for this email."
+                    "Invalid OTP challenge."
             });
         }
+
+        const payload =
+            challenge.payload;
+
+        const signature =
+            challenge.signature;
+
+        // --------------------------------
+        // CHECK REQUIRED PAYLOAD
+        // --------------------------------
+
+        if (
+            typeof payload.challengeId !== "string" ||
+            typeof payload.email !== "string" ||
+            typeof payload.otpHash !== "string" ||
+            !payload.expiresAt
+        ) {
+            return res.status(400).json({
+                error:
+                    "Incomplete OTP challenge."
+            });
+        }
+
+        // --------------------------------
+        // VERIFY CHALLENGE SIGNATURE
+        // --------------------------------
+
+        const expectedSignature =
+            crypto
+                .createHmac(
+                    "sha256",
+                    otpSecret
+                )
+                .update(
+                    JSON.stringify(payload)
+                )
+                .digest("hex");
+
+        if (
+            signature.length !==
+            expectedSignature.length
+        ) {
+            return res.status(400).json({
+                error:
+                    "OTP challenge signature is invalid."
+            });
+        }
+
+        let signatureValid = false;
+
+        try {
+            signatureValid =
+                crypto.timingSafeEqual(
+                    Buffer.from(
+                        signature,
+                        "utf8"
+                    ),
+                    Buffer.from(
+                        expectedSignature,
+                        "utf8"
+                    )
+                );
+        } catch (signatureError) {
+            console.error(
+                "Signature comparison error:",
+                signatureError
+            );
+
+            return res.status(400).json({
+                error:
+                    "OTP challenge signature is invalid."
+            });
+        }
+
+        if (!signatureValid) {
+            return res.status(400).json({
+                error:
+                    "OTP challenge signature is invalid."
+            });
+        }
+
+        // --------------------------------
+        // VERIFY EMAIL
+        // --------------------------------
+
+        const storedEmail =
+            String(payload.email)
+                .trim()
+                .toLowerCase();
+
+        if (storedEmail !== email) {
+            return res.status(400).json({
+                error:
+                    "This OTP does not belong to this email address."
+            });
+        }
+
+        // --------------------------------
+        // VERIFY EXPIRATION
+        // --------------------------------
 
         const expiresAt =
             Number(payload.expiresAt);
 
-        if (
-            !Number.isFinite(expiresAt) ||
-            Date.now() > expiresAt
-        ) {
+        if (!Number.isFinite(expiresAt)) {
+            return res.status(400).json({
+                error:
+                    "OTP expiration information is invalid."
+            });
+        }
+
+        if (Date.now() > expiresAt) {
             return res.status(400).json({
                 error:
                     "OTP has expired. Please request a new OTP."
             });
         }
 
+        // --------------------------------
+        // VERIFY OTP HASH
+        // --------------------------------
+
+        const enteredOtpHash =
+            crypto
+                .createHmac(
+                    "sha256",
+                    otpSecret
+                )
+                .update(
+                    `${payload.challengeId}:${email}:${otp}`
+                )
+                .digest("hex");
+
         if (
-            !payload.challengeId ||
             typeof payload.otpHash !== "string"
         ) {
             return res.status(400).json({
-                error: "Invalid OTP challenge."
+                error:
+                    "OTP hash is invalid."
             });
         }
-
-        const enteredOtpHash = crypto
-            .createHmac("sha256", otpSecret)
-            .update(
-                `${payload.challengeId}:${email}:${enteredOtp}`
-            )
-            .digest("hex");
 
         if (
             enteredOtpHash.length !==
             payload.otpHash.length
         ) {
             return res.status(400).json({
-                error: "Incorrect OTP."
+                error:
+                    "Incorrect OTP."
             });
         }
 
-        const otpMatches =
-            crypto.timingSafeEqual(
-                Buffer.from(enteredOtpHash, "utf8"),
-                Buffer.from(payload.otpHash, "utf8")
+        let otpValid = false;
+
+        try {
+            otpValid =
+                crypto.timingSafeEqual(
+                    Buffer.from(
+                        enteredOtpHash,
+                        "utf8"
+                    ),
+                    Buffer.from(
+                        payload.otpHash,
+                        "utf8"
+                    )
+                );
+        } catch (otpCompareError) {
+            console.error(
+                "OTP comparison error:",
+                otpCompareError
             );
 
-        if (!otpMatches) {
             return res.status(400).json({
-                error: "Incorrect OTP."
+                error:
+                    "Unable to verify OTP."
             });
         }
 
-        const now = Date.now();
+        if (!otpValid) {
+            return res.status(400).json({
+                error:
+                    "Incorrect OTP."
+            });
+        }
+
+        // --------------------------------
+        // CREATE SESSION
+        // --------------------------------
+
+        const now =
+            Date.now();
 
         const sessionPayload = {
             email: email,
+
             className:
                 className ||
                 payload.className ||
                 "",
+
             board:
                 board ||
                 payload.board ||
                 "",
+
             school:
                 school ||
                 payload.school ||
                 "",
-            authenticatedAt: now,
+
+            authenticatedAt:
+                now,
+
             expiresAt:
-                now + (24 * 60 * 60 * 1000)
+                now +
+                (24 * 60 * 60 * 1000)
         };
 
+        // --------------------------------
+        // SIGN SESSION
+        // --------------------------------
+
         const sessionString =
-            JSON.stringify(sessionPayload);
+            JSON.stringify(
+                sessionPayload
+            );
 
         const sessionSignature =
             crypto
-                .createHmac("sha256", otpSecret)
-                .update(sessionString)
+                .createHmac(
+                    "sha256",
+                    otpSecret
+                )
+                .update(
+                    sessionString
+                )
                 .digest("hex");
+
+        // --------------------------------
+        // CREATE TOKEN
+        // --------------------------------
+
+        const tokenPayload = {
+            payload:
+                sessionPayload,
+
+            signature:
+                sessionSignature
+        };
 
         const token =
             Buffer
                 .from(
-                    JSON.stringify({
-                        payload: sessionPayload,
-                        signature: sessionSignature
-                    })
+                    JSON.stringify(
+                        tokenPayload
+                    )
                 )
                 .toString("base64url");
 
+        // --------------------------------
+        // SUCCESS
+        // --------------------------------
+
         return res.status(200).json({
             success: true,
-            message: "OTP verified successfully.",
+
+            message:
+                "OTP verified successfully.",
+
             token: token,
-            email: email
+
+            email: email,
+
+            studentName: email,
+
+            className:
+                sessionPayload.className,
+
+            board:
+                sessionPayload.board,
+
+            school:
+                sessionPayload.school
         });
 
     } catch (error) {
         console.error(
-            "VERIFY OTP ERROR:",
+            "VERIFY OTP FATAL ERROR:",
             error
         );
 
+        let message =
+            "Something went wrong while verifying the OTP.";
+
+        if (
+            error &&
+            typeof error.message === "string" &&
+            error.message.trim()
+        ) {
+            message =
+                error.message;
+        }
+
         return res.status(500).json({
-            error:
-                error && error.message
-                    ? String(error.message)
-                    : "Something went wrong while verifying the OTP."
+            error: message
         });
     }
 };
