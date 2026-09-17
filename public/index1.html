@@ -1,0 +1,5043 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ZWITTERION - EDUNOVA Learning Platform">
+    <meta name="theme-color" content="#030712">
+
+    <title>ZWITTERION CLASSES</title>
+
+    <!-- Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            background: #030712;
+            color: #f8fafc;
+            font-family: "Inter", system-ui, sans-serif;
+            overflow: hidden;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        :root {
+            --bg-main: #030712;
+            --bg-sidebar: #0b0f19;
+            --bg-card: rgba(17, 24, 39, 0.82);
+            --bg-card-hover: rgba(30, 41, 59, 0.95);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #a855f7;
+            --accent-glow: rgba(6, 182, 212, 0.25);
+            --border: rgba(51, 65, 85, 0.65);
+            --header-bg: rgba(11, 15, 25, 0.86);
+            --input-bg: rgba(3, 7, 18, 0.95);
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        [data-theme="light"] {
+            --bg-main: #f8fafc;
+            --bg-sidebar: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.94);
+            --bg-card-hover: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --accent-cyan: #0891b2;
+            --accent-purple: #7c3aed;
+            --accent-glow: rgba(8, 145, 178, 0.14);
+            --border: rgba(226, 232, 240, 0.95);
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --input-bg: #f1f5f9;
+            --danger: #dc2626;
+            --success: #059669;
+        }
+
+        /* =========================================================
+           OPENING
+        ========================================================== */
+
+        #opening-transition {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            pointer-events: none;
+        }
+
+        #opening-transition.finished {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .opening-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .opening-logo {
+            width: min(180px, 45vw);
+            height: auto;
+            object-fit: contain;
+            opacity: 0;
+            transform: scale(.82) translateY(10px);
+            filter: drop-shadow(0 14px 28px rgba(8,145,178,.10));
+            animation: openingLogoIn 1.05s cubic-bezier(.22,1,.36,1) .08s forwards;
+        }
+
+        .opening-title {
+            margin-top: 16px;
+            font-family: "Orbitron", sans-serif;
+            font-size: clamp(17px, 4vw, 28px);
+            font-weight: 800;
+            letter-spacing: 5px;
+            color: #111827;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: openingTextIn .75s ease .48s forwards;
+        }
+
+        .opening-subtitle {
+            margin-top: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #6b7280;
+            opacity: 0;
+            transform: translateY(8px);
+            animation: openingTextIn .7s ease .68s forwards;
+        }
+
+        @keyframes openingLogoIn {
+            0% { opacity: 0; transform: scale(.82) translateY(10px); }
+            55% { opacity: 1; transform: scale(1.035) translateY(0); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes openingTextIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #opening-transition::before {
+            content: "";
+            position: absolute;
+            width: min(520px, 85vw);
+            height: min(520px, 85vw);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(8,145,178,.055), transparent 67%);
+            animation: openingAura 2.8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes openingAura {
+            0%,100% { transform: scale(.92); opacity: .65; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+
+        #opening-transition.finished .opening-content {
+            opacity: 0;
+            transform: scale(1.035) translateY(-8px);
+            transition: opacity .55s ease, transform .65s cubic-bezier(.22,1,.36,1);
+        }
+
+        /* =========================================================
+           AUTH
+        ========================================================== */
+
+        .screen-container {
+            width: 100%;
+            height: 100vh;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #ffffff !important;
+            color: #111827 !important;
+            overflow-y: auto;
+        }
+
+        .auth-card {
+            width: 470px;
+            max-width: 100%;
+            padding: 38px;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            background: #ffffff !important;
+            color: #111827 !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.16);
+            text-align: center;
+        }
+
+        .logo-badge {
+            width: 96px;
+            height: 96px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #ffffff;
+            border: 2px solid var(--accent-cyan);
+            border-radius: 16px;
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.20);
+        }
+
+        .logo-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .auth-card h1 {
+            margin-bottom: 8px;
+            font-family: "Orbitron", sans-serif;
+            font-size: 22px;
+            letter-spacing: 2px;
+            color: #111827 !important;
+        }
+
+        .subtitle {
+            margin-bottom: 24px;
+            color: #64748b !important;
+            font-size: 13px;
+            line-height: 1.5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .selection-btn {
+            width: 100%;
+            min-height: 58px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            background: #ffffff;
+            color: #111827;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .selection-btn i {
+            color: var(--accent-cyan);
+        }
+
+        .selection-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-cyan);
+            background: #f8fafc;
+            box-shadow: 0 10px 20px rgba(6, 182, 212, 0.10);
+        }
+
+        .back-btn {
+            width: 100%;
+            min-height: 46px;
+            margin-top: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #475569;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            color: #111827;
+            background: #f8fafc;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            min-height: 48px;
+            padding: 12px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #111827;
+            outline: none;
+        }
+
+        .form-group textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.12);
+        }
+
+        .btn-primary {
+            width: 100%;
+            min-height: 48px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .error-message {
+            margin-bottom: 16px;
+            padding: 10px;
+            border: 1px solid rgba(239, 68, 68, 0.20);
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.08);
+            color: var(--danger);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* =========================================================
+           APP
+        ========================================================== */
+
+        .app-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            background: var(--bg-main);
+        }
+
+        .sidebar {
+            width: 270px;
+            flex: 0 0 270px;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+        }
+
+        .sidebar-brand {
+            padding: 22px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-badge-small {
+            width: 38px;
+            height: 38px;
+            flex: 0 0 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid var(--accent-cyan);
+            border-radius: 8px;
+        }
+
+        .logo-badge-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-text {
+            min-width: 0;
+        }
+
+        .brand-text h2 {
+            font-family: "Orbitron", sans-serif;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .brand-text span {
+            color: var(--text-secondary);
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            width: 100%;
+            margin-bottom: 4px;
+            padding: 11px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-secondary);
+            text-align: left;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .nav-item i {
+            width: 20px;
+            flex: 0 0 20px;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--accent-glow);
+            color: var(--accent-cyan);
+            border-color: rgba(6, 182, 212, 0.20);
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .user-meta {
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            min-height: 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            color: var(--danger);
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        .main-wrapper {
+            flex: 1;
+            min-width: 0;
+            min-height: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            height: 70px;
+            flex: 0 0 70px;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-search {
+            width: 390px;
+            max-width: 100%;
+            position: relative;
+        }
+
+        .header-search i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .header-search input {
+            width: 100%;
+            height: 40px;
+            padding: 10px 14px 10px 38px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .version-pill {
+            padding: 7px 12px;
+            border: 1px solid rgba(6, 182, 212, 0.30);
+            border-radius: 20px;
+            background: var(--accent-glow);
+            color: var(--accent-cyan);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .theme-toggle {
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .content-viewport {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 32px;
+            background: var(--bg-main);
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header h2 {
+            margin-bottom: 5px;
+            font-family: "Orbitron", sans-serif;
+            font-size: 22px;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .module-card {
+            padding: 22px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--bg-card);
+            transition: 0.25s ease;
+        }
+
+        .module-card.clickable {
+            cursor: pointer;
+        }
+
+        .module-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 15px 30px -10px var(--accent-glow);
+        }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: var(--accent-glow);
+            color: var(--accent-cyan);
+        }
+
+        .module-card h3 {
+            margin-bottom: 7px;
+            font-size: 16px;
+        }
+
+        .module-card p {
+            margin-bottom: 14px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .card-link {
+            color: var(--accent-cyan);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .paper-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .paper-card {
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--bg-card);
+        }
+
+        .paper-title {
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .paper-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-bottom: 12px;
+        }
+
+        .paper-tag {
+            padding: 5px 8px;
+            border-radius: 7px;
+            background: var(--accent-glow);
+            color: var(--accent-cyan);
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .paper-description {
+            margin-bottom: 14px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .paper-open {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 12px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            padding: 45px 20px;
+            border: 1px dashed var(--border);
+            border-radius: 14px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--accent-cyan);
+            font-size: 30px;
+        }
+
+        .admin-form {
+            max-width: 760px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--bg-card);
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .admin-grid-full {
+            grid-column: 1 / -1;
+        }
+
+        .success-message {
+            margin-bottom: 16px;
+            padding: 10px;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 8px;
+            background: rgba(16, 185, 129, 0.08);
+            color: var(--success);
+            font-size: 12px;
+        }
+
+        @media (max-width: 1000px) {
+            .sidebar {
+                width: 230px;
+                flex-basis: 230px;
+            }
+
+            .top-header {
+                padding: 0 22px;
+            }
+
+            .content-viewport {
+                padding: 24px;
+            }
+
+            .cards-grid,
+            .paper-list {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .version-pill {
+                display: none;
+            }
+        }
+
+        @media (max-width: 700px) {
+            body {
+                overflow: hidden;
+            }
+
+            .app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex: 0 0 auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .sidebar-brand {
+                padding: 10px 14px;
+            }
+
+            .logo-badge-small {
+                width: 34px;
+                height: 34px;
+                flex-basis: 34px;
+            }
+
+            .brand-text h2 {
+                font-size: 13px;
+            }
+
+            .brand-text span {
+                font-size: 9px;
+            }
+
+            .sidebar-nav {
+                display: flex;
+                gap: 6px;
+                padding: 8px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                flex: none;
+            }
+
+            .nav-item {
+                width: auto;
+                flex: 0 0 auto;
+                margin: 0;
+                padding: 9px 12px;
+                white-space: nowrap;
+                font-size: 11px;
+            }
+
+            .nav-item i {
+                width: auto;
+                flex-basis: auto;
+            }
+
+            .sidebar-footer {
+                display: none;
+            }
+
+            .main-wrapper {
+                height: calc(100vh - 97px);
+            }
+
+            .top-header {
+                min-height: 60px;
+                height: auto;
+                flex-basis: auto;
+                padding: 9px 12px;
+                gap: 10px;
+            }
+
+            .header-search {
+                flex: 1;
+                width: auto;
+            }
+
+            .header-search input {
+                height: 40px;
+                font-size: 13px;
+            }
+
+            .theme-toggle {
+                width: 36px;
+                height: 36px;
+                flex-basis: 36px;
+            }
+
+            .content-viewport {
+                padding: 16px 12px;
+            }
+
+            .page-header {
+                margin-bottom: 16px;
+            }
+
+            .page-header h2 {
+                font-size: 18px;
+            }
+
+            .page-header p {
+                font-size: 12px;
+            }
+
+            .cards-grid,
+            .paper-list {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .module-card,
+            .paper-card {
+                padding: 19px;
+            }
+
+            .screen-container {
+                padding: 14px;
+            }
+
+            .auth-card {
+                padding: 27px 18px;
+            }
+
+            .logo-badge {
+                width: 82px;
+                height: 82px;
+            }
+
+            .auth-card h1 {
+                font-size: 19px;
+            }
+
+            .selection-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .selection-btn {
+                min-height: 50px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px;
+            }
+
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-grid-full {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .sidebar-brand {
+                padding: 9px 11px;
+            }
+
+            .sidebar-nav {
+                padding: 6px;
+            }
+
+            .nav-item {
+                padding: 8px 10px;
+                font-size: 10px;
+            }
+
+            .content-viewport {
+                padding: 13px 9px;
+            }
+
+            .module-card,
+            .paper-card {
+                padding: 16px;
+            }
+
+            .auth-card {
+                padding: 22px 14px;
+            }
+        }
+    
+        .opening-subtitle {
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #6b7280;
+        }
+
+        .content-card-actions,
+        .admin-paper-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .btn-danger {
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 16px;
+            background: var(--danger, #dc2626);
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .btn-danger:hover {
+            opacity: .88;
+        }
+
+        .content-type-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0 18px;
+        }
+
+        .type-filter {
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .type-filter.active {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+
+        #pdf-viewer-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100001;
+            display: none;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        #pdf-viewer-modal.active {
+            display: flex;
+        }
+
+        .pdf-viewer-toolbar {
+            min-height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            background: #030712;
+            color: #fff;
+        }
+
+        .pdf-viewer-toolbar button {
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 14px;
+            background: #fff;
+            color: #030712;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        #pdf-viewer-title {
+            font-weight: 800;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        #pdf-viewer-frame {
+            flex: 1;
+            width: 100%;
+            border: 0;
+            background: #e5e7eb;
+        }
+
+        .upload-progress-wrap {
+            display: none;
+            margin-top: 14px;
+        }
+
+        .upload-progress-wrap.active {
+            display: block;
+        }
+
+        .upload-progress {
+            width: 100%;
+            height: 10px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: rgba(148, 163, 184, .25);
+        }
+
+        .upload-progress-bar {
+            width: 0%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6);
+            transition: width .15s ease;
+        }
+
+        .upload-progress-label {
+            margin-top: 7px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+    
+
+        /* =========================================================
+           OTP LOGIN
+        ========================================================== */
+
+        .otp-method-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .otp-method-btn {
+            min-height: 42px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-weight: 700;
+            cursor: pointer;
+            transition: 180ms ease;
+        }
+
+        .otp-method-btn:hover,
+        .otp-method-btn.active {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            background: var(--accent-glow);
+        }
+
+        .otp-step-title {
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .otp-step-text {
+            margin-bottom: 18px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .otp-input-row {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 7px;
+            margin: 16px 0;
+        }
+
+        .otp-input {
+            width: 100%;
+            height: 52px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            text-align: center;
+            font-size: 20px;
+            font-weight: 800;
+            outline: none;
+        }
+
+        .otp-input:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(6,182,212,.12);
+        }
+
+        .otp-secondary-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .otp-timer {
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .otp-resend {
+            border: 0;
+            background: transparent;
+            color: var(--accent-cyan);
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .otp-resend:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        .otp-email-note {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 9px;
+            background: var(--accent-glow);
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        @media (max-width: 500px) {
+            .otp-input-row {
+                gap: 5px;
+            }
+
+            .otp-input {
+                height: 46px;
+                font-size: 18px;
+            }
+        }
+
+
+/* CHEMISTRY V1 DASHBOARD */
+.chem-dashboard{max-width:1400px;margin:0 auto}.chem-hero{position:relative;overflow:hidden;margin-bottom:22px;padding:30px;border:1px solid var(--border);border-radius:18px;background:radial-gradient(circle at 88% 18%,rgba(6,182,212,.18),transparent 30%),radial-gradient(circle at 70% 100%,rgba(124,58,237,.14),transparent 34%),linear-gradient(135deg,rgba(255,255,255,.035),rgba(255,255,255,.015))}.chem-hero:before{content:"";position:absolute;width:300px;height:300px;right:-110px;top:-160px;border:1px solid rgba(255,255,255,.08);border-radius:50%;box-shadow:0 0 0 35px rgba(255,255,255,.015),0 0 0 70px rgba(255,255,255,.01)}.chem-hero-content{position:relative;z-index:1;max-width:760px}.chem-kicker{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;margin-bottom:15px;border:1px solid rgba(6,182,212,.2);border-radius:999px;background:rgba(6,182,212,.07);color:var(--accent-cyan);font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}.chem-hero h1{margin:0 0 10px;font-family:"Orbitron",sans-serif;font-size:clamp(25px,4vw,42px);line-height:1.12}.chem-hero h1 span{color:var(--accent-cyan)}.chem-hero p{max-width:680px;margin:0;color:var(--text-secondary);font-size:13px;line-height:1.7}.chem-hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.chem-action{min-height:43px;padding:0 16px;border:1px solid var(--border);border-radius:10px;background:var(--bg-card);color:var(--text-primary);cursor:pointer;font-weight:700}.chem-action.primary{border-color:transparent;background:var(--accent-cyan);color:#06131a}.chem-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:25px}.chem-stat{padding:17px;border:1px solid var(--border);border-radius:14px;background:var(--bg-card)}.chem-stat-label{display:flex;justify-content:space-between;gap:10px;color:var(--text-secondary);font-size:11px}.chem-stat-value{margin-top:8px;font-family:"Orbitron",sans-serif;font-size:24px;font-weight:800}.chem-stat-note{margin-top:4px;color:var(--accent-cyan);font-size:10px}.chem-section-title{margin:26px 0 13px;font-family:"Orbitron",sans-serif;font-size:17px}.chem-branches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.chem-branch{position:relative;overflow:hidden;min-height:190px;padding:21px;border:1px solid var(--border);border-radius:15px;background:var(--bg-card);cursor:pointer;transition:.22s ease}.chem-branch:hover{transform:translateY(-3px);border-color:var(--accent-cyan);box-shadow:0 15px 30px -15px var(--accent-glow)}.chem-branch-icon{width:45px;height:45px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;border-radius:12px;background:var(--accent-glow);color:var(--accent-cyan);font-size:19px}.chem-branch:nth-child(2) .chem-branch-icon{color:#a78bfa;background:rgba(139,92,246,.12)}.chem-branch:nth-child(3) .chem-branch-icon{color:#34d399;background:rgba(52,211,153,.1)}.chem-branch h3{margin-bottom:6px;font-size:16px}.chem-branch p{min-height:48px;color:var(--text-secondary);font-size:12px;line-height:1.55}.chem-progress{height:5px;margin-top:15px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.07)}.chem-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent-cyan),#8b5cf6)}.chem-chapters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.chem-chapter{padding:17px;border:1px solid var(--border);border-radius:13px;background:var(--bg-card);cursor:pointer;transition:.2s ease}.chem-chapter:hover{transform:translateY(-2px);border-color:rgba(6,182,212,.55)}.chem-chapter-no{color:var(--accent-cyan);font-size:9px;font-weight:800;letter-spacing:1px}.chem-chapter h4{margin-top:8px;font-size:13px;line-height:1.4}.chem-chapter p{margin-top:6px;color:var(--text-secondary);font-size:10px;line-height:1.45}.chem-resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.chem-resource{display:flex;align-items:center;gap:13px;padding:16px;border:1px solid var(--border);border-radius:13px;background:var(--bg-card)}.chem-resource-icon{flex:0 0 42px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:var(--accent-glow);color:var(--accent-cyan)}.chem-resource h4{font-size:13px}.chem-resource p{margin-top:4px;color:var(--text-secondary);font-size:10px;line-height:1.4}.chem-resource button{margin-left:auto;flex:0 0 auto;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--accent-cyan);cursor:pointer;font-size:10px;font-weight:700}@media(max-width:1050px){.chem-chapters{grid-template-columns:repeat(3,minmax(0,1fr))}.chem-resource-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:780px){.chem-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.chem-branches{grid-template-columns:1fr}.chem-chapters{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){.chem-hero{padding:21px}.chem-chapters,.chem-resource-grid{grid-template-columns:1fr}.chem-resource{align-items:flex-start}.chem-resource button{margin-left:0}}
+
+</style>
+
+</head>
+
+<body>
+
+    <!-- =========================================================
+         OPENING
+    ========================================================== -->
+
+    <div id="opening-transition">
+        <div class="opening-content">
+            <img
+                src="logo.png"
+                class="opening-logo"
+                alt="ZWITTERION Logo"
+            >
+
+            <div class="opening-title">
+                ZWITTERION CLASSES
+            </div>
+            <div class="opening-subtitle">
+                LEARN • PRACTICE • MASTER
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =========================================================
+         CLASS
+    ========================================================== -->
+
+    <section
+        id="screen-class-select"
+        class="screen-container"
+    >
+
+        <div class="auth-card">
+
+            <div class="logo-badge">
+                <img
+                    src="logo.png"
+                    alt="ZWITTERION Logo"
+                >
+            </div>
+
+            <h1>
+                ZWITTERION
+            </h1>
+
+            <p class="subtitle">
+                Select Your Class
+            </p>
+
+            <div class="selection-grid">
+
+                <button
+                    type="button"
+                    class="selection-btn"
+                    onclick="selectClass('11')"
+                >
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    Class 11
+                </button>
+
+                <button
+                    type="button"
+                    class="selection-btn"
+                    onclick="selectClass('12')"
+                >
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    Class 12
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         BOARD
+    ========================================================== -->
+
+    <section
+        id="screen-board-select"
+        class="screen-container hidden"
+    >
+
+        <div class="auth-card">
+
+            <div class="logo-badge">
+                <img
+                    src="logo.png"
+                    alt="ZWITTERION Logo"
+                >
+            </div>
+
+            <h1>
+                CLASS
+                <span id="selected-class-label">
+                    11
+                </span>
+            </h1>
+
+            <p class="subtitle">
+                Select Board
+            </p>
+
+            <div class="selection-grid">
+
+                <button
+                    type="button"
+                    class="selection-btn"
+                    onclick="selectBoard('CBSE')"
+                >
+                    <i class="fa-solid fa-school"></i>
+                    CBSE
+                </button>
+
+                <button
+                    type="button"
+                    class="selection-btn"
+                    onclick="selectBoard('ICSE')"
+                >
+                    <i class="fa-solid fa-school"></i>
+                    ICSE
+                </button>
+
+            </div>
+
+            <button
+                type="button"
+                class="back-btn"
+                onclick="goBackToClass()"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+                Return
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         SCHOOL
+    ========================================================== -->
+
+    <section
+        id="screen-school-select"
+        class="screen-container hidden"
+    >
+
+        <div class="auth-card">
+
+            <div class="logo-badge">
+                <img
+                    src="logo.png"
+                    alt="ZWITTERION Logo"
+                >
+            </div>
+
+            <h1 id="selected-board-label">
+                CBSE
+            </h1>
+
+            <p class="subtitle">
+                Select Your School
+            </p>
+
+            <div
+                id="school-selection-grid"
+                class="selection-grid"
+            ></div>
+
+            <button
+                type="button"
+                class="back-btn"
+                onclick="goBackToBoard()"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+                Return
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         PORTAL
+    ========================================================== -->
+
+    <section
+        id="screen-access-select"
+        class="screen-container hidden"
+    >
+
+        <div class="auth-card">
+
+            <div class="logo-badge">
+                <img
+                    src="logo.png"
+                    alt="ZWITTERION Logo"
+                >
+            </div>
+
+            <h1 id="selected-school-title">
+                School
+            </h1>
+
+            <p class="subtitle">
+
+                Class
+                <span id="access-class">
+                    11
+                </span>
+
+                •
+
+                <span id="access-board">
+                    CBSE
+                </span>
+
+            </p>
+
+            <div
+                style="
+                    display:flex;
+                    flex-direction:column;
+                    gap:12px;
+                "
+            >
+
+                <button
+                    type="button"
+                    class="selection-btn"
+                    onclick="setAccessType('student')"
+                >
+                    <i class="fa-solid fa-user-graduate"></i>
+                    Student Portal
+                </button>
+
+                <button
+                    type="button"
+                    class="selection-btn"
+                    onclick="setAccessType('admin')"
+                >
+                    <i class="fa-solid fa-user-shield"></i>
+                    Admin Portal
+                </button>
+
+            </div>
+
+            <button
+                type="button"
+                class="back-btn"
+                onclick="goBackToSchool()"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+                Return
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         STUDENT LOGIN
+    ========================================================== -->
+
+    <section
+        id="screen-student-login"
+        class="screen-container hidden"
+    >
+
+        <div class="auth-card">
+
+            <div class="logo-badge">
+                <img
+                    src="logo.png"
+                    alt="ZWITTERION Logo"
+                >
+            </div>
+
+            <h1>
+                STUDENT LOGIN
+            </h1>
+
+            <p
+                id="student-login-subtitle"
+                class="subtitle"
+            >
+                Verify your account with OTP
+            </p>
+
+            <div id="student-otp-request-step">
+
+                <div class="otp-method-row">
+
+                    <button
+                        type="button"
+                        id="student-method-email"
+                        class="otp-method-btn active"
+                        onclick="setStudentOtpMethod('email')"
+                    >
+                        <i class="fa-solid fa-envelope"></i>
+                        Email
+                    </button>
+
+                    <button
+                        type="button"
+                        id="student-method-phone"
+                        class="otp-method-btn"
+                        onclick="setStudentOtpMethod('phone')"
+                    >
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                        Phone
+                    </button>
+
+                </div>
+
+                <form
+                    id="student-otp-request-form"
+                >
+
+                    <div class="form-group">
+
+                        <label
+                            id="student-otp-identifier-label"
+                        >
+                            Email Address
+                        </label>
+
+                        <input
+                            id="student-otp-identifier"
+                            type="email"
+                            inputmode="email"
+                            placeholder="student@example.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                    <div
+                        id="student-otp-request-error"
+                        class="error-message hidden"
+                    ></div>
+
+                    <button
+                        id="student-send-otp"
+                        type="submit"
+                        class="btn-primary"
+                    >
+                        <i
+                            class="fa-solid fa-paper-plane"
+                        ></i>
+                        Send OTP
+                    </button>
+
+                </form>
+
+            </div>
+
+            <div
+                id="student-otp-verify-step"
+                class="hidden"
+            >
+
+                <div class="otp-step-title">
+                    Verify OTP
+                </div>
+
+                <div
+                    id="student-otp-destination"
+                    class="otp-step-text"
+                >
+                    Enter the 6-digit OTP we sent you.
+                </div>
+
+                <form
+                    id="student-otp-verify-form"
+                >
+
+                    <div
+                        class="otp-input-row"
+                        id="student-otp-input-row"
+                    >
+
+                        <input
+                            class="otp-input"
+                            maxlength="1"
+                            inputmode="numeric"
+                            autocomplete="one-time-code"
+                            aria-label="OTP digit 1"
+                        >
+
+                        <input
+                            class="otp-input"
+                            maxlength="1"
+                            inputmode="numeric"
+                            aria-label="OTP digit 2"
+                        >
+
+                        <input
+                            class="otp-input"
+                            maxlength="1"
+                            inputmode="numeric"
+                            aria-label="OTP digit 3"
+                        >
+
+                        <input
+                            class="otp-input"
+                            maxlength="1"
+                            inputmode="numeric"
+                            aria-label="OTP digit 4"
+                        >
+
+                        <input
+                            class="otp-input"
+                            maxlength="1"
+                            inputmode="numeric"
+                            aria-label="OTP digit 5"
+                        >
+
+                        <input
+                            class="otp-input"
+                            maxlength="1"
+                            inputmode="numeric"
+                            aria-label="OTP digit 6"
+                        >
+
+                    </div>
+
+                    <div
+                        id="student-otp-verify-error"
+                        class="error-message hidden"
+                    ></div>
+
+                    <button
+                        id="student-verify-otp"
+                        type="submit"
+                        class="btn-primary"
+                    >
+                        <i
+                            class="fa-solid fa-shield-check"
+                        ></i>
+                        Verify OTP
+                    </button>
+
+                </form>
+
+                <div class="otp-secondary-row">
+
+                    <span
+                        id="student-otp-timer"
+                        class="otp-timer"
+                    >
+                        Resend available in 60s
+                    </span>
+
+                    <button
+                        type="button"
+                        id="student-otp-resend"
+                        class="otp-resend"
+                        disabled
+                    >
+                        Resend OTP
+                    </button>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="back-btn"
+                    onclick="resetStudentOtpLogin()"
+                >
+                    <i
+                        class="fa-solid fa-arrow-left"
+                    ></i>
+                    Change Email / Phone
+                </button>
+
+            </div>
+
+            <button
+                type="button"
+                class="back-btn"
+                onclick="goBackToAccess()"
+            >
+                <i
+                    class="fa-solid fa-arrow-left"
+                ></i>
+                Return
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         ADMIN LOGIN
+    ========================================================== -->
+
+    <section
+        id="screen-admin-login"
+        class="screen-container hidden"
+    >
+
+        <div class="auth-card">
+
+            <div class="logo-badge">
+
+                <img
+                    src="logo.png"
+                    alt="ZWITTERION Logo"
+                >
+
+            </div>
+
+
+            <h1>
+                ADMIN LOGIN
+            </h1>
+
+
+            <p
+                id="admin-login-subtitle"
+                class="subtitle"
+            >
+                School Admin
+            </p>
+
+
+            <form id="admin-login-form">
+
+                <div class="form-group">
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        id="admin-email"
+                        type="email"
+                        placeholder="admin@school.demo"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Password
+                    </label>
+
+                    <input
+                        id="admin-password"
+                        type="password"
+                        placeholder="Enter password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+
+                <div
+                    id="admin-login-error"
+                    class="error-message hidden"
+                >
+                    Invalid admin details.
+                    <br><br>
+                    Demo:
+                    <strong>
+                        admin@school1.demo / Demo1234!
+                    </strong>
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                >
+                    Initialize Session
+                </button>
+
+            </form>
+
+
+            <button
+                type="button"
+                class="back-btn"
+                onclick="goBackToAccess()"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+                Return
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         MAIN APP
+    ========================================================== -->
+
+    <section
+        id="app-workspace"
+        class="app-container hidden"
+    >
+
+        <aside class="sidebar">
+
+            <div>
+
+                <div class="sidebar-brand">
+
+                    <div class="logo-badge-small">
+
+                        <img
+                            src="logo.png"
+                            alt="ZWITTERION Logo"
+                        >
+
+                    </div>
+
+
+                    <div class="brand-text">
+
+                        <h2>
+                            ZWITTERION
+                        </h2>
+
+                        <span
+                            id="sidebar-school-name"
+                        >
+                            School
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <nav
+                    id="sidebar-nav-container"
+                    class="sidebar-nav"
+                ></nav>
+
+            </div>
+
+
+            <div class="sidebar-footer">
+
+                <div class="user-meta">
+
+                    <span id="meta-student">
+                        Student
+                    </span>
+
+                    <span id="meta-class-board">
+                        Class 11 • CBSE
+                    </span>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-logout"
+                    onclick="handleLogout()"
+                >
+
+                    <i
+                        class="
+                            fa-solid
+                            fa-right-from-bracket
+                        "
+                    ></i>
+
+                    Logout
+
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <div class="main-wrapper">
+
+            <header class="top-header">
+
+                <div class="header-search">
+
+                    <i
+                        class="
+                            fa-solid
+                            fa-magnifying-glass
+                        "
+                    ></i>
+
+
+                    <input
+                        id="global-search"
+                        type="search"
+                        placeholder="Search..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <div class="header-actions">
+
+                    <div class="version-pill">
+                        V1 CORE
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="theme-toggle"
+                        onclick="toggleTheme()"
+                        aria-label="Toggle theme"
+                    >
+
+                        <i
+                            id="theme-icon"
+                            class="
+                                fa-solid
+                                fa-moon
+                            "
+                        ></i>
+
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <main
+                id="content-viewport-container"
+                class="content-viewport"
+            ></main>
+
+        </div>
+
+    </section>
+
+
+    <script>
+
+        /* =========================================================
+           STATE
+        ========================================================== */
+
+        const appState = {
+
+            selectedClass:
+                null,
+
+            selectedBoard:
+                null,
+
+            selectedSchool:
+                null,
+
+            selectedSchoolId:
+                null,
+
+            accessType:
+                null,
+
+            currentUser:
+                null,
+
+            currentRole:
+                null,
+
+            currentTheme:
+                "dark"
+
+        };
+
+
+        /* =========================================================
+           SCHOOL LIST
+        ========================================================== */
+
+        const SCHOOLS = {
+
+            CBSE: [
+
+                {
+                    name:
+                        "KLPS",
+
+                    id:
+                        "CBSE-KLPS"
+                },
+
+                {
+                    name:
+                        "BRS",
+
+                    id:
+                        "CBSE-BRS"
+                },
+
+                {
+                    name:
+                        "DAV",
+
+                    id:
+                        "CBSE-DAV"
+                },
+
+                {
+                    name:
+                        "IIS",
+
+                    id:
+                        "CBSE-IIS"
+                }
+
+            ],
+
+            ICSE: [
+
+                {
+                    name:
+                        "St. Patricks",
+
+                    id:
+                        "ICSE-PATRICKS"
+                },
+
+                {
+                    name:
+                        "St. Vincent",
+
+                    id:
+                        "ICSE-VINCENT"
+                },
+
+                {
+                    name:
+                        "AG Church",
+
+                    id:
+                        "ICSE-AGCHURCH"
+                },
+
+                {
+                    name:
+                        "Loreto",
+
+                    id:
+                        "ICSE-LORETO"
+                }
+
+            ]
+
+        };
+
+
+        /* =========================================================
+           DEMO CREDENTIALS
+        ========================================================== */
+
+        const TEST_STUDENT = {
+
+            id:
+                "BRS1234",
+
+            pin:
+                "8163"
+
+        };
+
+
+        const TEST_ADMIN = {
+
+            email:
+                "admin@school1.demo",
+
+            password:
+                "Demo1234!"
+
+        };
+
+
+        /* =========================================================
+           HELPERS
+        ========================================================== */
+
+        function byId(id) {
+            return document.getElementById(id);
+        }
+
+        function show(id) {
+
+            const element =
+                document.getElementById(id);
+
+            if (element) {
+
+                element.classList.remove(
+                    "hidden"
+                );
+
+            }
+
+        }
+
+
+        function hide(id) {
+
+            const element =
+                document.getElementById(id);
+
+            if (element) {
+
+                element.classList.add(
+                    "hidden"
+                );
+
+            }
+
+        }
+
+
+        function clearErrors() {
+
+            hide(
+                "student-login-error"
+            );
+
+            hide(
+                "admin-login-error"
+            );
+
+        }
+
+
+        function getViewport() {
+
+            return document.getElementById(
+                "content-viewport-container"
+            );
+
+        }
+
+
+        /* =========================================================
+           CLASS NAVIGATION
+        ========================================================== */
+
+        function selectClass(
+            className
+        ) {
+
+            appState.selectedClass =
+                String(className);
+
+
+            document.getElementById(
+                "selected-class-label"
+            ).textContent =
+                appState.selectedClass;
+
+
+            hide(
+                "screen-class-select"
+            );
+
+
+            show(
+                "screen-board-select"
+            );
+
+        }
+
+
+        function goBackToClass() {
+
+            hide(
+                "screen-board-select"
+            );
+
+
+            show(
+                "screen-class-select"
+            );
+
+        }
+
+
+        /* =========================================================
+           BOARD NAVIGATION
+        ========================================================== */
+
+        function selectBoard(
+            board
+        ) {
+
+            appState.selectedBoard =
+                board;
+
+
+            document.getElementById(
+                "selected-board-label"
+            ).textContent =
+                board;
+
+
+            buildSchoolButtons();
+
+
+            hide(
+                "screen-board-select"
+            );
+
+
+            show(
+                "screen-school-select"
+            );
+
+        }
+
+
+        function goBackToBoard() {
+
+            hide(
+                "screen-school-select"
+            );
+
+
+            show(
+                "screen-board-select"
+            );
+
+        }
+
+
+        /* =========================================================
+           SCHOOL
+        ========================================================== */
+
+        function buildSchoolButtons() {
+
+            const container =
+                document.getElementById(
+                    "school-selection-grid"
+                );
+
+
+            container.innerHTML =
+                "";
+
+
+            const schools =
+                SCHOOLS[
+                    appState.selectedBoard
+                ] || [];
+
+
+            schools.forEach(
+                function(school) {
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    button.type =
+                        "button";
+
+
+                    button.className =
+                        "selection-btn";
+
+
+                    button.innerHTML = `
+
+                        <i
+                            class="
+                                fa-solid
+                                fa-school
+                            "
+                        ></i>
+
+                        ${escapeHtml(
+                            school.name
+                        )}
+
+                    `;
+
+
+                    button.addEventListener(
+                        "click",
+                        function() {
+
+                            selectSchool(
+                                school.name,
+                                school.id
+                            );
+
+                        }
+                    );
+
+
+                    container.appendChild(
+                        button
+                    );
+
+                }
+            );
+
+        }
+
+
+        function selectSchool(
+            name,
+            id
+        ) {
+
+            appState.selectedSchool =
+                name;
+
+
+            appState.selectedSchoolId =
+                id;
+
+
+            document.getElementById(
+                "selected-school-title"
+            ).textContent =
+                name;
+
+
+            document.getElementById(
+                "access-class"
+            ).textContent =
+                appState.selectedClass;
+
+
+            document.getElementById(
+                "access-board"
+            ).textContent =
+                appState.selectedBoard;
+
+
+            hide(
+                "screen-school-select"
+            );
+
+
+            show(
+                "screen-access-select"
+            );
+
+        }
+
+
+        function goBackToSchool() {
+
+            hide(
+                "screen-access-select"
+            );
+
+
+            show(
+                "screen-school-select"
+            );
+
+        }
+
+
+        /* =========================================================
+           ACCESS TYPE
+        ========================================================== */
+
+        function setAccessType(
+            type
+        ) {
+
+            appState.accessType =
+                type;
+
+
+            clearErrors();
+
+
+            hide(
+                "screen-access-select"
+            );
+
+
+            if (
+                type ===
+                "student"
+            ) {
+
+                document.getElementById(
+                    "student-login-subtitle"
+                ).textContent =
+
+                    `Class ${appState.selectedClass}
+                     • ${appState.selectedBoard}
+                     • ${appState.selectedSchool}`;
+
+
+                show(
+                    "screen-student-login"
+                );
+
+
+            } else {
+
+                document.getElementById(
+                    "admin-login-subtitle"
+                ).textContent =
+
+                    `${appState.selectedSchool}
+                     • Class ${appState.selectedClass}
+                     • ${appState.selectedBoard}`;
+
+
+                show(
+                    "screen-admin-login"
+                );
+
+            }
+
+        }
+
+
+        function goBackToAccess() {
+
+            hide(
+                "screen-student-login"
+            );
+
+
+            hide(
+                "screen-admin-login"
+            );
+
+
+            show(
+                "screen-access-select"
+            );
+
+        }
+
+
+        /* =========================================================
+           STUDENT OTP LOGIN
+        ========================================================== */
+
+        let studentOtpMethod = "email";
+        let studentOtpIdentifier = "";
+        let studentOtpChallengeId = "";
+        let studentOtpResendTimer = null;
+        let studentOtpSecondsRemaining = 0;
+
+        function setStudentOtpMethod(method) {
+
+            studentOtpMethod =
+                method === "phone"
+                    ? "phone"
+                    : "email";
+
+            const input =
+                byId("student-otp-identifier");
+
+            const label =
+                byId("student-otp-identifier-label");
+
+            const emailButton =
+                byId("student-method-email");
+
+            const phoneButton =
+                byId("student-method-phone");
+
+            const form =
+                byId("student-otp-request-form");
+
+            if (studentOtpMethod === "phone") {
+
+                label.textContent =
+                    "Mobile Number";
+
+                input.type =
+                    "tel";
+
+                input.inputMode =
+                    "tel";
+
+                input.autocomplete =
+                    "tel";
+
+                input.placeholder =
+                    "+91 9876543210";
+
+                input.pattern =
+                    "[+]?[0-9 ()-]{8,18}";
+
+                emailButton.classList.remove("active");
+                phoneButton.classList.add("active");
+
+            } else {
+
+                label.textContent =
+                    "Email Address";
+
+                input.type =
+                    "email";
+
+                input.inputMode =
+                    "email";
+
+                input.autocomplete =
+                    "email";
+
+                input.placeholder =
+                    "student@example.com";
+
+                input.removeAttribute("pattern");
+
+                phoneButton.classList.remove("active");
+                emailButton.classList.add("active");
+
+            }
+
+            form.reset();
+            input.type =
+                studentOtpMethod === "phone"
+                    ? "tel"
+                    : "email";
+
+        }
+
+        function normalizePhone(value) {
+
+            return String(value || "")
+                .replace(/[^0-9+]/g, "")
+                .replace(/(?!^)\+/g, "");
+
+        }
+
+        function validateStudentOtpIdentifier(value) {
+
+            if (studentOtpMethod === "phone") {
+
+                const normalized =
+                    normalizePhone(value);
+
+                return /^\+?[0-9]{8,15}$/.test(
+                    normalized
+                );
+
+            }
+
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+                value
+                    .trim()
+                    .toLowerCase()
+            );
+
+        }
+
+        function setOtpRequestLoading(loading) {
+
+            const button =
+                byId("student-send-otp");
+
+            if (!button) {
+                return;
+            }
+
+            button.disabled =
+                loading;
+
+            button.innerHTML = loading
+                ? `
+                    <i
+                        class="fa-solid fa-spinner fa-spin"
+                    ></i>
+                    Sending OTP...
+                `
+                : `
+                    <i
+                        class="fa-solid fa-paper-plane"
+                    ></i>
+                    Send OTP
+                `;
+
+        }
+
+        function setOtpVerifyLoading(loading) {
+
+            const button =
+                byId("student-verify-otp");
+
+            if (!button) {
+                return;
+            }
+
+            button.disabled =
+                loading;
+
+            button.innerHTML = loading
+                ? `
+                    <i
+                        class="fa-solid fa-spinner fa-spin"
+                    ></i>
+                    Verifying...
+                `
+                : `
+                    <i
+                        class="fa-solid fa-shield-check"
+                    ></i>
+                    Verify OTP
+                `;
+
+        }
+
+        function getStudentOtpCode() {
+
+            return Array.from(
+                document.querySelectorAll(
+                    "#student-otp-input-row .otp-input"
+                )
+            )
+                .map(
+                    function(input) {
+                        return input.value.trim();
+                    }
+                )
+                .join("");
+
+        }
+
+        function clearStudentOtpInputs() {
+
+            document
+                .querySelectorAll(
+                    "#student-otp-input-row .otp-input"
+                )
+                .forEach(
+                    function(input) {
+                        input.value = "";
+                    }
+                );
+
+        }
+
+        function focusFirstStudentOtpInput() {
+
+            const first =
+                document.querySelector(
+                    "#student-otp-input-row .otp-input"
+                );
+
+            if (first) {
+                first.focus();
+            }
+
+        }
+
+        function startStudentOtpTimer(seconds) {
+
+            if (studentOtpResendTimer) {
+
+                clearInterval(
+                    studentOtpResendTimer
+                );
+
+            }
+
+            studentOtpSecondsRemaining =
+                Number(seconds) || 60;
+
+            const timer =
+                byId("student-otp-timer");
+
+            const resend =
+                byId("student-otp-resend");
+
+            resend.disabled = true;
+
+            function tick() {
+
+                if (
+                    studentOtpSecondsRemaining <= 0
+                ) {
+
+                    clearInterval(
+                        studentOtpResendTimer
+                    );
+
+                    studentOtpResendTimer =
+                        null;
+
+                    timer.textContent =
+                        "You can resend the OTP now.";
+
+                    resend.disabled =
+                        false;
+
+                    return;
+                }
+
+                timer.textContent =
+                    `Resend available in ${studentOtpSecondsRemaining}s`;
+
+                studentOtpSecondsRemaining -= 1;
+
+            }
+
+            tick();
+
+            studentOtpResendTimer =
+                setInterval(
+                    tick,
+                    1000
+                );
+
+        }
+
+        function resetStudentOtpLogin() {
+
+            if (studentOtpResendTimer) {
+
+                clearInterval(
+                    studentOtpResendTimer
+                );
+
+                studentOtpResendTimer =
+                    null;
+
+            }
+
+            studentOtpIdentifier = "";
+            studentOtpChallengeId = "";
+            studentOtpSecondsRemaining =
+                0;
+
+            clearStudentOtpInputs();
+
+            hide(
+                "student-otp-verify-step"
+            );
+
+            show(
+                "student-otp-request-step"
+            );
+
+            byId(
+                "student-otp-request-form"
+            ).reset();
+
+            byId(
+                "student-otp-request-error"
+            ).classList.add("hidden");
+
+            byId(
+                "student-otp-verify-error"
+            ).classList.add("hidden");
+
+        }
+
+        function maskStudentIdentifier() {
+
+            if (
+                studentOtpMethod === "email"
+            ) {
+
+                const parts =
+                    studentOtpIdentifier.split("@");
+
+                if (parts.length !== 2) {
+                    return studentOtpIdentifier;
+                }
+
+                const name =
+                    parts[0];
+
+                const visible =
+                    name.slice(0, 2);
+
+                return (
+                    visible +
+                    "***@" +
+                    parts[1]
+                );
+
+            }
+
+            const digits =
+                normalizePhone(
+                    studentOtpIdentifier
+                );
+
+            if (digits.length < 4) {
+                return "your mobile number";
+            }
+
+            return (
+                "******" +
+                digits.slice(-4)
+            );
+
+        }
+
+        byId(
+            "student-otp-request-form"
+        ).addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+                const errorBox =
+                    byId(
+                        "student-otp-request-error"
+                    );
+
+                errorBox.classList.add(
+                    "hidden"
+                );
+
+                let value =
+                    byId(
+                        "student-otp-identifier"
+                    ).value.trim();
+
+                if (
+                    studentOtpMethod === "email"
+                ) {
+
+                    value =
+                        value.toLowerCase();
+
+                } else {
+
+                    value =
+                        normalizePhone(value);
+
+                }
+
+                if (
+                    !validateStudentOtpIdentifier(
+                        value
+                    )
+                ) {
+
+                    errorBox.textContent =
+                        studentOtpMethod === "phone"
+                            ? "Enter a valid mobile number."
+                            : "Enter a valid email address.";
+
+                    errorBox.classList.remove(
+                        "hidden"
+                    );
+
+                    return;
+                }
+
+                studentOtpIdentifier =
+                    value;
+
+                setOtpRequestLoading(
+                    true
+                );
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/student/send-otp",
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type":
+                                        "application/json",
+                                    "Accept":
+                                        "application/json"
+                                },
+                                body:
+                                    JSON.stringify({
+                                        method:
+                                            studentOtpMethod,
+                                        identifier:
+                                            studentOtpIdentifier,
+                                        className:
+                                            appState.selectedClass ||
+                                            "",
+                                        board:
+                                            appState.selectedBoard ||
+                                            "",
+                                        school:
+                                            appState.selectedSchool ||
+                                            ""
+                                    })
+                            }
+                        );
+
+                    const result =
+                        await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(
+                            typeof result.error === "string"
+                                ? result.error
+                                : result.error
+                                    ? JSON.stringify(result.error)
+                                    : "Could not send OTP."
+                        );
+                    }
+
+                    studentOtpChallengeId =
+                        result.challengeId ||
+                        "";
+
+                    byId(
+                        "student-otp-destination"
+                    ).textContent =
+                        result.message ||
+                        `A 6-digit OTP was sent to ${maskStudentIdentifier()}.`;
+
+                    hide(
+                        "student-otp-request-step"
+                    );
+
+                    show(
+                        "student-otp-verify-step"
+                    );
+
+                    clearStudentOtpInputs();
+
+                    startStudentOtpTimer(
+                        result.resendAfter ||
+                        60
+                    );
+
+                    focusFirstStudentOtpInput();
+
+                } catch (error) {
+
+                    console.error(
+                        "Send student OTP error:",
+                        error
+                    );
+
+                    errorBox.textContent =
+                        error.message ||
+                        "Could not send OTP.";
+
+                    errorBox.classList.remove(
+                        "hidden"
+                    );
+
+                } finally {
+
+                    setOtpRequestLoading(
+                        false
+                    );
+
+                }
+
+            }
+        );
+
+        byId(
+            "student-otp-verify-form"
+        ).addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+                const errorBox =
+                    byId(
+                        "student-otp-verify-error"
+                    );
+
+                errorBox.classList.add(
+                    "hidden"
+                );
+
+                const otp =
+                    getStudentOtpCode();
+
+                if (
+                    !/^\d{6}$/.test(otp)
+                ) {
+
+                    errorBox.textContent =
+                        "Enter the complete 6-digit OTP.";
+
+                    errorBox.classList.remove(
+                        "hidden"
+                    );
+
+                    focusFirstStudentOtpInput();
+
+                    return;
+                }
+
+                setOtpVerifyLoading(
+                    true
+                );
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/student/verify-otp",
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type":
+                                        "application/json",
+                                    "Accept":
+                                        "application/json"
+                                },
+                                body:
+                                    JSON.stringify({
+                                        challengeId:
+                                            studentOtpChallengeId,
+                                        method:
+                                            studentOtpMethod,
+                                        identifier:
+                                            studentOtpIdentifier,
+                                        otp,
+                                        className:
+                                            appState.selectedClass ||
+                                            "",
+                                        board:
+                                            appState.selectedBoard ||
+                                            "",
+                                        school:
+                                            appState.selectedSchool ||
+                                            ""
+                                    })
+                            }
+                        );
+
+                    const result =
+                        await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(
+                            typeof result.error === "string"
+                                ? result.error
+                                : result.error
+                                    ? JSON.stringify(result.error)
+                                    : "OTP verification failed."
+                        );
+                    }
+
+                    if (
+                        result.token
+                    ) {
+
+                        sessionStorage.setItem(
+                            "zwitterion_student_token",
+                            result.token
+                        );
+
+                    }
+
+                    appState.currentUser =
+                        result.studentName ||
+                        result.email ||
+                        result.phone ||
+                        studentOtpIdentifier;
+
+                    appState.currentRole =
+                        "STUDENT";
+
+                    if (studentOtpResendTimer) {
+
+                        clearInterval(
+                            studentOtpResendTimer
+                        );
+
+                        studentOtpResendTimer =
+                            null;
+
+                    }
+
+                    launchApp();
+
+                } catch (error) {
+
+                    console.error(
+                        "Verify student OTP error:",
+                        error
+                    );
+
+                    errorBox.textContent =
+                        error.message ||
+                        "OTP verification failed.";
+
+                    errorBox.classList.remove(
+                        "hidden"
+                    );
+
+                } finally {
+
+                    setOtpVerifyLoading(
+                        false
+                    );
+
+                }
+
+            }
+        );
+
+        byId(
+            "student-otp-resend"
+        ).addEventListener(
+            "click",
+            async function() {
+
+                if (
+                    studentOtpSecondsRemaining > 0
+                ) {
+                    return;
+                }
+
+                byId(
+                    "student-send-otp"
+                ).disabled = true;
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/student/send-otp",
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type":
+                                        "application/json",
+                                    "Accept":
+                                        "application/json"
+                                },
+                                body:
+                                    JSON.stringify({
+                                        method:
+                                            studentOtpMethod,
+                                        identifier:
+                                            studentOtpIdentifier,
+                                        challengeId:
+                                            studentOtpChallengeId,
+                                        className:
+                                            appState.selectedClass ||
+                                            "",
+                                        board:
+                                            appState.selectedBoard ||
+                                            "",
+                                        school:
+                                            appState.selectedSchool ||
+                                            ""
+                                    })
+                            }
+                        );
+
+                    const result =
+                        await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(
+                            typeof result.error === "string"
+                                ? result.error
+                                : result.error
+                                    ? JSON.stringify(result.error)
+                                    : "Could not resend OTP."
+                        );
+                    }
+
+                    studentOtpChallengeId =
+                        result.challengeId ||
+                        studentOtpChallengeId;
+
+                    clearStudentOtpInputs();
+
+                    byId(
+                        "student-otp-destination"
+                    ).textContent =
+                        result.message ||
+                        `A new OTP was sent to ${maskStudentIdentifier()}.`;
+
+                    startStudentOtpTimer(
+                        result.resendAfter ||
+                        60
+                    );
+
+                    focusFirstStudentOtpInput();
+
+                } catch (error) {
+
+                    console.error(
+                        "Resend OTP error:",
+                        error
+                    );
+
+                    byId(
+                        "student-otp-verify-error"
+                    ).textContent =
+                        error.message ||
+                        "Could not resend OTP.";
+
+                    byId(
+                        "student-otp-verify-error"
+                    ).classList.remove(
+                        "hidden"
+                    );
+
+                } finally {
+
+                    byId(
+                        "student-send-otp"
+                    ).disabled = false;
+
+                }
+
+            }
+        );
+
+        document
+            .querySelectorAll(
+                "#student-otp-input-row .otp-input"
+            )
+            .forEach(
+                function(input, index, inputs) {
+
+                    input.addEventListener(
+                        "input",
+                        function() {
+
+                            this.value =
+                                this.value
+                                    .replace(/\D/g, "")
+                                    .slice(0, 1);
+
+                            if (
+                                this.value &&
+                                inputs[index + 1]
+                            ) {
+
+                                inputs[index + 1]
+                                    .focus();
+
+                            }
+
+                            if (
+                                getStudentOtpCode()
+                                    .length === 6
+                            ) {
+
+                                byId(
+                                    "student-otp-verify-form"
+                                ).requestSubmit();
+
+                            }
+
+                        }
+                    );
+
+                    input.addEventListener(
+                        "keydown",
+                        function(event) {
+
+                            if (
+                                event.key ===
+                                    "Backspace" &&
+                                !this.value &&
+                                inputs[index - 1]
+                            ) {
+
+                                inputs[index - 1]
+                                    .focus();
+
+                            }
+
+                        }
+                    );
+
+                    input.addEventListener(
+                        "paste",
+                        function(event) {
+
+                            const pasted =
+                                (
+                                    event.clipboardData ||
+                                    window.clipboardData
+                                )
+                                    .getData("text")
+                                    .replace(/\D/g, "")
+                                    .slice(0, 6);
+
+                            if (!pasted) {
+                                return;
+                            }
+
+                            event.preventDefault();
+
+                            pasted
+                                .split("")
+                                .forEach(
+                                    function(char, i) {
+
+                                        if (inputs[i]) {
+                                            inputs[i].value =
+                                                char;
+                                        }
+
+                                    }
+                                );
+
+                            const target =
+                                inputs[
+                                    Math.min(
+                                        pasted.length,
+                                        inputs.length
+                                    ) - 1
+                                ];
+
+                            if (target) {
+                                target.focus();
+                            }
+
+                        }
+                    );
+
+                }
+            );
+
+        /* =========================================================
+           ADMIN LOGIN
+        ========================================================== */
+
+        document
+            .getElementById("admin-login-form")
+            .addEventListener("submit", async function(event) {
+                event.preventDefault();
+
+                const email =
+                    document.getElementById("admin-email")
+                        .value
+                        .trim()
+                        .toLowerCase();
+
+                const password =
+                    document.getElementById("admin-password")
+                        .value;
+
+                const errorBox =
+                    document.getElementById("admin-login-error");
+
+                errorBox.classList.add("hidden");
+
+                try {
+                    const response = await fetch("/api/admin-auth", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok || !result.token) {
+                        throw new Error(
+                            result.error || "Invalid admin details."
+                        );
+                    }
+
+                    sessionStorage.setItem(
+                        "zwitterion_admin_token",
+                        result.token
+                    );
+
+                    appState.currentUser =
+                        result.email || email;
+
+                    appState.currentRole =
+                        "SCHOOL_ADMIN";
+
+                    launchApp();
+                } catch (error) {
+                    console.error("Admin login error:", error);
+                    errorBox.innerHTML =
+                        "Invalid admin details.<br><br>" +
+                        "Set your admin credentials in Vercel Environment Variables.";
+                    errorBox.classList.remove("hidden");
+                }
+            });
+
+        /* =========================================================
+           LAUNCH
+        ========================================================== */
+
+        function launchApp() {
+
+            hide(
+                "screen-student-login"
+            );
+
+
+            hide(
+                "screen-admin-login"
+            );
+
+
+            hide(
+                "screen-access-select"
+            );
+
+
+            show(
+                "app-workspace"
+            );
+
+
+            document.getElementById(
+                "sidebar-school-name"
+            ).textContent =
+                appState.selectedSchool;
+
+
+            document.getElementById(
+                "meta-student"
+            ).textContent =
+                `${appState.currentUser}
+                 • ${appState.selectedSchool}`;
+
+
+            document.getElementById(
+                "meta-class-board"
+            ).textContent =
+                `Class ${appState.selectedClass}
+                 • ${appState.selectedBoard}`;
+
+
+            buildNavigation();
+
+        }
+
+
+        /* =========================================================
+           NAVIGATION
+        ========================================================== */
+
+        function buildNavigation() {
+
+            const nav =
+                document.getElementById(
+                    "sidebar-nav-container"
+                );
+
+
+            nav.innerHTML =
+                "";
+
+
+            const links = [
+
+                [
+                    "dashboard",
+                    "Dashboard",
+                    "fa-chart-pie"
+                ],
+
+                [
+                    "question-papers",
+                    "Question Papers",
+                    "fa-file-lines"
+                ],
+
+                [
+                    "notes",
+                    "Notes",
+                    "fa-book-open"
+                ],
+
+                [
+                    "pyqs",
+                    "PYQs",
+                    "fa-clock-rotate-left"
+                ],
+
+                [
+                    "sample-papers",
+                    "Sample Papers",
+                    "fa-file-circle-check"
+                ],
+
+                [
+                    "suggestions",
+                    "Suggestions",
+                    "fa-lightbulb"
+                ],
+
+                [
+                    "results",
+                    "Results",
+                    "fa-square-poll-vertical"
+                ]
+
+            ];
+
+
+            if (
+                appState.currentRole ===
+                "SCHOOL_ADMIN"
+            ) {
+
+                links.push(
+                    [
+                        "admin-dashboard",
+                        "Admin Dashboard",
+                        "fa-user-shield"
+                    ]
+                );
+
+            }
+
+
+            links.forEach(
+                function(
+                    link,
+                    index
+                ) {
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    button.type =
+                        "button";
+
+
+                    button.className =
+                        "nav-item" +
+                        (
+                            index === 0
+                                ? " active"
+                                : ""
+                        );
+
+
+                    button.innerHTML = `
+
+                        <i
+                            class="
+                                fa-solid
+                                ${link[2]}
+                            "
+                        ></i>
+
+                        <span>
+                            ${link[1]}
+                        </span>
+
+                    `;
+
+
+                    button.addEventListener(
+                        "click",
+                        function() {
+
+                            document
+                                .querySelectorAll(
+                                    ".nav-item"
+                                )
+                                .forEach(
+                                    function(item) {
+
+                                        item.classList.remove(
+                                            "active"
+                                        );
+
+                                    }
+                                );
+
+
+                            button.classList.add(
+                                "active"
+                            );
+
+
+                            loadPage(
+                                link[0]
+                            );
+
+                        }
+                    );
+
+
+                    nav.appendChild(
+                        button
+                    );
+
+                }
+            );
+
+
+            loadPage(
+                "dashboard"
+            );
+
+        }
+
+
+        /* =========================================================
+           PAGE ROUTER
+        ========================================================== */
+
+        function loadPage(
+            pageId
+        ) {
+
+            switch (
+                pageId
+            ) {
+
+                case "dashboard":
+
+                    renderDashboard();
+
+                    break;
+
+
+                case "question-papers":
+
+                    renderQuestionPapers();
+
+                    break;
+
+
+                case "notes":
+
+                    renderNotes();
+
+                    break;
+
+
+                case "pyqs":
+
+                    renderPYQs();
+
+                    break;
+
+
+                case "sample-papers":
+
+                    renderSamplePapers();
+
+                    break;
+
+
+                case "suggestions":
+
+                    renderSuggestions();
+
+                    break;
+
+
+                case "results":
+
+                    renderResults();
+
+                    break;
+
+
+                case "admin-dashboard":
+
+                    renderAdminDashboard();
+
+                    break;
+
+
+                default:
+
+                    renderDashboard();
+
+            }
+
+        }
+
+
+        /* =========================================================
+           DASHBOARD
+        ========================================================== */
+
+        function renderDashboard() {
+            const viewport = getViewport();
+            viewport.innerHTML = `
+                <div class="chem-dashboard">
+                    <div class="page-header">
+                        <h2>Chemistry Dashboard</h2>
+                        <p>Class ${escapeHtml(appState.selectedClass || "11")} • ${escapeHtml(appState.selectedBoard || "CBSE")} • ${escapeHtml(appState.selectedSchool || "School")} • ZWITTERION V1</p>
+                    </div>
+                    <section class="chem-hero">
+                        <div class="chem-hero-content">
+                            <div class="chem-kicker"><i class="fa-solid fa-atom"></i> CLASS ${escapeHtml(appState.selectedClass || "11")} CHEMISTRY</div>
+                            <h1>Understand Chemistry.<br><span>Don\'t just memorize it.</span></h1>
+                            <p>Build Chemistry from the atomic level upward — concepts, equations, mechanisms, numerical problems, school papers and PYQs in one focused workspace.</p>
+                            <div class="chem-hero-actions">
+                                <button class="chem-action primary" onclick="openChemistryTopic('Some Basic Concepts of Chemistry')"><i class="fa-solid fa-play"></i> Continue Learning</button>
+                                <button class="chem-action" onclick="openChemistryTopic('Chemistry Roadmap')"><i class="fa-solid fa-route"></i> View Roadmap</button>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="chem-stats">
+                        <div class="chem-stat"><div class="chem-stat-label"><span>Class 11 Chapters</span><i class="fa-solid fa-book"></i></div><div class="chem-stat-value">14</div><div class="chem-stat-note">Full Chemistry roadmap</div></div>
+                        <div class="chem-stat"><div class="chem-stat-label"><span>Branches</span><i class="fa-solid fa-diagram-project"></i></div><div class="chem-stat-value">3</div><div class="chem-stat-note">Physical • Inorganic • Organic</div></div>
+                        <div class="chem-stat"><div class="chem-stat-label"><span>Practice</span><i class="fa-solid fa-bolt"></i></div><div class="chem-stat-value">500+</div><div class="chem-stat-note">PYQ & practice target</div></div>
+                        <div class="chem-stat"><div class="chem-stat-label"><span>Progress</span><i class="fa-solid fa-chart-line"></i></div><div class="chem-stat-value">12%</div><div class="chem-stat-note">Keep building 🚀</div></div>
+                    </div>
+                    <div class="chem-section-title">Chemistry Branches</div>
+                    <div class="chem-branches">
+                        <article class="chem-branch" onclick="openChemistryTopic('Physical Chemistry')"><div class="chem-branch-icon"><i class="fa-solid fa-atom"></i></div><h3>Physical Chemistry</h3><p>Mathematics + Chemistry: mole concept, thermodynamics, equilibrium and quantitative reasoning.</p><div class="chem-progress"><span style="width:18%"></span></div></article>
+                        <article class="chem-branch" onclick="openChemistryTopic('Inorganic Chemistry')"><div class="chem-branch-icon"><i class="fa-solid fa-cubes-stacked"></i></div><h3>Inorganic Chemistry</h3><p>Periodic trends, bonding, elements and structures — learn the logic behind the patterns.</p><div class="chem-progress"><span style="width:9%"></span></div></article>
+                        <article class="chem-branch" onclick="openChemistryTopic('Organic Chemistry')"><div class="chem-branch-icon"><i class="fa-solid fa-link"></i></div><h3>Organic Chemistry</h3><p>Carbon chemistry from fundamentals to electronic effects, mechanisms, nomenclature and hydrocarbons.</p><div class="chem-progress"><span style="width:5%"></span></div></article>
+                    </div>
+                    <div class="chem-section-title">Core Class 11 Chapters</div>
+                    <div class="chem-chapters">
+                        ${chemistryChapterCard("01","Some Basic Concepts of Chemistry","Mole concept • Stoichiometry","Physical")}
+                        ${chemistryChapterCard("02","Structure of Atom","Quantum numbers • Orbitals","Physical")}
+                        ${chemistryChapterCard("03","Classification of Elements","Periodic table • Trends","Inorganic")}
+                        ${chemistryChapterCard("04","Chemical Bonding","VSEPR • Hybridisation","Inorganic")}
+                        ${chemistryChapterCard("05","Thermodynamics","Enthalpy • Entropy • Gibbs","Physical")}
+                        ${chemistryChapterCard("06","Equilibrium","Chemical • Ionic equilibrium","Physical")}
+                        ${chemistryChapterCard("07","Redox Reactions","Oxidation • Reduction","Physical")}
+                        ${chemistryChapterCard("08","Organic Chemistry Basics","Electronic effects • Acidity","Organic")}
+                        ${chemistryChapterCard("09","Hydrocarbons","Alkanes • Alkenes • Alkynes","Organic")}
+                        ${chemistryChapterCard("10","Solutions","Concentration • Solubility","Physical")}
+                        ${chemistryChapterCard("11","Electrochemistry","Cells • Electrodes","Physical")}
+                        ${chemistryChapterCard("12","p-Block Elements","Groups • Trends","Inorganic")}
+                        ${chemistryChapterCard("13","Hydrogen","Isotopes • Hydrides","Inorganic")}
+                        ${chemistryChapterCard("14","Environmental Chemistry","Pollution • Green chemistry","Inorganic")}
+                    </div>
+                    <div class="chem-section-title">Study Resources</div>
+                    <div class="chem-resource-grid">
+                        ${chemistryResourceCard("fa-file-lines","Question Papers","School examinations and tests.","question-papers")}
+                        ${chemistryResourceCard("fa-book-open","Notes","Chapter-focused Chemistry notes.","notes")}
+                        ${chemistryResourceCard("fa-clock-rotate-left","PYQs","Previous-year practice questions.","pyqs")}
+                        ${chemistryResourceCard("fa-file-circle-check","Sample Papers","Full Chemistry assessments.","sample-papers")}
+                        ${chemistryResourceCard("fa-lightbulb","Suggestions","Revision and preparation guidance.","suggestions")}
+                        ${chemistryResourceCard("fa-square-poll-vertical","Results","Track published Chemistry results.","results")}
+                    </div>
+                    <div class="chem-hero" style="margin-top:22px;padding:20px 22px;">
+                        <div class="chem-hero-content">
+                            <div class="chem-kicker"><i class="fa-solid fa-flask"></i> ZWITTERION CHEMISTRY ENGINE</div>
+                            <p>Your Chemistry dashboard is now focused on the subject. Uploaded PDFs from the Admin Portal continue to appear inside the existing Question Papers, Notes, PYQs, Sample Papers, Suggestions and Results sections.</p>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function chemistryChapterCard(number,title,description,branch){
+            return `<article class="chem-chapter" onclick="openChemistryTopic(${JSON.stringify(title)})"><div class="chem-chapter-no">${escapeHtml(number)} • ${escapeHtml(branch.toUpperCase())}</div><h4>${escapeHtml(title)}</h4><p>${escapeHtml(description)}</p></article>`;
+        }
+
+        function chemistryResourceCard(icon,title,description,page){
+            return `<article class="chem-resource"><div class="chem-resource-icon"><i class="fa-solid ${escapeHtml(icon)}"></i></div><div><h4>${escapeHtml(title)}</h4><p>${escapeHtml(description)}</p></div><button type="button" onclick="event.stopPropagation();loadPage('${page}')">OPEN</button></article>`;
+        }
+
+        const CHEMISTRY_TOPIC_DATA={
+            "Some Basic Concepts of Chemistry":[["Mole Concept","Amount of substance and Avogadro constant"],["Molar Mass","Mass relationships in chemical calculations"],["Stoichiometry","Quantitative relationships in reactions"],["Limiting Reagent","Finding the reactant that controls product formation"],["Percentage Yield","Comparing actual and theoretical yield"]],
+            "Physical Chemistry":[["Mole Concept","Quantitative foundation of Chemistry"],["Structure of Atom","Atomic models and quantum concepts"],["Thermodynamics","Energy and spontaneity"],["Equilibrium","Dynamic equilibrium and equilibrium constants"],["Redox Reactions","Electron transfer and oxidation states"]],
+            "Inorganic Chemistry":[["Periodic Table","Classification of elements"],["Periodic Trends","Radius, ionisation energy and related trends"],["Chemical Bonding","Bond formation and molecular structure"],["p-Block Elements","Properties and trends of p-block elements"],["Hydrogen","Isotopes, hydrides and properties"]],
+            "Organic Chemistry":[["Organic Basics","Fundamentals of carbon chemistry"],["Electronic Effects","Inductive, resonance and related effects"],["Reaction Mechanisms","Understanding how reactions proceed"],["Hydrocarbons","Alkanes, alkenes, alkynes and aromatics"],["Isomerism","Structural and stereochemical relationships"]],
+            "Chemistry Roadmap":[["Foundation","Mole concept, atomic structure and periodicity"],["Structure","Chemical bonding and molecular structure"],["Energy","Thermodynamics, equilibrium and redox"],["Organic","Organic fundamentals and hydrocarbons"],["Practice","PYQs, school papers and sample papers"]]
+        };
+
+        function openChemistryTopic(topic){
+            const data=CHEMISTRY_TOPIC_DATA[topic]||[["Concept","Explore the Chemistry concept and its applications."],["Theory","Build the underlying chemical reasoning."],["Practice","Move from concepts to examination-style problems."]];
+            const overlay=document.createElement("div");
+            overlay.className="modal-overlay";
+            overlay.innerHTML=`<div class="modal-card" style="max-width:650px;width:92%;"><div class="modal-header"><div><div class="modal-title">${escapeHtml(topic)}</div><div class="modal-subtitle">Chemistry learning path</div></div><button class="modal-close" type="button">×</button></div><div style="display:grid;gap:10px;">${data.map(function(item){return `<button type="button" class="selection-btn" style="justify-content:flex-start;text-align:left;min-height:58px;" onclick="showChemistryToast(${JSON.stringify(item[0])})"><i class="fa-solid fa-atom"></i><span><strong>${escapeHtml(item[0])}</strong><br><small style="color:var(--text-secondary);">${escapeHtml(item[1])}</small></span></button>`;}).join("")}</div></div>`;
+            document.body.appendChild(overlay);
+            overlay.querySelector(".modal-close").addEventListener("click",function(){overlay.remove();});
+            overlay.addEventListener("click",function(event){if(event.target===overlay)overlay.remove();});
+        }
+
+        function showChemistryToast(message){
+            const old=document.getElementById("chemistry-toast"); if(old)old.remove();
+            const toast=document.createElement("div"); toast.id="chemistry-toast"; toast.textContent=message+" selected";
+            toast.style.cssText="position:fixed;right:20px;bottom:20px;z-index:9999;padding:12px 16px;border:1px solid var(--border);border-radius:10px;background:var(--bg-card);color:var(--text-primary);box-shadow:0 15px 35px rgba(0,0,0,.35);font-size:12px;font-weight:700;";
+            document.body.appendChild(toast); setTimeout(function(){toast.remove();},1800);
+        }
+
+        function dashboardCard(
+            title,
+            description,
+            icon,
+            page
+        ) {
+
+            return `
+
+                <div
+                    class="
+                        module-card
+                        clickable
+                    "
+                    onclick="
+                        loadPage('${page}')
+                    "
+                >
+
+                    <div class="card-icon">
+
+                        <i
+                            class="
+                                fa-solid
+                                ${icon}
+                            "
+                        ></i>
+
+                    </div>
+
+
+                    <h3>
+                        ${escapeHtml(title)}
+                    </h3>
+
+
+                    <p>
+                        ${escapeHtml(description)}
+                    </p>
+
+
+                    <span class="card-link">
+                        Open →
+                    </span>
+
+                </div>
+
+            `;
+
+        }
+
+
+        /* =========================================================
+           CLOUD CONTENT LIBRARY
+        ========================================================== */
+
+        const ZWITTERION_CONTENT_TYPES = {
+            "question-papers": "question-papers",
+            "notes": "notes",
+            "pyqs": "pyqs",
+            "sample-papers": "sample-papers",
+            "suggestions": "suggestions",
+            "results": "results"
+        };
+
+        function adminToken() {
+            return sessionStorage.getItem("zwitterion_admin_token") || "";
+        }
+
+        async function fetchContent(type) {
+            const response = await fetch(
+                "/api/content?type=" + encodeURIComponent(type),
+                { cache: "no-store" }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Could not load content.");
+            }
+
+            const selectedClass = String(appState.selectedClass || "");
+            const selectedBoard = String(appState.selectedBoard || "");
+            const selectedSchool = String(appState.selectedSchool || "");
+
+            return (result.items || []).filter(function(item) {
+                const classOK =
+                    !item.className ||
+                    item.className === selectedClass;
+
+                const boardOK =
+                    !item.board ||
+                    item.board === selectedBoard;
+
+                const schoolOK =
+                    !item.school ||
+                    item.school === selectedSchool;
+
+                return classOK && boardOK && schoolOK;
+            });
+        }
+
+        function contentTypeLabel(type) {
+            const labels = {
+                "question-papers": "Question Paper",
+                "notes": "Notes",
+                "pyqs": "PYQ",
+                "sample-papers": "Sample Paper",
+                "suggestions": "Suggestion",
+                "results": "Result"
+            };
+            return labels[type] || type;
+        }
+
+        function renderCloudLibrary(type, title, subtitle, icon) {
+            const viewport = getViewport();
+
+            viewport.innerHTML = `
+                <div class="page-header">
+                    <h2>${escapeHtml(title)}</h2>
+                    <p>${escapeHtml(subtitle)}</p>
+                </div>
+                <div id="cloud-filter-badges" class="content-type-badges"></div>
+                <div id="cloud-content-list" class="paper-list">
+                    <div class="empty-state">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        Loading content...
+                    </div>
+                </div>
+            `;
+
+            const list = document.getElementById("cloud-content-list");
+            const filter = document.getElementById("cloud-filter-badges");
+
+            filter.innerHTML = `
+                <span class="paper-tag">
+                    <i class="fa-solid ${escapeHtml(icon)}"></i>
+                    ${escapeHtml(contentTypeLabel(type))}
+                </span>
+                <span class="paper-tag">Class ${escapeHtml(appState.selectedClass || "")}</span>
+                <span class="paper-tag">${escapeHtml(appState.selectedBoard || "")}</span>
+                <span class="paper-tag">${escapeHtml(appState.selectedSchool || "")}</span>
+            `;
+
+            fetchContent(type)
+                .then(function(items) {
+                    if (!items.length) {
+                        list.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fa-solid fa-file-circle-xmark"></i>
+                                <p>No ${escapeHtml(contentTypeLabel(type).toLowerCase())} files published yet.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    list.innerHTML = items.map(function(item) {
+                        return `
+                            <article class="paper-card">
+                                <div class="paper-title">
+                                    ${escapeHtml(item.title || item.fileName || "Untitled")}
+                                </div>
+
+                                <div class="paper-meta">
+                                    <span class="paper-tag">${escapeHtml(item.subject || "General")}</span>
+                                    ${item.examType ? `<span class="paper-tag">${escapeHtml(item.examType)}</span>` : ""}
+                                    ${item.topic ? `<span class="paper-tag">${escapeHtml(item.topic)}</span>` : ""}
+                                </div>
+
+                                <div class="paper-description">
+                                    ${escapeHtml(item.description || "Published by ZWITTERION Admin.")}
+                                </div>
+
+                                <div class="content-card-actions">
+                                    <button
+                                        type="button"
+                                        class="paper-open"
+                                        onclick="openCloudPdf(${JSON.stringify(item.url)}, ${JSON.stringify(item.title || item.fileName || 'PDF')})"
+                                    >
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                        Open
+                                    </button>
+                                </div>
+                            </article>
+                        `;
+                    }).join("");
+                })
+                .catch(function(error) {
+                    console.error("Content library error:", error);
+                    list.innerHTML = `
+                        <div class="empty-state">
+                            Could not load published content.
+                        </div>
+                    `;
+                });
+        }
+
+        function renderQuestionPapers() {
+            renderCloudLibrary(
+                "question-papers",
+                "Question Papers",
+                `Class ${appState.selectedClass} • ${appState.selectedBoard} • ${appState.selectedSchool}`,
+                "fa-file-lines"
+            );
+        }
+
+        function renderNotes() {
+            renderCloudLibrary(
+                "notes",
+                "Notes",
+                `Class ${appState.selectedClass} • ${appState.selectedBoard} • ${appState.selectedSchool}`,
+                "fa-book-open"
+            );
+        }
+
+        function renderPYQs() {
+            renderCloudLibrary(
+                "pyqs",
+                "Previous Year Questions",
+                `Class ${appState.selectedClass} • ${appState.selectedBoard} • ${appState.selectedSchool}`,
+                "fa-clock-rotate-left"
+            );
+        }
+
+        function renderSamplePapers() {
+            renderCloudLibrary(
+                "sample-papers",
+                "Sample Papers",
+                `Class ${appState.selectedClass} • ${appState.selectedBoard} • ${appState.selectedSchool}`,
+                "fa-file-circle-check"
+            );
+        }
+
+        function renderResults() {
+            renderCloudLibrary(
+                "results",
+                "Results",
+                `Published results • ${appState.selectedSchool}`,
+                "fa-square-poll-vertical"
+            );
+        }
+
+        function renderSuggestions() {
+            renderCloudLibrary(
+                "suggestions",
+                "Suggestions",
+                `Study guidance • Class ${appState.selectedClass}`,
+                "fa-lightbulb"
+            );
+        }
+
+        /* =========================================================
+           IN-APP PDF VIEWER
+        ========================================================== */
+
+        function openCloudPdf(url, title) {
+            const modal = document.getElementById("pdf-viewer-modal");
+            const frame = document.getElementById("pdf-viewer-frame");
+            const heading = document.getElementById("pdf-viewer-title");
+
+            if (!modal || !frame || !heading) return;
+
+            heading.textContent = title || "PDF";
+            frame.src = url;
+            modal.classList.add("active");
+            modal.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeCloudPdf() {
+            const modal = document.getElementById("pdf-viewer-modal");
+            const frame = document.getElementById("pdf-viewer-frame");
+
+            if (!modal || !frame) return;
+
+            frame.src = "";
+            modal.classList.remove("active");
+            modal.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
+        }
+
+        /* =========================================================
+           SUGGESTIONS
+        ========================================================== */
+
+        function renderSuggestions() {
+            renderCloudLibrary(
+                "suggestions",
+                "Suggestions",
+                `Study guidance • Class ${appState.selectedClass} • ${appState.selectedSchool}`,
+                "fa-lightbulb"
+            );
+        }
+
+
+        /* =========================================================
+           RESULTS
+        ========================================================== */
+
+        function renderResults() {
+            renderCloudLibrary(
+                "results",
+                "Results",
+                `Published results • ${appState.selectedSchool}`,
+                "fa-square-poll-vertical"
+            );
+        }
+
+
+        /* =========================================================
+           ADMIN CONTENT MANAGER
+        ========================================================== */
+
+        function renderAdminDashboard() {
+            const viewport = getViewport();
+
+            viewport.innerHTML = `
+                <div class="page-header">
+                    <h2>Admin Dashboard</h2>
+                    <p>
+                        ${escapeHtml(appState.selectedSchool)}
+                        • Class ${escapeHtml(appState.selectedClass)}
+                        • ${escapeHtml(appState.selectedBoard)}
+                    </p>
+                </div>
+
+                <div class="admin-form">
+                    <div
+                        id="admin-success"
+                        class="success-message hidden"
+                    >
+                        Content published successfully.
+                    </div>
+
+                    <h3 style="margin-bottom:20px;">
+                        Upload Content
+                    </h3>
+
+                    <form id="paper-form">
+                        <div class="admin-grid">
+
+                            <div class="form-group">
+                                <label>Content Type</label>
+                                <select id="content-type" required>
+                                    <option value="question-papers">Question Papers</option>
+                                    <option value="notes">Notes</option>
+                                    <option value="pyqs">PYQs</option>
+                                    <option value="sample-papers">Sample Papers</option>
+                                    <option value="suggestions">Suggestions</option>
+                                    <option value="results">Results</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input
+                                    id="paper-title"
+                                    type="text"
+                                    placeholder="Class 11 Chemistry Test 1"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label>Class</label>
+                                <input
+                                    type="text"
+                                    value="${escapeAttribute(appState.selectedClass)}"
+                                    disabled
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label>Subject</label>
+                                <input
+                                    id="paper-subject"
+                                    type="text"
+                                    value="Chemistry"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label>Exam / Paper Type</label>
+                                <select id="paper-exam-type">
+                                    <option>Test 1</option>
+                                    <option>Test 2</option>
+                                    <option>Test 3</option>
+                                    <option>Half Yearly</option>
+                                    <option>Final Exam</option>
+                                    <option>General</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Topic / Chapter</label>
+                                <input
+                                    id="paper-topic"
+                                    type="text"
+                                    placeholder="Chapter 1 • Mole Concept"
+                                >
+                            </div>
+
+                            <div class="form-group admin-grid-full">
+                                <label>Description</label>
+                                <textarea
+                                    id="paper-description"
+                                    placeholder="Add a short description..."
+                                ></textarea>
+                            </div>
+
+                            <div class="form-group admin-grid-full">
+                                <label>PDF File</label>
+                                <input
+                                    id="paper-file"
+                                    type="file"
+                                    accept="application/pdf,.pdf"
+                                    required
+                                >
+                                <small style="display:block;margin-top:8px;color:var(--text-secondary);">
+                                    PDF only • direct cloud upload • up to 100 MB
+                                </small>
+                            </div>
+
+                        </div>
+
+                        <div class="upload-progress-wrap" id="upload-progress-wrap">
+                            <div class="upload-progress">
+                                <div class="upload-progress-bar" id="upload-progress-bar"></div>
+                            </div>
+                            <div class="upload-progress-label" id="upload-progress-label">
+                                Preparing upload...
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn-primary"
+                            id="upload-submit-button"
+                        >
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            Upload &amp; Publish
+                        </button>
+                    </form>
+                </div>
+
+                <div class="admin-form" style="margin-top:20px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+                        <h3>Published Content</h3>
+                        <button
+                            type="button"
+                            class="btn-secondary"
+                            onclick="renderAdminUploadedPapers()"
+                        >
+                            <i class="fa-solid fa-rotate"></i>
+                            Refresh
+                        </button>
+                    </div>
+
+                    <div id="admin-uploaded-papers" class="admin-paper-list">
+                        <div class="empty-state">
+                            Loading published content...
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document
+                .getElementById("paper-form")
+                .addEventListener("submit", saveQuestionPaper);
+
+            renderAdminUploadedPapers();
+        }
+
+        async function saveQuestionPaper(event) {
+            event.preventDefault();
+
+            const token = adminToken();
+
+            if (!token) {
+                alert("Admin session expired. Please log in again.");
+                return;
+            }
+
+            const title = document.getElementById("paper-title").value.trim();
+            const type = document.getElementById("content-type").value;
+            const examType = document.getElementById("paper-exam-type").value;
+            const subject = document.getElementById("paper-subject").value.trim() || "General";
+            const topic = document.getElementById("paper-topic").value.trim();
+            const description = document.getElementById("paper-description").value.trim();
+            const fileInput = document.getElementById("paper-file");
+            const file = fileInput?.files?.[0];
+            const progressWrap = document.getElementById("upload-progress-wrap");
+            const progressBar = document.getElementById("upload-progress-bar");
+            const progressLabel = document.getElementById("upload-progress-label");
+            const submitButton = document.getElementById("upload-submit-button");
+
+            if (!title) {
+                alert("Please enter a title.");
+                return;
+            }
+
+            if (!file) {
+                alert("Please select a PDF file.");
+                return;
+            }
+
+            const isPdf =
+                file.type === "application/pdf" ||
+                file.name.toLowerCase().endsWith(".pdf");
+
+            if (!isPdf) {
+                alert("Only PDF files are allowed.");
+                return;
+            }
+
+            if (file.size > 100 * 1024 * 1024) {
+                alert("PDF must be 100 MB or smaller.");
+                return;
+            }
+
+            submitButton.disabled = true;
+            progressWrap.classList.add("active");
+            progressBar.style.width = "0%";
+            progressLabel.textContent = "Uploading PDF...";
+
+            const contentId =
+                "cnt_" +
+                Date.now().toString(36) +
+                "_" +
+                Math.random().toString(36).slice(2, 9);
+
+            try {
+                if (typeof window.zwitterionBlobUpload !== "function") {
+                    throw new Error("Blob upload module is not ready. Refresh the page and try again.");
+                }
+
+                const uploadPayload = {
+                    contentId,
+                    type,
+                    title,
+                    examType,
+                    subject,
+                    topic,
+                    description,
+                    className: appState.selectedClass || "",
+                    board: appState.selectedBoard || "",
+                    school: appState.selectedSchool || ""
+                };
+
+                const blob = await window.zwitterionBlobUpload(
+                    file,
+                    uploadPayload,
+                    function(progress) {
+                        const pct = Math.round(progress);
+                        progressBar.style.width = pct + "%";
+                        progressLabel.textContent = "Uploading PDF... " + pct + "%";
+                    }
+                );
+
+                progressBar.style.width = "100%";
+                progressLabel.textContent = "Saving content metadata...";
+
+                const saveResponse = await fetch("/api/content", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({
+                        id: contentId,
+                        type,
+                        title,
+                        examType,
+                        subject,
+                        topic,
+                        description,
+                        className: appState.selectedClass || "",
+                        board: appState.selectedBoard || "",
+                        school: appState.selectedSchool || "",
+                        fileName: file.name,
+                        fileSize: file.size,
+                        blob: blob
+                    })
+                });
+
+                const saveResult = await saveResponse.json();
+
+                if (!saveResponse.ok) {
+                    await fetch("/api/delete", {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + token
+                        },
+                        body: JSON.stringify({
+                            urls: [blob.url]
+                        })
+                    }).catch(() => {});
+
+                    throw new Error(
+                        saveResult.error || "Could not save content metadata."
+                    );
+                }
+
+                const success = document.getElementById("admin-success");
+                success.textContent = "Content published successfully.";
+                success.classList.remove("hidden");
+
+                document.getElementById("paper-form").reset();
+                document.getElementById("paper-subject").value = "Chemistry";
+                progressLabel.textContent = "Published successfully.";
+
+                await renderAdminUploadedPapers();
+            } catch (error) {
+                console.error("Publish content error:", error);
+                alert(error.message || "Could not publish the content.");
+                progressLabel.textContent = "Upload failed.";
+            } finally {
+                submitButton.disabled = false;
+            }
+        }
+
+        async function renderAdminUploadedPapers() {
+            const container = document.getElementById("admin-uploaded-papers");
+
+            if (!container) return;
+
+            try {
+                const response = await fetch("/api/content", {
+                    cache: "no-store"
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || "Could not load content.");
+                }
+
+                const items = result.items || [];
+
+                if (!items.length) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fa-solid fa-file-circle-xmark"></i>
+                            No content published yet.
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = items.map(function(item) {
+                    const sizeMb =
+                        item.fileSize
+                            ? (item.fileSize / (1024 * 1024)).toFixed(2)
+                            : "";
+
+                    return `
+                        <div class="admin-paper-item">
+                            <div class="paper-title">
+                                ${escapeHtml(item.title || item.fileName || "Untitled")}
+                            </div>
+
+                            <div class="paper-meta">
+                                <span class="paper-tag">
+                                    ${escapeHtml(contentTypeLabel(item.type))}
+                                </span>
+                                <span class="paper-tag">
+                                    ${escapeHtml(item.subject || "General")}
+                                </span>
+                                <span class="paper-tag">
+                                    Class ${escapeHtml(item.className || "")}
+                                </span>
+                            </div>
+
+                            <div class="paper-description">
+                                ${escapeHtml(item.description || item.fileName || "PDF")}
+                                ${sizeMb ? ` • ${escapeHtml(sizeMb)} MB` : ""}
+                            </div>
+
+                            <div class="admin-paper-actions">
+                                <button
+                                    type="button"
+                                    class="btn-primary"
+                                    onclick="openCloudPdf(${JSON.stringify(item.url)}, ${JSON.stringify(item.title || item.fileName || 'PDF')})"
+                                >
+                                    <i class="fa-solid fa-eye"></i>
+                                    Open
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="btn-danger"
+                                    onclick="deleteCloudContent(${JSON.stringify(item.id)}, ${JSON.stringify(item.blobPath)}, ${JSON.stringify(item.metadataPath)}, ${JSON.stringify(item.url)})"
+                                >
+                                    <i class="fa-solid fa-trash"></i>
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+            } catch (error) {
+                console.error("Admin content list error:", error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        Could not load published content.
+                    </div>
+                `;
+            }
+        }
+
+        async function deleteCloudContent(id, blobPath, metadataPath, url) {
+            const token = adminToken();
+
+            if (!token) {
+                alert("Admin session expired. Please log in again.");
+                return;
+            }
+
+            if (!confirm("Remove this content from ZWITTERION?")) {
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/delete", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({
+                        id,
+                        blobPath,
+                        metadataPath,
+                        urls: [url]
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || "Could not remove content.");
+                }
+
+                await renderAdminUploadedPapers();
+            } catch (error) {
+                console.error("Delete content error:", error);
+                alert(error.message || "Could not remove content.");
+            }
+        }
+
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "Escape") {
+                closeCloudPdf();
+            }
+        });
+
+        /* =========================================================
+           CONTENT CARD
+        ========================================================== */
+
+        function contentCard(
+            title,
+            description,
+            icon
+        ) {
+
+            return `
+
+                <div
+                    class="
+                        module-card
+                        clickable
+                    "
+                    onclick="
+                        alert(
+                            '${escapeJs(title)} is available in V1.'
+                        )
+                    "
+                >
+
+                    <div class="card-icon">
+
+                        <i
+                            class="
+                                fa-solid
+                                ${icon}
+                            "
+                        ></i>
+
+                    </div>
+
+
+                    <h3>
+                        ${escapeHtml(title)}
+                    </h3>
+
+
+                    <p>
+                        ${escapeHtml(description)}
+                    </p>
+
+
+                    <span class="card-link">
+                        Open →
+                    </span>
+
+                </div>
+
+            `;
+
+        }
+
+
+        /* =========================================================
+           SEARCH
+        ========================================================== */
+
+        document.getElementById(
+            "global-search"
+        ).addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key !==
+                    "Enter"
+                ) {
+
+                    return;
+
+                }
+
+
+                const query =
+                    this.value
+                        .trim()
+                        .toLowerCase();
+
+
+                if (
+                    query.includes("question") ||
+                    query.includes("paper")
+                ) {
+
+                    loadPage(
+                        "question-papers"
+                    );
+
+                }
+
+                else if (
+                    query.includes("note")
+                ) {
+
+                    loadPage(
+                        "notes"
+                    );
+
+                }
+
+                else if (
+                    query.includes("pyq")
+                ) {
+
+                    loadPage(
+                        "pyqs"
+                    );
+
+                }
+
+                else if (
+                    query.includes("sample")
+                ) {
+
+                    loadPage(
+                        "sample-papers"
+                    );
+
+                }
+
+                else if (
+                    query.includes("suggest")
+                ) {
+
+                    loadPage(
+                        "suggestions"
+                    );
+
+                }
+
+                else if (
+                    query.includes("result")
+                ) {
+
+                    loadPage(
+                        "results"
+                    );
+
+                }
+
+                else if (
+                    query.includes("admin")
+                ) {
+
+                    if (
+                        appState.currentRole ===
+                        "SCHOOL_ADMIN"
+                    ) {
+
+                        loadPage(
+                            "admin-dashboard"
+                        );
+
+                    }
+
+                }
+
+                else {
+
+                    alert(
+                        "No matching V1 section found."
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =========================================================
+           THEME
+        ========================================================== */
+
+        function toggleTheme() {
+
+            const html =
+                document.documentElement;
+
+
+            const icon =
+                document.getElementById(
+                    "theme-icon"
+                );
+
+
+            if (
+                appState.currentTheme ===
+                "dark"
+            ) {
+
+                appState.currentTheme =
+                    "light";
+
+
+                html.setAttribute(
+                    "data-theme",
+                    "light"
+                );
+
+
+                icon.className =
+                    "fa-solid fa-sun";
+
+            }
+
+            else {
+
+                appState.currentTheme =
+                    "dark";
+
+
+                html.setAttribute(
+                    "data-theme",
+                    "dark"
+                );
+
+
+                icon.className =
+                    "fa-solid fa-moon";
+
+            }
+
+        }
+
+
+        /* =========================================================
+           LOGOUT
+        ========================================================== */
+
+        function handleLogout() {
+
+            sessionStorage.removeItem("zwitterion_student_token");
+
+            hide(
+                "app-workspace"
+            );
+
+
+            appState.selectedClass =
+                null;
+
+            appState.selectedBoard =
+                null;
+
+            appState.selectedSchool =
+                null;
+
+            appState.selectedSchoolId =
+                null;
+
+            appState.accessType =
+                null;
+
+            appState.currentUser =
+                null;
+
+            appState.currentRole =
+                null;
+
+
+            show(
+                "screen-class-select"
+            );
+
+        }
+
+
+        /* =========================================================
+           ESCAPING
+        ========================================================== */
+
+        function escapeHtml(
+            value
+        ) {
+
+            return String(
+                value ?? ""
+            )
+
+                .replaceAll(
+                    "&",
+                    "&amp;"
+                )
+
+                .replaceAll(
+                    "<",
+                    "&lt;"
+                )
+
+                .replaceAll(
+                    ">",
+                    "&gt;"
+                )
+
+                .replaceAll(
+                    '"',
+                    "&quot;"
+                )
+
+                .replaceAll(
+                    "'",
+                    "&#039;"
+                );
+
+        }
+
+
+        function escapeAttribute(
+            value
+        ) {
+
+            return escapeHtml(
+                value
+            );
+
+        }
+
+
+        function escapeJs(
+            value
+        ) {
+
+            return String(
+                value ?? ""
+            )
+
+                .replaceAll(
+                    "\\",
+                    "\\\\"
+                )
+
+                .replaceAll(
+                    "'",
+                    "\\'"
+                )
+
+                .replaceAll(
+                    "\n",
+                    "\\n"
+                )
+
+                .replaceAll(
+                    "\r",
+                    "\\r"
+                );
+
+        }
+
+    </script>
+
+
+    <script>
+
+        /* =========================================================
+           OPENING TIMER
+        ========================================================== */
+
+        setTimeout(
+            function() {
+
+                const opening =
+                    document.getElementById(
+                        "opening-transition"
+                    );
+
+
+                if (
+                    opening
+                ) {
+
+                    opening.classList.add(
+                        "finished"
+                    );
+
+                }
+
+            },
+            2600
+        );
+
+    </script>
+
+
+
+    <!-- =========================================================
+         IN-APP PDF VIEWER
+    ========================================================== -->
+    <div
+        id="pdf-viewer-modal"
+        aria-hidden="true"
+    >
+        <div class="pdf-viewer-toolbar">
+            <button
+                type="button"
+                onclick="closeCloudPdf()"
+            >
+                ← Back to ZWITTERION
+            </button>
+
+            <div id="pdf-viewer-title">
+                PDF Viewer
+            </div>
+        </div>
+
+        <iframe
+            id="pdf-viewer-frame"
+            title="ZWITTERION PDF Viewer"
+        ></iframe>
+    </div>
+
+
+    <script type="module">
+        import { upload } from "https://esm.sh/@vercel/blob@2.8.0/client?bundle";
+
+        window.zwitterionBlobUpload = async function(file, metadata, onProgress) {
+            const pathname =
+                "zwitterion/pdfs/" +
+                metadata.contentId + "/" +
+                file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+
+            const result = await upload(
+                pathname,
+                file,
+                {
+                    access: "public",
+                    handleUploadUrl: "/api/upload",
+                    multipart: true,
+                    clientPayload: JSON.stringify(metadata),
+                    onUploadProgress: function(event) {
+                        if (typeof onProgress === "function" && event.total) {
+                            onProgress((event.loaded / event.total) * 100);
+                        }
+                    }
+                }
+            );
+
+            return result;
+        };
+    </script>
+
+</body>
+</html>
