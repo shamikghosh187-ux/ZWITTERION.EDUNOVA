@@ -3,13 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ZWITTERION - EDUNOVA Learning Platform">
+    <meta name="description" content="ZWITTERION Classes — multi-institute LMS for students and teachers.">
     <meta name="theme-color" content="#030712">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://zwitterionclasses.co.in/">
-    <link rel="icon" type="image/png" href="/favicon.png">
 
-    <title>ZWITTERION // V1</title>
+    <title>ZWITTERION Classes | LMS</title>
 
     <!-- Icons -->
     <link
@@ -129,14 +126,65 @@
             width: min(180px, 45vw);
             height: auto;
             object-fit: contain;
+            opacity: 0;
+            transform: scale(.82) translateY(10px);
+            filter: drop-shadow(0 14px 28px rgba(8,145,178,.10));
+            animation: openingLogoIn 1.05s cubic-bezier(.22,1,.36,1) .08s forwards;
         }
 
         .opening-title {
             margin-top: 16px;
             font-family: "Orbitron", sans-serif;
-            font-size: clamp(16px, 4vw, 26px);
-            letter-spacing: 4px;
+            font-size: clamp(17px, 4vw, 28px);
+            font-weight: 800;
+            letter-spacing: 5px;
             color: #111827;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: openingTextIn .75s ease .48s forwards;
+        }
+
+        .opening-subtitle {
+            margin-top: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #6b7280;
+            opacity: 0;
+            transform: translateY(8px);
+            animation: openingTextIn .7s ease .68s forwards;
+        }
+
+        @keyframes openingLogoIn {
+            0% { opacity: 0; transform: scale(.82) translateY(10px); }
+            55% { opacity: 1; transform: scale(1.035) translateY(0); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes openingTextIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #opening-transition::before {
+            content: "";
+            position: absolute;
+            width: min(520px, 85vw);
+            height: min(520px, 85vw);
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(8,145,178,.055), transparent 67%);
+            animation: openingAura 2.8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes openingAura {
+            0%,100% { transform: scale(.92); opacity: .65; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+
+        #opening-transition.finished .opening-content {
+            opacity: 0;
+            transform: scale(1.035) translateY(-8px);
+            transition: opacity .55s ease, transform .65s cubic-bezier(.22,1,.36,1);
         }
 
         /* =========================================================
@@ -1169,6 +1217,33 @@
             }
         }
 
+
+/* CHEMISTRY V1 DASHBOARD */
+.chem-dashboard{max-width:1400px;margin:0 auto}.chem-hero{position:relative;overflow:hidden;margin-bottom:22px;padding:30px;border:1px solid var(--border);border-radius:18px;background:radial-gradient(circle at 88% 18%,rgba(6,182,212,.18),transparent 30%),radial-gradient(circle at 70% 100%,rgba(124,58,237,.14),transparent 34%),linear-gradient(135deg,rgba(255,255,255,.035),rgba(255,255,255,.015))}.chem-hero:before{content:"";position:absolute;width:300px;height:300px;right:-110px;top:-160px;border:1px solid rgba(255,255,255,.08);border-radius:50%;box-shadow:0 0 0 35px rgba(255,255,255,.015),0 0 0 70px rgba(255,255,255,.01)}.chem-hero-content{position:relative;z-index:1;max-width:760px}.chem-kicker{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;margin-bottom:15px;border:1px solid rgba(6,182,212,.2);border-radius:999px;background:rgba(6,182,212,.07);color:var(--accent-cyan);font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}.chem-hero h1{margin:0 0 10px;font-family:"Orbitron",sans-serif;font-size:clamp(25px,4vw,42px);line-height:1.12}.chem-hero h1 span{color:var(--accent-cyan)}.chem-hero p{max-width:680px;margin:0;color:var(--text-secondary);font-size:13px;line-height:1.7}.chem-hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.chem-action{min-height:43px;padding:0 16px;border:1px solid var(--border);border-radius:10px;background:var(--bg-card);color:var(--text-primary);cursor:pointer;font-weight:700}.chem-action.primary{border-color:transparent;background:var(--accent-cyan);color:#06131a}.chem-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:25px}.chem-stat{padding:17px;border:1px solid var(--border);border-radius:14px;background:var(--bg-card)}.chem-stat-label{display:flex;justify-content:space-between;gap:10px;color:var(--text-secondary);font-size:11px}.chem-stat-value{margin-top:8px;font-family:"Orbitron",sans-serif;font-size:24px;font-weight:800}.chem-stat-note{margin-top:4px;color:var(--accent-cyan);font-size:10px}.chem-section-title{margin:26px 0 13px;font-family:"Orbitron",sans-serif;font-size:17px}.chem-branches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.chem-branch{position:relative;overflow:hidden;min-height:190px;padding:21px;border:1px solid var(--border);border-radius:15px;background:var(--bg-card);cursor:pointer;transition:.22s ease}.chem-branch:hover{transform:translateY(-3px);border-color:var(--accent-cyan);box-shadow:0 15px 30px -15px var(--accent-glow)}.chem-branch-icon{width:45px;height:45px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;border-radius:12px;background:var(--accent-glow);color:var(--accent-cyan);font-size:19px}.chem-branch:nth-child(2) .chem-branch-icon{color:#a78bfa;background:rgba(139,92,246,.12)}.chem-branch:nth-child(3) .chem-branch-icon{color:#34d399;background:rgba(52,211,153,.1)}.chem-branch h3{margin-bottom:6px;font-size:16px}.chem-branch p{min-height:48px;color:var(--text-secondary);font-size:12px;line-height:1.55}.chem-progress{height:5px;margin-top:15px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.07)}.chem-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent-cyan),#8b5cf6)}.chem-chapters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.chem-chapter{padding:17px;border:1px solid var(--border);border-radius:13px;background:var(--bg-card);cursor:pointer;transition:.2s ease}.chem-chapter:hover{transform:translateY(-2px);border-color:rgba(6,182,212,.55)}.chem-chapter-no{color:var(--accent-cyan);font-size:9px;font-weight:800;letter-spacing:1px}.chem-chapter h4{margin-top:8px;font-size:13px;line-height:1.4}.chem-chapter p{margin-top:6px;color:var(--text-secondary);font-size:10px;line-height:1.45}.chem-resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.chem-resource{display:flex;align-items:center;gap:13px;padding:16px;border:1px solid var(--border);border-radius:13px;background:var(--bg-card)}.chem-resource-icon{flex:0 0 42px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:var(--accent-glow);color:var(--accent-cyan)}.chem-resource h4{font-size:13px}.chem-resource p{margin-top:4px;color:var(--text-secondary);font-size:10px;line-height:1.4}.chem-resource button{margin-left:auto;flex:0 0 auto;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--accent-cyan);cursor:pointer;font-size:10px;font-weight:700}@media(max-width:1050px){.chem-chapters{grid-template-columns:repeat(3,minmax(0,1fr))}.chem-resource-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:780px){.chem-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.chem-branches{grid-template-columns:1fr}.chem-chapters{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){.chem-hero{padding:21px}.chem-chapters,.chem-resource-grid{grid-template-columns:1fr}.chem-resource{align-items:flex-start}.chem-resource button{margin-left:0}}
+
+
+
+        /* =========================================================
+           LMS SAAS EXTENSION
+        ========================================================== */
+        .lms-hero{padding:26px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(135deg,rgba(6,182,212,.10),rgba(168,85,247,.08));margin-bottom:20px}
+        .lms-hero h1{font-family:"Orbitron",sans-serif;font-size:clamp(22px,3vw,34px);margin-bottom:8px}
+        .lms-hero p{color:var(--text-secondary);font-size:13px;line-height:1.65}
+        .lms-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
+        .lms-stat{padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--bg-card)}
+        .lms-stat-label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.7px}
+        .lms-stat-value{font-family:"Orbitron",sans-serif;font-size:24px;font-weight:800;margin-top:8px}
+        .lms-stat-note{font-size:10px;color:var(--accent-cyan);margin-top:5px}
+        .lms-panel{padding:20px;border:1px solid var(--border);border-radius:15px;background:var(--bg-card);margin-bottom:16px}
+        .lms-panel h3{font-size:16px;margin-bottom:6px}.lms-panel>p{color:var(--text-secondary);font-size:12px;line-height:1.5}
+        .lms-list{display:grid;gap:10px;margin-top:14px}.lms-list-item{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--border);border-radius:11px;background:var(--input-bg)}
+        .lms-list-icon{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:var(--accent-glow);color:var(--accent-cyan);flex:0 0 38px}
+        .lms-list-main{min-width:0;flex:1}.lms-list-main strong{display:block;font-size:13px}.lms-list-main span{display:block;color:var(--text-secondary);font-size:11px;margin-top:3px}
+        .lms-progress{height:7px;background:rgba(148,163,184,.15);border-radius:99px;overflow:hidden;margin-top:9px}.lms-progress span{display:block;height:100%;background:linear-gradient(90deg,var(--accent-cyan),var(--accent-purple));border-radius:inherit}
+        .lms-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}.lms-btn{min-height:40px;padding:0 13px;border:1px solid var(--border);border-radius:9px;background:var(--bg-card);color:var(--text-primary);cursor:pointer;font-size:12px;font-weight:700}.lms-btn.primary{border-color:transparent;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-purple));color:#fff}
+        .lms-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}.lms-table th,.lms-table td{text-align:left;padding:11px;border-bottom:1px solid var(--border)}.lms-table th{color:var(--text-secondary);font-size:10px;text-transform:uppercase;letter-spacing:.6px}
+        @media(max-width:900px){.lms-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){.lms-grid{grid-template-columns:1fr}}
+
 </style>
 
 </head>
@@ -1188,10 +1263,10 @@
             >
 
             <div class="opening-title">
-                ZWITTERION
+                ZWITTERION CLASSES
             </div>
             <div class="opening-subtitle">
-                EDUNOVA • V1
+                LEARN • PRACTICE • MASTER
             </div>
         </div>
     </div>
@@ -1419,7 +1494,7 @@
                     class="selection-btn"
                     onclick="setAccessType('teacher')"
                 >
-                    <i class="fa-solid fa-chalkboard-user"></i>
+                    <i class="fa-solid fa-chalkboard-teacher"></i>
                     Teacher Portal
                 </button>
 
@@ -1704,7 +1779,7 @@
                 id="teacher-login-subtitle"
                 class="subtitle"
             >
-                Teacher Portal
+                School Teacher
             </p>
 
 
@@ -1752,7 +1827,7 @@
                     <br><br>
                     Demo:
                     <strong>
-                        teacher@zwitterion.demo / Teacher123!
+                        teacher@school1.demo / Demo1234!
                     </strong>
                 </div>
 
@@ -2065,10 +2140,10 @@
         const TEST_TEACHER = {
 
             email:
-                "teacher@zwitterion.demo",
+                "teacher@school1.demo",
 
             password:
-                "Teacher123!"
+                "Demo1234!"
 
         };
 
@@ -2400,7 +2475,10 @@
                 );
 
 
-            } else {
+            } else if (
+                type ===
+                "teacher"
+            ) {
 
                 document.getElementById(
                     "teacher-login-subtitle"
@@ -3381,16 +3459,9 @@
                     launchApp();
                 } catch (error) {
                     console.error("Teacher login error:", error);
-                    if (email === "teacher@zwitterion.demo" && password === "Teacher123!") {
-                        appState.currentUser = email;
-                        appState.currentRole = "TEACHER";
-                        launchApp();
-                        return;
-                    }
                     errorBox.innerHTML =
                         "Invalid teacher details.<br><br>" +
-                        "Production: configure /api/teacher-auth and your Vercel environment variables.<br>" +
-                        "UI demo: <strong>teacher@zwitterion.demo / Teacher123!</strong>";
+                        "Set your teacher credentials in Vercel Environment Variables.";
                     errorBox.classList.remove("hidden");
                 }
             });
@@ -3462,67 +3533,40 @@
                 "";
 
 
-            const links = [
-
-                [
-                    "dashboard",
-                    "Dashboard",
-                    "fa-chart-pie"
-                ],
-
-                [
-                    "question-papers",
-                    "Question Papers",
-                    "fa-file-lines"
-                ],
-
-                [
-                    "notes",
-                    "Notes",
-                    "fa-book-open"
-                ],
-
-                [
-                    "pyqs",
-                    "PYQs",
-                    "fa-clock-rotate-left"
-                ],
-
-                [
-                    "sample-papers",
-                    "Sample Papers",
-                    "fa-file-circle-check"
-                ],
-
-                [
-                    "suggestions",
-                    "Suggestions",
-                    "fa-lightbulb"
-                ],
-
-                [
-                    "results",
-                    "Results",
-                    "fa-square-poll-vertical"
-                ]
-
+            const studentLinks = [
+                ["dashboard", "Dashboard", "fa-chart-pie"],
+                ["my-courses", "My Courses", "fa-graduation-cap"],
+                ["lessons", "Lessons", "fa-play-circle"],
+                ["tests", "Tests", "fa-pen-to-square"],
+                ["results", "Results", "fa-square-poll-vertical"],
+                ["progress", "My Progress", "fa-chart-line"],
+                ["question-papers", "Question Papers", "fa-file-lines"],
+                ["notes", "Notes", "fa-book-open"],
+                ["pyqs", "PYQs", "fa-clock-rotate-left"],
+                ["sample-papers", "Sample Papers", "fa-file-circle-check"],
+                ["suggestions", "Suggestions", "fa-lightbulb"]
             ];
 
+            const teacherLinks = [
+                ["dashboard", "Dashboard", "fa-chart-pie"],
+                ["teacher-courses", "My Courses", "fa-chalkboard"],
+                ["course-builder", "Course Builder", "fa-layer-group"],
+                ["teacher-tests", "Test Builder", "fa-file-circle-question"],
+                ["teacher-materials", "Materials", "fa-folder-open"],
+                ["teacher-students", "Students", "fa-users"],
+                ["teacher-analytics", "Analytics", "fa-chart-column"],
+                ["question-papers", "Question Papers", "fa-file-lines"],
+                ["notes", "Notes", "fa-book-open"],
+                ["pyqs", "PYQs", "fa-clock-rotate-left"],
+                ["sample-papers", "Sample Papers", "fa-file-circle-check"]
+            ];
 
-            if (
-                appState.currentRole ===
-                "TEACHER"
-            ) {
+            const links =
+                appState.currentRole === "TEACHER"
+                    ? teacherLinks
+                    : studentLinks;
 
-                links.push(
-                    [
-                        "teacher-dashboard",
-                        "Teacher Dashboard",
-                        "fa-chalkboard-user"
-                    ]
-                );
 
-            }
 
 
             links.forEach(
@@ -3632,6 +3676,46 @@
                     break;
 
 
+                case "my-courses":
+                    renderStudentCourses();
+                    break;
+
+                case "lessons":
+                    renderLessons();
+                    break;
+
+                case "tests":
+                    renderTests();
+                    break;
+
+                case "progress":
+                    renderProgress();
+                    break;
+
+                case "teacher-courses":
+                    renderTeacherCourses();
+                    break;
+
+                case "course-builder":
+                    renderCourseBuilder();
+                    break;
+
+                case "teacher-tests":
+                    renderTeacherTests();
+                    break;
+
+                case "teacher-materials":
+                    renderTeacherMaterials();
+                    break;
+
+                case "teacher-students":
+                    renderTeacherStudents();
+                    break;
+
+                case "teacher-analytics":
+                    renderTeacherAnalytics();
+                    break;
+
                 case "question-papers":
 
                     renderQuestionPapers();
@@ -3675,9 +3759,7 @@
 
 
                 case "teacher-dashboard":
-
-                    renderTeacherLegacyDashboard();
-
+                    renderTeacherDashboard();
                     break;
 
 
@@ -3695,105 +3777,103 @@
         ========================================================== */
 
         function renderDashboard() {
-
-            const viewport =
-                getViewport();
-
-
+            const viewport = getViewport();
             viewport.innerHTML = `
-
-                <div
-                    class="page-header"
-                >
-
-                    <h2>
-
-                        ${escapeHtml(
-                            appState.selectedSchool
-                        )}
-
-                        Dashboard
-
-                    </h2>
-
-
-                    <p>
-
-                        Class
-                        ${escapeHtml(
-                            appState.selectedClass
-                        )}
-
-                        •
-
-                        ${escapeHtml(
-                            appState.selectedBoard
-                        )}
-
-                        • ZWITTERION V1
-
-                    </p>
-
-                </div>
-
-
-                <div
-                    class="cards-grid"
-                >
-
-                    ${dashboardCard(
-                        "Question Papers",
-                        "Open school tests and examination papers.",
-                        "fa-file-lines",
-                        "question-papers"
-                    )}
-
-
-                    ${dashboardCard(
-                        "Notes",
-                        "Open class study notes.",
-                        "fa-book-open",
-                        "notes"
-                    )}
-
-
-                    ${dashboardCard(
-                        "PYQs",
-                        "Practice previous-year questions.",
-                        "fa-clock-rotate-left",
-                        "pyqs"
-                    )}
-
-
-                    ${dashboardCard(
-                        "Sample Papers",
-                        "Open sample assessments.",
-                        "fa-file-circle-check",
-                        "sample-papers"
-                    )}
-
-
-                    ${dashboardCard(
-                        "Suggestions",
-                        "See revision suggestions.",
-                        "fa-lightbulb",
-                        "suggestions"
-                    )}
-
-
-                    ${dashboardCard(
-                        "Results",
-                        "View published results.",
-                        "fa-square-poll-vertical",
-                        "results"
-                    )}
-
-                </div>
-
-            `;
-
+                <div class="chem-dashboard">
+                    <div class="page-header">
+                        <h2>Chemistry Dashboard</h2>
+                        <p>Class ${escapeHtml(appState.selectedClass || "11")} • ${escapeHtml(appState.selectedBoard || "CBSE")} • ${escapeHtml(appState.selectedSchool || "School")} • ZWITTERION V1</p>
+                    </div>
+                    <section class="chem-hero">
+                        <div class="chem-hero-content">
+                            <div class="chem-kicker"><i class="fa-solid fa-atom"></i> CLASS ${escapeHtml(appState.selectedClass || "11")} CHEMISTRY</div>
+                            <h1>Understand Chemistry.<br><span>Don\'t just memorize it.</span></h1>
+                            <p>Build Chemistry from the atomic level upward — concepts, equations, mechanisms, numerical problems, school papers and PYQs in one focused workspace.</p>
+                            <div class="chem-hero-actions">
+                                <button class="chem-action primary" onclick="openChemistryTopic('Some Basic Concepts of Chemistry')"><i class="fa-solid fa-play"></i> Continue Learning</button>
+                                <button class="chem-action" onclick="openChemistryTopic('Chemistry Roadmap')"><i class="fa-solid fa-route"></i> View Roadmap</button>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="chem-stats">
+                        <div class="chem-stat"><div class="chem-stat-label"><span>Class 11 Chapters</span><i class="fa-solid fa-book"></i></div><div class="chem-stat-value">14</div><div class="chem-stat-note">Full Chemistry roadmap</div></div>
+                        <div class="chem-stat"><div class="chem-stat-label"><span>Branches</span><i class="fa-solid fa-diagram-project"></i></div><div class="chem-stat-value">3</div><div class="chem-stat-note">Physical • Inorganic • Organic</div></div>
+                        <div class="chem-stat"><div class="chem-stat-label"><span>Practice</span><i class="fa-solid fa-bolt"></i></div><div class="chem-stat-value">500+</div><div class="chem-stat-note">PYQ & practice target</div></div>
+                        <div class="chem-stat"><div class="chem-stat-label"><span>Progress</span><i class="fa-solid fa-chart-line"></i></div><div class="chem-stat-value">12%</div><div class="chem-stat-note">Keep building 🚀</div></div>
+                    </div>
+                    <div class="chem-section-title">Chemistry Branches</div>
+                    <div class="chem-branches">
+                        <article class="chem-branch" onclick="openChemistryTopic('Physical Chemistry')"><div class="chem-branch-icon"><i class="fa-solid fa-atom"></i></div><h3>Physical Chemistry</h3><p>Mathematics + Chemistry: mole concept, thermodynamics, equilibrium and quantitative reasoning.</p><div class="chem-progress"><span style="width:18%"></span></div></article>
+                        <article class="chem-branch" onclick="openChemistryTopic('Inorganic Chemistry')"><div class="chem-branch-icon"><i class="fa-solid fa-cubes-stacked"></i></div><h3>Inorganic Chemistry</h3><p>Periodic trends, bonding, elements and structures — learn the logic behind the patterns.</p><div class="chem-progress"><span style="width:9%"></span></div></article>
+                        <article class="chem-branch" onclick="openChemistryTopic('Organic Chemistry')"><div class="chem-branch-icon"><i class="fa-solid fa-link"></i></div><h3>Organic Chemistry</h3><p>Carbon chemistry from fundamentals to electronic effects, mechanisms, nomenclature and hydrocarbons.</p><div class="chem-progress"><span style="width:5%"></span></div></article>
+                    </div>
+                    <div class="chem-section-title">Core Class 11 Chapters</div>
+                    <div class="chem-chapters">
+                        ${chemistryChapterCard("01","Some Basic Concepts of Chemistry","Mole concept • Stoichiometry","Physical")}
+                        ${chemistryChapterCard("02","Structure of Atom","Quantum numbers • Orbitals","Physical")}
+                        ${chemistryChapterCard("03","Classification of Elements","Periodic table • Trends","Inorganic")}
+                        ${chemistryChapterCard("04","Chemical Bonding","VSEPR • Hybridisation","Inorganic")}
+                        ${chemistryChapterCard("05","Thermodynamics","Enthalpy • Entropy • Gibbs","Physical")}
+                        ${chemistryChapterCard("06","Equilibrium","Chemical • Ionic equilibrium","Physical")}
+                        ${chemistryChapterCard("07","Redox Reactions","Oxidation • Reduction","Physical")}
+                        ${chemistryChapterCard("08","Organic Chemistry Basics","Electronic effects • Acidity","Organic")}
+                        ${chemistryChapterCard("09","Hydrocarbons","Alkanes • Alkenes • Alkynes","Organic")}
+                        ${chemistryChapterCard("10","Solutions","Concentration • Solubility","Physical")}
+                        ${chemistryChapterCard("11","Electrochemistry","Cells • Electrodes","Physical")}
+                        ${chemistryChapterCard("12","p-Block Elements","Groups • Trends","Inorganic")}
+                        ${chemistryChapterCard("13","Hydrogen","Isotopes • Hydrides","Inorganic")}
+                        ${chemistryChapterCard("14","Environmental Chemistry","Pollution • Green chemistry","Inorganic")}
+                    </div>
+                    <div class="chem-section-title">Study Resources</div>
+                    <div class="chem-resource-grid">
+                        ${chemistryResourceCard("fa-file-lines","Question Papers","School examinations and tests.","question-papers")}
+                        ${chemistryResourceCard("fa-book-open","Notes","Chapter-focused Chemistry notes.","notes")}
+                        ${chemistryResourceCard("fa-clock-rotate-left","PYQs","Previous-year practice questions.","pyqs")}
+                        ${chemistryResourceCard("fa-file-circle-check","Sample Papers","Full Chemistry assessments.","sample-papers")}
+                        ${chemistryResourceCard("fa-lightbulb","Suggestions","Revision and preparation guidance.","suggestions")}
+                        ${chemistryResourceCard("fa-square-poll-vertical","Results","Track published Chemistry results.","results")}
+                    </div>
+                    <div class="chem-hero" style="margin-top:22px;padding:20px 22px;">
+                        <div class="chem-hero-content">
+                            <div class="chem-kicker"><i class="fa-solid fa-flask"></i> ZWITTERION CHEMISTRY ENGINE</div>
+                            <p>Your Chemistry dashboard is now focused on the subject. Uploaded PDFs from the Teacher Portal continue to appear inside the existing Question Papers, Notes, PYQs, Sample Papers, Suggestions and Results sections.</p>
+                        </div>
+                    </div>
+                </div>`;
         }
 
+        function chemistryChapterCard(number,title,description,branch){
+            return `<article class="chem-chapter" onclick="openChemistryTopic(${JSON.stringify(title)})"><div class="chem-chapter-no">${escapeHtml(number)} • ${escapeHtml(branch.toUpperCase())}</div><h4>${escapeHtml(title)}</h4><p>${escapeHtml(description)}</p></article>`;
+        }
+
+        function chemistryResourceCard(icon,title,description,page){
+            return `<article class="chem-resource"><div class="chem-resource-icon"><i class="fa-solid ${escapeHtml(icon)}"></i></div><div><h4>${escapeHtml(title)}</h4><p>${escapeHtml(description)}</p></div><button type="button" onclick="event.stopPropagation();loadPage('${page}')">OPEN</button></article>`;
+        }
+
+        const CHEMISTRY_TOPIC_DATA={
+            "Some Basic Concepts of Chemistry":[["Mole Concept","Amount of substance and Avogadro constant"],["Molar Mass","Mass relationships in chemical calculations"],["Stoichiometry","Quantitative relationships in reactions"],["Limiting Reagent","Finding the reactant that controls product formation"],["Percentage Yield","Comparing actual and theoretical yield"]],
+            "Physical Chemistry":[["Mole Concept","Quantitative foundation of Chemistry"],["Structure of Atom","Atomic models and quantum concepts"],["Thermodynamics","Energy and spontaneity"],["Equilibrium","Dynamic equilibrium and equilibrium constants"],["Redox Reactions","Electron transfer and oxidation states"]],
+            "Inorganic Chemistry":[["Periodic Table","Classification of elements"],["Periodic Trends","Radius, ionisation energy and related trends"],["Chemical Bonding","Bond formation and molecular structure"],["p-Block Elements","Properties and trends of p-block elements"],["Hydrogen","Isotopes, hydrides and properties"]],
+            "Organic Chemistry":[["Organic Basics","Fundamentals of carbon chemistry"],["Electronic Effects","Inductive, resonance and related effects"],["Reaction Mechanisms","Understanding how reactions proceed"],["Hydrocarbons","Alkanes, alkenes, alkynes and aromatics"],["Isomerism","Structural and stereochemical relationships"]],
+            "Chemistry Roadmap":[["Foundation","Mole concept, atomic structure and periodicity"],["Structure","Chemical bonding and molecular structure"],["Energy","Thermodynamics, equilibrium and redox"],["Organic","Organic fundamentals and hydrocarbons"],["Practice","PYQs, school papers and sample papers"]]
+        };
+
+        function openChemistryTopic(topic){
+            const data=CHEMISTRY_TOPIC_DATA[topic]||[["Concept","Explore the Chemistry concept and its applications."],["Theory","Build the underlying chemical reasoning."],["Practice","Move from concepts to examination-style problems."]];
+            const overlay=document.createElement("div");
+            overlay.className="modal-overlay";
+            overlay.innerHTML=`<div class="modal-card" style="max-width:650px;width:92%;"><div class="modal-header"><div><div class="modal-title">${escapeHtml(topic)}</div><div class="modal-subtitle">Chemistry learning path</div></div><button class="modal-close" type="button">×</button></div><div style="display:grid;gap:10px;">${data.map(function(item){return `<button type="button" class="selection-btn" style="justify-content:flex-start;text-align:left;min-height:58px;" onclick="showChemistryToast(${JSON.stringify(item[0])})"><i class="fa-solid fa-atom"></i><span><strong>${escapeHtml(item[0])}</strong><br><small style="color:var(--text-secondary);">${escapeHtml(item[1])}</small></span></button>`;}).join("")}</div></div>`;
+            document.body.appendChild(overlay);
+            overlay.querySelector(".modal-close").addEventListener("click",function(){overlay.remove();});
+            overlay.addEventListener("click",function(event){if(event.target===overlay)overlay.remove();});
+        }
+
+        function showChemistryToast(message){
+            const old=document.getElementById("chemistry-toast"); if(old)old.remove();
+            const toast=document.createElement("div"); toast.id="chemistry-toast"; toast.textContent=message+" selected";
+            toast.style.cssText="position:fixed;right:20px;bottom:20px;z-index:9999;padding:12px 16px;border:1px solid var(--border);border-radius:10px;background:var(--bg-card);color:var(--text-primary);box-shadow:0 15px 35px rgba(0,0,0,.35);font-size:12px;font-weight:700;";
+            document.body.appendChild(toast); setTimeout(function(){toast.remove();},1800);
+        }
 
         function dashboardCard(
             title,
@@ -3846,6 +3926,67 @@
 
         }
 
+
+
+        /* =========================================================
+           LMS CORE FRONTEND
+        ========================================================== */
+
+        const LMS_COURSES = [
+            {id:"chem-11", title:"Class 11 Chemistry", subject:"Chemistry", lessons:24, progress:68, status:"In progress"},
+            {id:"phy-11", title:"Class 11 Physics", subject:"Physics", lessons:31, progress:42, status:"In progress"},
+            {id:"math-11", title:"Class 11 Mathematics", subject:"Mathematics", lessons:28, progress:81, status:"Almost complete"}
+        ];
+
+        function lmsStat(label,value,note){return `<div class="lms-stat"><div class="lms-stat-label">${escapeHtml(label)}</div><div class="lms-stat-value">${escapeHtml(value)}</div><div class="lms-stat-note">${escapeHtml(note)}</div></div>`;}
+        function lmsPanel(title,text,body){return `<section class="lms-panel"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p>${body||""}</section>`;}
+        function renderStudentCourses(){
+            const v=getViewport();
+            v.innerHTML=`<div class="page-header"><h2>My Courses</h2><p>Your enrolled learning paths for Class ${escapeHtml(appState.selectedClass)}.</p></div><div class="cards-grid">${LMS_COURSES.map(c=>`<article class="module-card"><div class="card-icon"><i class="fa-solid fa-graduation-cap"></i></div><h3>${escapeHtml(c.title)}</h3><p>${escapeHtml(c.subject)} • ${c.lessons} lessons • ${c.status}</p><div class="lms-progress"><span style="width:${c.progress}%"></span></div><div class="lms-actions"><button class="lms-btn primary" onclick="loadPage('lessons')">Continue learning</button></div></article>`).join("")}</div>`;
+        }
+        function renderLessons(){
+            const v=getViewport();
+            const lessons=["Atomic Structure","Periodic Classification","Chemical Bonding","Thermodynamics","Equilibrium"];
+            v.innerHTML=`<div class="page-header"><h2>Lessons</h2><p>Continue your enrolled courses and track lesson completion.</p></div>${lmsPanel("Continue learning","Pick a lesson to continue.",`<div class="lms-list">${lessons.map((x,i)=>`<div class="lms-list-item"><div class="lms-list-icon"><i class="fa-solid ${i===0?'fa-play':'fa-lock-open'}"></i></div><div class="lms-list-main"><strong>${escapeHtml(x)}</strong><span>Class ${escapeHtml(appState.selectedClass)} • Chemistry • Lesson ${i+1}</span><div class="lms-progress"><span style="width:${[100,78,52,25,8][i]}%"></span></div></div><button class="lms-btn" onclick="alert('Lesson module ready for database-backed content.')">Open</button></div>`).join("")}</div>`)} `;
+        }
+        function renderTests(){
+            const v=getViewport();
+            v.innerHTML=`<div class="page-header"><h2>Tests & Assessments</h2><p>Assignments and practice tests from your teachers.</p></div><div class="cards-grid">${["Atomic Structure Test","Kinematics Practice","Mole Concept Quiz","NLM Challenge"].map((x,i)=>`<article class="module-card"><div class="card-icon"><i class="fa-solid fa-pen-to-square"></i></div><h3>${escapeHtml(x)}</h3><p>${10+i*5} questions • ${20+i*5} minutes</p><button class="lms-btn primary" onclick="alert('Test engine will open here when the assessment API is connected.')">Start test</button></article>`).join("")}</div>`;
+        }
+        function renderProgress(){
+            const v=getViewport();
+            v.innerHTML=`<div class="page-header"><h2>My Progress</h2><p>Track course completion, assessments and learning activity.</p></div><div class="lms-grid">${lmsStat("Overall progress","64%","Across enrolled courses")}${lmsStat("Lessons done","53","Of 83 lessons")}${lmsStat("Tests completed","12","This learning cycle")}${lmsStat("Average score","82%","Recent assessments")}</div>${lmsPanel("Course progress","Your current course completion.",`<div class="lms-list">${LMS_COURSES.map(c=>`<div class="lms-list-item"><div class="lms-list-main"><strong>${escapeHtml(c.title)}</strong><span>${c.progress}% complete</span><div class="lms-progress"><span style="width:${c.progress}%"></span></div></div></div>`).join("")}</div>`)}`;
+        }
+        function renderTeacherCourses(){
+            const v=getViewport();
+            v.innerHTML=`<div class="page-header"><h2>Teacher • My Courses</h2><p>Create, publish and manage courses belonging to your institute.</p></div><div class="lms-actions"><button class="lms-btn primary" onclick="loadPage('course-builder')"><i class="fa-solid fa-plus"></i> Create course</button></div><div class="cards-grid" style="margin-top:18px">${LMS_COURSES.map(c=>`<article class="module-card"><div class="card-icon"><i class="fa-solid fa-chalkboard"></i></div><h3>${escapeHtml(c.title)}</h3><p>${c.lessons} lessons • Published • Institute: ${escapeHtml(appState.selectedSchool)}</p><div class="lms-actions"><button class="lms-btn" onclick="loadPage('course-builder')">Manage</button></div></article>`).join("")}</div>`;
+        }
+        function renderCourseBuilder(){
+            const v=getViewport();
+            v.innerHTML=`<div class="page-header"><h2>Course Builder</h2><p>Build a structured course with modules, lessons and resources.</p></div>${lmsPanel("Create / edit course","This frontend is ready for the persistent course API.",`<div class="teacher-form"><div class="teacher-grid"><div class="form-group"><label>Course title</label><input id="lms-course-title" placeholder="e.g. Class 11 Chemistry"></div><div class="form-group"><label>Subject</label><input id="lms-course-subject" placeholder="Chemistry"></div><div class="form-group teacher-grid-full"><label>Description</label><textarea id="lms-course-description" placeholder="Describe the course..."></textarea></div></div><div class="lms-actions"><button class="lms-btn primary" onclick="createLmsCourse()">Save course</button><button class="lms-btn" onclick="loadPage('teacher-courses')">Cancel</button></div></div>`)} `;
+        }
+        function createLmsCourse(){
+            const title=byId("lms-course-title")?.value.trim();
+            const subject=byId("lms-course-subject")?.value.trim()||"General";
+            if(!title){alert("Enter a course title.");return;}
+            alert(`Course '${title}' is prepared for the LMS database (${subject}).`);
+        }
+        function renderTeacherTests(){
+            const v=getViewport();
+            v.innerHTML=`<div class="page-header"><h2>Test Builder</h2><p>Create assessments, set marks and review submissions.</p></div>${lmsPanel("Assessment workspace","The test builder is separated from student test-taking.",`<div class="lms-actions"><button class="lms-btn primary" onclick="alert('Question builder will connect to the LMS assessment API.')"><i class="fa-solid fa-plus"></i> Create test</button></div><div class="lms-list"><div class="lms-list-item"><div class="lms-list-icon"><i class="fa-solid fa-file-circle-question"></i></div><div class="lms-list-main"><strong>Atomic Structure Test</strong><span>20 questions • 40 marks • Published</span></div><button class="lms-btn">Manage</button></div><div class="lms-list-item"><div class="lms-list-icon"><i class="fa-solid fa-file-circle-question"></i></div><div class="lms-list-main"><strong>Kinematics Practice</strong><span>15 questions • 30 marks • Draft</span></div><button class="lms-btn">Manage</button></div></div>`)} `;
+        }
+        function renderTeacherMaterials(){
+            const v=getViewport();
+            v.innerHTML=`<div class="page-header"><h2>Teacher • Materials</h2><p>Publish PDFs and learning resources for your students.</p></div><div class="lms-grid">${lmsStat("Published","0","Course materials")}${lmsStat("Question papers","0","Institute library")}${lmsStat("Notes","0","Study resources")}${lmsStat("Storage","—","Connected to content API")}</div><div class="lms-actions"><button class="lms-btn primary" onclick="loadPage('teacher-dashboard')">Open publishing workspace</button></div>`;
+        }
+        function renderTeacherStudents(){
+            const v=getViewport();
+            v.innerHTML=`<div class="page-header"><h2>Students</h2><p>Students enrolled under ${escapeHtml(appState.selectedSchool)}.</p></div>${lmsPanel("Student roster","Persistent student records will be loaded from the LMS database.",`<table class="lms-table"><thead><tr><th>Student</th><th>Class</th><th>Courses</th><th>Progress</th></tr></thead><tbody><tr><td>Student records will appear here</td><td>${escapeHtml(appState.selectedClass)}</td><td>—</td><td>—</td></tr></tbody></table>`)} `;
+        }
+        function renderTeacherAnalytics(){
+            const v=getViewport();
+            v.innerHTML=`<div class="page-header"><h2>Teacher Analytics</h2><p>Monitor course activity and assessment performance.</p></div><div class="lms-grid">${lmsStat("Active students","—","Institute scoped")}${lmsStat("Avg. completion","—","Course progress")}${lmsStat("Avg. score","—","Assessments")}${lmsStat("Submissions","—","Recent activity")}</div>${lmsPanel("Analytics foundation","Charts and metrics will be populated from the LMS analytics API.",`<div class="lms-list"><div class="lms-list-item"><div class="lms-list-icon"><i class="fa-solid fa-chart-column"></i></div><div class="lms-list-main"><strong>Course engagement</strong><span>Database-backed analytics endpoint pending.</span></div></div></div>`)}`;
+        }
 
         /* =========================================================
            CLOUD CONTENT LIBRARY
@@ -3965,7 +4106,7 @@
                                 </div>
 
                                 <div class="paper-description">
-                                    ${escapeHtml(item.description || "Published by ZWITTERION Teacher.")}
+                                    ${escapeHtml(item.description || "Published by ZWITTERION Classes.")}
                                 </div>
 
                                 <div class="content-card-actions">
@@ -4108,7 +4249,7 @@
            TEACHER CONTENT MANAGER
         ========================================================== */
 
-        function renderTeacherLegacyDashboard() {
+        function renderTeacherDashboard() {
             const viewport = getViewport();
 
             viewport.innerHTML = `
@@ -4995,121 +5136,6 @@
             return result;
         };
     </script>
-
-
-
-<style id="zwitterion-monster-lms-style">
-/* =========================================================
-   ZWITTERION LMS MONSTER EXTENSION
-========================================================= */
-.lms-hero{padding:26px;border:1px solid var(--border);border-radius:18px;background:linear-gradient(135deg,var(--bg-card),rgba(6,182,212,.07));margin-bottom:20px;position:relative;overflow:hidden}
-.lms-hero:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-90px;top:-100px;background:var(--accent-glow);filter:blur(10px)}
-.lms-hero h1{font-family:Orbitron,sans-serif;font-size:clamp(22px,3vw,34px);margin-bottom:8px}.lms-hero p{color:var(--text-secondary);max-width:760px;line-height:1.6}
-.lms-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}.lms-stat{padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--bg-card)}.lms-stat strong{display:block;font-size:25px;margin-top:7px}.lms-stat span{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px}
-.lms-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 20px}.lms-btn{border:1px solid var(--border);border-radius:10px;padding:10px 14px;background:var(--bg-card);color:var(--text-primary);cursor:pointer;font-weight:700}.lms-btn.primary{border:0;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-purple));color:white}.lms-btn.danger{background:var(--danger);color:#fff;border:0}.lms-btn:hover{transform:translateY(-1px)}
-.lms-table-wrap{overflow:auto;border:1px solid var(--border);border-radius:14px}.lms-table{width:100%;border-collapse:collapse;min-width:700px}.lms-table th,.lms-table td{padding:13px 15px;border-bottom:1px solid var(--border);text-align:left;font-size:12px}.lms-table th{color:var(--text-secondary);text-transform:uppercase;font-size:10px;letter-spacing:1px}.lms-table tr:last-child td{border-bottom:0}
-.progress-track{height:8px;background:rgba(148,163,184,.16);border-radius:999px;overflow:hidden}.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent-cyan),var(--accent-purple));border-radius:999px}
-.course-cover{height:120px;border-radius:12px;margin-bottom:14px;background:radial-gradient(circle at 20% 20%,rgba(168,85,247,.45),transparent 35%),linear-gradient(135deg,#07111f,#10243b);display:flex;align-items:flex-end;padding:14px;font-family:Orbitron,sans-serif;letter-spacing:1px}.course-card{padding:0 0 18px;overflow:hidden}.course-card .course-body{padding:0 18px}.course-meta{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.pill{display:inline-flex;padding:5px 8px;border-radius:999px;background:var(--accent-glow);color:var(--accent-cyan);font-size:10px;font-weight:800}.notice{padding:13px 15px;border-radius:11px;border:1px solid rgba(6,182,212,.25);background:var(--accent-glow);margin:10px 0;font-size:12px}.notice.warn{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.08)}
-.lms-form{padding:20px;border:1px solid var(--border);border-radius:16px;background:var(--bg-card)}.lms-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.lms-form .full{grid-column:1/-1}.lms-form label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--text-secondary);margin-bottom:6px}.lms-form input,.lms-form select,.lms-form textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text-primary);outline:none}.lms-form textarea{min-height:120px;resize:vertical}
-.lesson-list{display:grid;gap:10px}.lesson-row{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--bg-card)}.lesson-row .num{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--accent-glow);color:var(--accent-cyan);font-weight:800}.lesson-row .grow{flex:1}.lesson-row small{color:var(--text-secondary)}
-@media(max-width:800px){.lms-stats{grid-template-columns:repeat(2,1fr)}.lms-form-grid{grid-template-columns:1fr}.lms-form .full{grid-column:auto}}
-@media(max-width:480px){.lms-stats{grid-template-columns:1fr}.lms-hero{padding:20px}}
-</style>
-
-<script>
-/* =========================================================
-   ZWITTERION LMS MONSTER ENGINE
-   Student + Teacher only. No Teacher role.
-========================================================= */
-(function(){
-  const KEY='zwitterion_lms_v2';
-  const seed={
-    courses:[
-      {id:'PHY-11-01',title:'Physics — Mechanics Core',subject:'Physics',className:'11',board:'CBSE',teacher:'Physics Faculty',description:'Kinematics, Newtonian mechanics, work-energy and rotational foundations.',lessons:[{id:'l1',title:'Units & Dimensions',duration:'42 min'},{id:'l2',title:'Kinematics I — Motion',duration:'58 min'},{id:'l3',title:'Newton’s Laws',duration:'64 min'},{id:'l4',title:'Work, Power & Energy',duration:'51 min'}],students:28},
-      {id:'CHEM-11-01',title:'Chemistry — Mole & Atomic Structure',subject:'Chemistry',className:'11',board:'CBSE',teacher:'Chemistry Faculty',description:'Mole concept, atomic structure and electronic configuration.',lessons:[{id:'l5',title:'Mole Concept',duration:'48 min'},{id:'l6',title:'Structure of Atom',duration:'55 min'},{id:'l7',title:'Quantum Numbers',duration:'44 min'}],students:31},
-      {id:'MATH-11-01',title:'Mathematics — Advanced Foundations',subject:'Mathematics',className:'11',board:'CBSE',teacher:'Mathematics Faculty',description:'Functions, limits, vectors and problem-solving foundations.',lessons:[{id:'l8',title:'Functions',duration:'50 min'},{id:'l9',title:'Limits',duration:'47 min'},{id:'l10',title:'Vectors',duration:'61 min'}],students:26}
-    ],
-    tests:[{id:'T-001',title:'Mechanics Boss Fight',course:'PHY-11-01',questions:20,time:35,marks:80,status:'Published'},{id:'T-002',title:'Mole Concept Challenge',course:'CHEM-11-01',questions:25,time:40,marks:100,status:'Published'}],
-    announcements:[{id:1,title:'Welcome to Zwitterion Classes',text:'Your learning workspace is now live. Complete lessons, tests and track your progress.',date:new Date().toLocaleDateString()}],
-    progress:{'PHY-11-01':62,'CHEM-11-01':34,'MATH-11-01':18}
-  };
-  let db; try{db=JSON.parse(localStorage.getItem(KEY))||seed}catch(e){db=seed}
-  const save=()=>localStorage.setItem(KEY,JSON.stringify(db));
-  const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[c]));
-  const vp=()=>document.getElementById('content-viewport-container');
-  const role=()=>appState.currentRole==='TEACHER'?'TEACHER':'STUDENT';
-  const course=id=>db.courses.find(c=>c.id===id);
-  const card=(title,desc,icon,page)=>`<div class="module-card clickable" onclick="window.ZLMS.go('${page}')"><div class="card-icon"><i class="fa-solid ${icon}"></i></div><h3>${esc(title)}</h3><p>${esc(desc)}</p><span class="card-link">Open module →</span></div>`;
-
-  window.ZLMS={
-    go(page){
-      document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(x=>{if((x.dataset.page||'')===page)x.classList.add('active')});
-      loadPage(page);
-    },
-    resetDemo(){localStorage.removeItem(KEY);location.reload()}
-  };
-
-  window.buildNavigation=function(){
-    const nav=byId('sidebar-nav-container'); if(!nav)return; nav.innerHTML='';
-    const student=[
-      ['dashboard','Dashboard','fa-chart-pie'],['courses','My Courses','fa-graduation-cap'],['lessons','Learning Hub','fa-book-open-reader'],['tests','Tests & Exams','fa-file-pen'],['results','Results','fa-square-poll-vertical'],['progress','Progress','fa-chart-line'],['question-papers','Question Papers','fa-file-lines'],['notes','Notes','fa-book-open'],['pyqs','PYQs','fa-clock-rotate-left'],['sample-papers','Sample Papers','fa-file-circle-check'],['suggestions','Suggestions','fa-lightbulb'],['profile','My Profile','fa-user']
-    ];
-    const teacher=[
-      ['teacher-dashboard','Dashboard','fa-gauge-high'],['teacher-courses','My Courses','fa-chalkboard'],['course-builder','Course Builder','fa-layer-group'],['teacher-tests','Test Builder','fa-file-circle-plus'],['teacher-students','Students','fa-user-graduate'],['teacher-analytics','Analytics','fa-chart-column'],['teacher-materials','Materials','fa-folder-open'],['announcements','Announcements','fa-bullhorn'],['profile','My Profile','fa-user']
-    ];
-    const links=role()==='TEACHER'?teacher:student;
-    links.forEach((l,i)=>{const b=document.createElement('button');b.type='button';b.className='nav-item'+(i===0?' active':'');b.dataset.page=l[0];b.innerHTML=`<i class="fa-solid ${l[2]}"></i><span>${l[1]}</span>`;b.onclick=()=>window.ZLMS.go(l[0]);nav.appendChild(b)});
-    loadPage(links[0][0]);
-  };
-
-  window.loadPage=function(page){
-    if(role()==='TEACHER' && !page.startsWith('teacher') && !['course-builder','profile','announcements'].includes(page)){ if(!['teacher-dashboard','teacher-courses','teacher-tests','teacher-students','teacher-analytics','teacher-materials'].includes(page))page='teacher-dashboard'; }
-    const renders={dashboard:studentDashboard,courses:studentCourses,lessons:studentLessons,tests:studentTests,results:studentResults,progress:studentProgress,profile:profilePage,question-papers:renderQuestionPapers,notes:renderNotes,pyqs:renderPYQs,'sample-papers':renderSamplePapers,suggestions:renderSuggestions,'teacher-dashboard':teacherDashboard,'teacher-courses':teacherCourses,'course-builder':courseBuilder,'teacher-tests':teacherTests,'teacher-students':teacherStudents,'teacher-analytics':teacherAnalytics,'teacher-materials':teacherMaterials,announcements:announcements};
-    (renders[page]||renders.dashboard)();
-  };
-
-  function header(title,sub){return `<div class="page-header"><h2>${esc(title)}</h2><p>${esc(sub)}</p></div>`}
-  function stats(items){return `<div class="lms-stats">${items.map(x=>`<div class="lms-stat"><span>${esc(x[0])}</span><strong>${esc(x[1])}</strong></div>`).join('')}</div>`}
-  function studentDashboard(){
-    const avg=Math.round(Object.values(db.progress).reduce((a,b)=>a+b,0)/Object.keys(db.progress).length);
-    vp().innerHTML=`<div class="lms-hero"><h1>Welcome back, ${esc(appState.currentUser||'Learner')} 👋</h1><p>Your Zwitterion learning command center. Courses, lessons, tests, results and progress — all in one place.</p></div>${stats([['Enrolled Courses',db.courses.length],['Average Progress',avg+'%'],['Tests Available',db.tests.length],['Learning Streak','7 days']])}<div class="cards-grid">${card('My Courses','Continue your active courses and open the next lesson.','fa-graduation-cap','courses')}${card('Tests & Exams','Take assessments and review your performance.','fa-file-pen','tests')}${card('Progress','See course completion and learning momentum.','fa-chart-line','progress')}${card('Study Library','Question papers, notes, PYQs and sample papers.','fa-books','question-papers')}</div><div style="margin-top:20px">${header('Recent announcements','Updates from your learning workspace')}${db.announcements.map(a=>`<div class="notice"><b>${esc(a.title)}</b><br>${esc(a.text)}<br><small>${esc(a.date)}</small></div>`).join('')}</div>`;
-  }
-  function studentCourses(){vp().innerHTML=header('My Courses','Your institute courses and learning paths')+`<div class="cards-grid">${db.courses.map(c=>`<div class="module-card course-card"><div class="course-cover">${esc(c.subject)}</div><div class="course-body"><h3>${esc(c.title)}</h3><div class="course-meta"><span class="pill">Class ${esc(c.className)}</span><span class="pill">${esc(c.board)}</span><span class="pill">${c.lessons.length} lessons</span></div><p>${esc(c.description)}</p><div class="progress-track"><div class="progress-fill" style="width:${db.progress[c.id]||0}%"></div></div><p style="margin:7px 0 12px;font-size:11px">${db.progress[c.id]||0}% complete</p><button class="lms-btn primary" onclick="window.ZLMS.openCourse('${esc(c.id)}')">Open Course</button></div></div>`).join('')}</div>`}
-  window.ZLMS.openCourse=id=>{const c=course(id);if(!c)return;vp().innerHTML=header(c.title,`${c.subject} • Class ${c.className} • ${c.teacher}`)+`<div class="lms-hero"><p>${esc(c.description)}</p></div><div class="lesson-list">${c.lessons.map((l,i)=>`<div class="lesson-row"><div class="num">${i+1}</div><div class="grow"><b>${esc(l.title)}</b><br><small>${esc(l.duration)}</small></div><button class="lms-btn" onclick="window.ZLMS.completeLesson('${c.id}',${i})">${i<Math.round((db.progress[c.id]||0)/25)?'Completed ✓':'Start Lesson'}</button></div>`).join('')}</div>`};
-  window.ZLMS.completeLesson=(id,i)=>{db.progress[id]=Math.min(100,Math.max(db.progress[id]||0,(i+1)*Math.round(100/course(id).lessons.length)));save();window.ZLMS.openCourse(id)};
-  function studentLessons(){vp().innerHTML=header('Learning Hub','Jump directly into lessons across your courses')+`<div class="lesson-list">${db.courses.flatMap(c=>c.lessons.map((l,i)=>`<div class="lesson-row"><div class="num">${i+1}</div><div class="grow"><b>${esc(l.title)}</b><br><small>${esc(c.title)} • ${esc(l.duration)}</small></div><button class="lms-btn primary" onclick="window.ZLMS.openCourse('${c.id}')">Open</button></div>`)).join('')}</div>`}
-  function studentTests(){vp().innerHTML=header('Tests & Exams','Assessments published by your teachers')+`<div class="paper-list">${db.tests.map(t=>{const c=course(t.course);return `<div class="paper-card"><div class="paper-title">${esc(t.title)}</div><div class="paper-meta"><span class="paper-tag">${t.questions} Questions</span><span class="paper-tag">${t.time} min</span><span class="paper-tag">${t.marks} Marks</span></div><p class="paper-description">${esc(c?.title||'Course assessment')}</p><button class="lms-btn primary" onclick="window.ZLMS.startTest('${t.id}')">Start Test</button></div>`}).join('')}</div>`}
-  window.ZLMS.startTest=id=>{const t=db.tests.find(x=>x.id===id);vp().innerHTML=header(t.title,`${t.questions} questions • ${t.time} minutes • ${t.marks} marks`)+`<div class="lms-hero"><h1>Assessment Ready ⚡</h1><p>This frontend is the assessment shell. Connect your secure question API/database before production. For now you can simulate submission.</p><div class="lms-toolbar"><button class="lms-btn primary" onclick="window.ZLMS.submitTest('${id}')">Submit Demo Attempt</button><button class="lms-btn" onclick="window.ZLMS.go('tests')">Back</button></div></div>`};
-  window.ZLMS.submitTest=id=>{const t=db.tests.find(x=>x.id===id);const score=Math.round(t.marks*(0.72+Math.random()*.24));localStorage.setItem('zwitterion_last_score',score);studentResults()};
-  function studentResults(){const score=localStorage.getItem('zwitterion_last_score')||'—';vp().innerHTML=header('Results','Your assessment history and performance')+stats([['Latest Score',score==='—'?'—':score+' marks'],['Attempts',score==='—'?0:1],['Courses',db.courses.length],['Accuracy','86%']])+`<div class="lms-table-wrap"><table class="lms-table"><thead><tr><th>Assessment</th><th>Course</th><th>Status</th><th>Score</th></tr></thead><tbody>${db.tests.map((t,i)=>`<tr><td>${esc(t.title)}</td><td>${esc(course(t.course)?.title||'')}</td><td><span class="pill">${i===0&&score!=='—'?'Completed':'Available'}</span></td><td>${i===0&&score!=='—'?esc(score)+' / '+t.marks:'—'}</td></tr>`).join('')}</tbody></table></div>`}
-  function studentProgress(){vp().innerHTML=header('Progress','Track completion across your learning paths')+`<div class="cards-grid">${db.courses.map(c=>`<div class="module-card"><h3>${esc(c.title)}</h3><p>${c.lessons.length} lessons • ${c.students} learners</p><div class="progress-track"><div class="progress-fill" style="width:${db.progress[c.id]||0}%"></div></div><p style="margin-top:8px">${db.progress[c.id]||0}% complete</p></div>`).join('')}</div>`}
-  function profilePage(){vp().innerHTML=header('My Profile','Account and learning identity')+`<div class="lms-form"><div class="lms-form-grid"><div><label>Display name</label><input value="${esc(appState.currentUser||'Zwitterion Learner')}" readonly></div><div><label>Role</label><input value="${role()==='TEACHER'?'Teacher':'Student'}" readonly></div><div><label>Institute</label><input value="${esc(appState.selectedSchool||'Zwitterion Classes')}" readonly></div><div><label>Class / Board</label><input value="${esc(appState.selectedClass||'11')} • ${esc(appState.selectedBoard||'CBSE')}" readonly></div><div class="full"><label>Account security</label><div class="notice">Authentication is handled by the backend API. Never put passwords, API keys or database credentials in this HTML.</div></div></div></div>`}
-
-  function teacherDashboard(){const learners=db.courses.reduce((a,c)=>a+c.students,0);vp().innerHTML=`<div class="lms-hero"><h1>Teacher Command Center 🎓</h1><p>Create courses, build lessons and assessments, monitor learners and publish academic updates.</p></div>${stats([['My Courses',db.courses.length],['Learners',learners],['Tests',db.tests.length],['Published',db.tests.filter(t=>t.status==='Published').length]])}<div class="cards-grid">${card('My Courses','Manage the courses you teach.','fa-chalkboard','teacher-courses')}${card('Course Builder','Create a course and add lessons.','fa-layer-group','course-builder')}${card('Test Builder','Create and publish assessments.','fa-file-circle-plus','teacher-tests')}${card('Analytics','Review course and learner metrics.','fa-chart-column','teacher-analytics')}${card('Students','See enrolled learners.','fa-user-graduate','teacher-students')}${card('Materials','Organize PDFs, notes and resources.','fa-folder-open','teacher-materials')}</div>`}
-  function teacherCourses(){vp().innerHTML=header('My Courses','Courses owned and managed by your teacher account')+`<div class="lms-toolbar"><button class="lms-btn primary" onclick="window.ZLMS.go('course-builder')">+ Create Course</button></div><div class="cards-grid">${db.courses.map(c=>`<div class="module-card"><div class="course-cover">${esc(c.subject)}</div><h3>${esc(c.title)}</h3><p>${esc(c.description)}</p><div class="course-meta"><span class="pill">${c.students} students</span><span class="pill">${c.lessons.length} lessons</span></div><button class="lms-btn" onclick="window.ZLMS.editCourse('${c.id}')">Manage</button></div>`).join('')}</div>`}
-  window.ZLMS.editCourse=id=>{const c=course(id);vp().innerHTML=header('Manage Course',c.title)+`<div class="lms-toolbar"><button class="lms-btn primary" onclick="window.ZLMS.addLesson('${c.id}')">+ Add Lesson</button><button class="lms-btn danger" onclick="window.ZLMS.deleteCourse('${c.id}')">Delete Course</button></div><div class="lesson-list">${c.lessons.map((l,i)=>`<div class="lesson-row"><div class="num">${i+1}</div><div class="grow"><b>${esc(l.title)}</b><br><small>${esc(l.duration)}</small></div><button class="lms-btn danger" onclick="window.ZLMS.deleteLesson('${c.id}',${i})">Remove</button></div>`).join('')}</div>`};
-  window.ZLMS.addLesson=id=>{const title=prompt('Lesson title?');if(!title)return;const c=course(id);c.lessons.push({id:'l'+Date.now(),title,duration:'45 min'});save();window.ZLMS.editCourse(id)};
-  window.ZLMS.deleteLesson=(id,i)=>{const c=course(id);c.lessons.splice(i,1);save();window.ZLMS.editCourse(id)};
-  window.ZLMS.deleteCourse=id=>{if(!confirm('Delete this course?'))return;db.courses=db.courses.filter(c=>c.id!==id);delete db.progress[id];save();teacherCourses()};
-  function courseBuilder(){vp().innerHTML=header('Course Builder','Create a new course for your students')+`<form class="lms-form" onsubmit="window.ZLMS.createCourse(event)"><div class="lms-form-grid"><div><label>Course title</label><input id="cb-title" required placeholder="e.g. Physics — Rotational Motion"></div><div><label>Subject</label><input id="cb-subject" required placeholder="Physics"></div><div><label>Class</label><select id="cb-class"><option>9</option><option>10</option><option selected>11</option><option>12</option></select></div><div><label>Board</label><select id="cb-board"><option>CBSE</option><option>ICSE</option><option>ISC</option><option>WBCHSE</option></select></div><div class="full"><label>Description</label><textarea id="cb-desc" required placeholder="What will students learn?"></textarea></div><div class="full"><button class="lms-btn primary" type="submit">Create Course</button></div></div></form>`}
-  window.ZLMS.createCourse=e=>{e.preventDefault();const id='COURSE-'+Date.now();db.courses.push({id,title:byId('cb-title').value,subject:byId('cb-subject').value,className:byId('cb-class').value,board:byId('cb-board').value,teacher:appState.currentUser||'Teacher',description:byId('cb-desc').value,lessons:[],students:0});db.progress[id]=0;save();teacherCourses()};
-  function teacherTests(){vp().innerHTML=header('Test Builder','Create and publish assessments')+`<div class="lms-toolbar"><button class="lms-btn primary" onclick="window.ZLMS.newTest()">+ Create Test</button></div><div class="lms-table-wrap"><table class="lms-table"><thead><tr><th>Test</th><th>Course</th><th>Questions</th><th>Time</th><th>Status</th><th>Action</th></tr></thead><tbody>${db.tests.map(t=>`<tr><td>${esc(t.title)}</td><td>${esc(course(t.course)?.title||'')}</td><td>${t.questions}</td><td>${t.time} min</td><td><span class="pill">${esc(t.status)}</span></td><td><button class="lms-btn danger" onclick="window.ZLMS.deleteTest('${t.id}')">Delete</button></td></tr>`).join('')}</tbody></table></div>`}
-  window.ZLMS.newTest=()=>{const title=prompt('Test title?');if(!title)return;const c=db.courses[0];db.tests.push({id:'T-'+Date.now(),title,course:c.id,questions:10,time:20,marks:40,status:'Published'});save();teacherTests()};
-  window.ZLMS.deleteTest=id=>{db.tests=db.tests.filter(t=>t.id!==id);save();teacherTests()};
-  function teacherStudents(){const rows=db.courses.flatMap(c=>Array.from({length:Math.min(c.students,8)},(_,i)=>({name:'Student '+String(i+1).padStart(2,'0'),course:c.title,progress:(db.progress[c.id]||0)+((i*7)%18)})));vp().innerHTML=header('Students','Learners enrolled in your courses')+`<div class="lms-table-wrap"><table class="lms-table"><thead><tr><th>Student</th><th>Course</th><th>Progress</th><th>Activity</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.course)}</td><td><div style="min-width:120px"><div class="progress-track"><div class="progress-fill" style="width:${Math.min(r.progress,100)}%"></div></div><small>${Math.min(r.progress,100)}%</small></div></td><td><span class="pill">Active</span></td></tr>`).join('')}</tbody></table></div>`}
-  function teacherAnalytics(){const avg=Math.round(Object.values(db.progress).reduce((a,b)=>a+b,0)/Object.keys(db.progress).length);vp().innerHTML=header('Analytics','High-level teaching and learning metrics')+stats([['Average Completion',avg+'%'],['Total Learners',db.courses.reduce((a,c)=>a+c.students,0)],['Courses',db.courses.length],['Assessments',db.tests.length]])+`<div class="cards-grid">${db.courses.map(c=>`<div class="module-card"><h3>${esc(c.title)}</h3><p>${c.students} enrolled learners</p><div class="progress-track"><div class="progress-fill" style="width:${db.progress[c.id]||0}%"></div></div><p style="margin-top:8px">${db.progress[c.id]||0}% average completion</p></div>`).join('')}</div>`}
-  function teacherMaterials(){vp().innerHTML=header('Materials','Manage PDFs, notes and learning resources')+`<div class="lms-hero"><h1>Resource Library</h1><p>Use your existing Vercel Blob upload flow for real files. This panel is the LMS management surface.</p><div class="lms-toolbar"><button class="lms-btn primary" onclick="window.ZLMS.addMaterial()">+ Add Resource</button></div></div><div class="cards-grid"><div class="module-card"><h3>PDF Question Papers</h3><p>Upload and organize exam papers by class, subject and year.</p></div><div class="module-card"><h3>Lecture Notes</h3><p>Attach notes to courses and lessons.</p></div><div class="module-card"><h3>PYQs & Samples</h3><p>Build a searchable practice library.</p></div></div>`}
-  window.ZLMS.addMaterial=()=>alert('Connect this action to /api/upload and your content database for production file storage.');
-  function announcements(){vp().innerHTML=header('Announcements','Communicate important updates to your learners')+`<form class="lms-form" onsubmit="window.ZLMS.publishAnnouncement(event)"><div class="lms-form-grid"><div><label>Title</label><input id="ann-title" required></div><div><label>Date</label><input id="ann-date" type="date" value="${new Date().toISOString().slice(0,10)}"></div><div class="full"><label>Message</label><textarea id="ann-text" required></textarea></div><div class="full"><button class="lms-btn primary">Publish Announcement</button></div></div></form><div style="margin-top:20px">${db.announcements.map(a=>`<div class="notice"><b>${esc(a.title)}</b><br>${esc(a.text)}<br><small>${esc(a.date)}</small></div>`).join('')}</div>`}
-  window.ZLMS.publishAnnouncement=e=>{e.preventDefault();db.announcements.unshift({id:Date.now(),title:byId('ann-title').value,text:byId('ann-text').value,date:byId('ann-date').value});save();announcements()};
-
-  /* Refresh workspace labels for role-aware UI. */
-  const oldLaunch=window.launchApp;
-  window.launchApp=function(){oldLaunch();const tag=byId('meta-class-board');if(tag&&role()==='TEACHER')tag.textContent='Teacher Workspace';const meta=byId('meta-student');if(meta&&role()==='TEACHER')meta.textContent=appState.currentUser+' • Teacher';};
-  save();
-})();
-</script>
 
 </body>
 </html>
