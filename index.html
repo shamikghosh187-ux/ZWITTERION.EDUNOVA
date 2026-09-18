@@ -95,7 +95,7 @@
         }
 
         /* =========================================================
-           OPENING
+           OPENING — ZWITTERION CLASSES SCIENCE TRANSITION
         ========================================================== */
 
         #opening-transition {
@@ -105,10 +105,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
             background: #ffffff;
             opacity: 1;
             visibility: visible;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
+            transition: opacity 0.9s ease, visibility 0.9s ease;
             pointer-events: none;
         }
 
@@ -118,25 +119,129 @@
         }
 
         .opening-content {
+            position: relative;
+            z-index: 5;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
+            animation: openingContentIn 1.15s cubic-bezier(.22,1,.36,1) both;
         }
 
         .opening-logo {
-            width: min(180px, 45vw);
+            width: min(165px, 42vw);
             height: auto;
             object-fit: contain;
+            opacity: 0;
+            transform: scale(.82) translateY(12px);
+            filter: drop-shadow(0 14px 28px rgba(8,145,178,.12));
+            animation: openingLogoIn 1.05s cubic-bezier(.22,1,.36,1) .08s forwards;
         }
 
         .opening-title {
-            margin-top: 16px;
+            margin-top: 15px;
             font-family: "Orbitron", sans-serif;
-            font-size: clamp(16px, 4vw, 26px);
+            font-size: clamp(17px, 4vw, 27px);
+            font-weight: 800;
             letter-spacing: 4px;
             color: #111827;
+            opacity: 0;
+            transform: translateY(9px);
+            animation: openingTextIn .75s ease .55s forwards;
+        }
+
+        .opening-subtitle {
+            margin-top: 7px;
+            font-family: "Inter", sans-serif;
+            font-size: clamp(9px, 2vw, 12px);
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #0891b2;
+            opacity: 0;
+            transform: translateY(7px);
+            animation: openingTextIn .7s ease .72s forwards;
+        }
+
+        .science-field {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .science-item {
+            position: absolute;
+            color: rgba(8,145,178,.14);
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.7;
+            opacity: 0;
+            animation: scienceFloat 3.4s ease-in-out infinite;
+        }
+
+        .science-item text {
+            stroke: none;
+            fill: currentColor;
+            font-family: Inter, sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .science-item:nth-child(1) { width: 92px; left: 8%; top: 17%; animation-delay: .15s; }
+        .science-item:nth-child(2) { width: 78px; right: 9%; top: 13%; animation-delay: .55s; }
+        .science-item:nth-child(3) { width: 105px; left: 13%; bottom: 14%; animation-delay: .9s; }
+        .science-item:nth-child(4) { width: 88px; right: 12%; bottom: 16%; animation-delay: .35s; }
+        .science-item:nth-child(5) { width: 58px; left: 28%; top: 8%; animation-delay: 1.1s; }
+        .science-item:nth-child(6) { width: 58px; right: 28%; bottom: 8%; animation-delay: .7s; }
+
+        .science-dot {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: rgba(8,145,178,.18);
+            animation: dotPulse 2.6s ease-in-out infinite;
+        }
+
+        .science-dot:nth-of-type(1) { left: 21%; top: 31%; }
+        .science-dot:nth-of-type(2) { right: 22%; top: 38%; animation-delay: .8s; }
+        .science-dot:nth-of-type(3) { left: 25%; bottom: 29%; animation-delay: 1.2s; }
+        .science-dot:nth-of-type(4) { right: 24%; bottom: 31%; animation-delay: .45s; }
+
+        @keyframes openingLogoIn {
+            0% { opacity: 0; transform: scale(.82) translateY(12px); }
+            55% { opacity: 1; transform: scale(1.035) translateY(0); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes openingTextIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes openingContentIn {
+            from { transform: scale(.985); }
+            to { transform: scale(1); }
+        }
+
+        @keyframes scienceFloat {
+            0%, 100% { opacity: 0; transform: translateY(10px) rotate(-2deg); }
+            25%, 75% { opacity: 1; }
+            50% { opacity: .72; transform: translateY(-8px) rotate(2deg); }
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: .25; transform: scale(.8); }
+            50% { opacity: .8; transform: scale(1.45); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .science-item, .science-dot, .opening-content,
+            .opening-logo, .opening-title, .opening-subtitle {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
         }
 
         /* =========================================================
@@ -1180,19 +1285,71 @@
     ========================================================== -->
 
     <div id="opening-transition">
+        <div class="science-field" aria-hidden="true">
+            <!-- Microscope -->
+            <svg class="science-item" viewBox="0 0 100 100">
+                <circle cx="58" cy="34" r="13"></circle>
+                <path d="M48 44 L34 63 L49 76"></path>
+                <path d="M49 76 H78"></path>
+                <path d="M29 82 H82"></path>
+                <path d="M60 47 L72 58"></path>
+                <circle cx="76" cy="63" r="4"></circle>
+            </svg>
+
+            <!-- Test tube -->
+            <svg class="science-item" viewBox="0 0 100 100">
+                <path d="M39 15 H61"></path>
+                <path d="M44 15 V57 L30 76 Q27 82 34 85 H66 Q73 82 70 76 L56 57 V15"></path>
+                <path d="M34 67 Q50 61 66 67"></path>
+                <circle cx="58" cy="75" r="2"></circle>
+                <circle cx="47" cy="79" r="2"></circle>
+            </svg>
+
+            <!-- Molecule -->
+            <svg class="science-item" viewBox="0 0 110 100">
+                <circle cx="25" cy="52" r="10"></circle>
+                <circle cx="58" cy="25" r="11"></circle>
+                <circle cx="86" cy="59" r="12"></circle>
+                <circle cx="57" cy="78" r="8"></circle>
+                <path d="M34 46 L49 32 M67 32 L78 50 M78 67 L63 74 M48 72 L32 59"></path>
+            </svg>
+
+            <!-- Chemistry flask -->
+            <svg class="science-item" viewBox="0 0 100 100">
+                <path d="M42 14 H58 M46 14 V43 L25 75 Q22 82 30 84 H70 Q78 82 75 75 L54 43 V14"></path>
+                <path d="M31 68 Q49 61 69 68"></path>
+                <circle cx="59" cy="75" r="2"></circle>
+            </svg>
+
+            <!-- Atom -->
+            <svg class="science-item" viewBox="0 0 70 70">
+                <ellipse cx="35" cy="35" rx="27" ry="11"></ellipse>
+                <ellipse cx="35" cy="35" rx="27" ry="11" transform="rotate(60 35 35)"></ellipse>
+                <ellipse cx="35" cy="35" rx="27" ry="11" transform="rotate(-60 35 35)"></ellipse>
+                <circle cx="35" cy="35" r="3" fill="currentColor" stroke="none"></circle>
+            </svg>
+
+            <!-- Beaker -->
+            <svg class="science-item" viewBox="0 0 70 80">
+                <path d="M20 10 H50 M26 10 V32 L15 65 Q13 72 21 74 H49 Q57 72 55 65 L44 32 V10"></path>
+                <path d="M18 58 Q35 51 52 58"></path>
+            </svg>
+
+            <span class="science-dot"></span>
+            <span class="science-dot"></span>
+            <span class="science-dot"></span>
+            <span class="science-dot"></span>
+        </div>
+
         <div class="opening-content">
             <img
                 src="logo.png"
                 class="opening-logo"
-                alt="ZWITTERION Logo"
+                alt="ZWITTERION Classes Logo"
             >
 
-            <div class="opening-title">
-                ZWITTERION
-            </div>
-            <div class="opening-subtitle">
-                EDUNOVA • V1
-            </div>
+            <div class="opening-title">ZWITTERION CLASSES</div>
+            <div class="opening-subtitle">LEARN • PRACTICE • MASTER</div>
         </div>
     </div>
 
