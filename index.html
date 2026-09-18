@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ZWITTERION - Online Learning Platform">
+    <meta name="description" content="ZWITTERION - EDUNOVA Learning Platform">
     <meta name="theme-color" content="#030712">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://zwitterionclasses.co.in/">
     <link rel="icon" type="image/png" href="/favicon.png">
 
-    <title>ZWITTERION CLASSES</title>
+    <title>ZWITTERION // V1</title>
 
     <!-- Icons -->
     <link
@@ -2642,49 +2642,38 @@
             appState.accessType = type;
             appState.currentRole = type === "student" ? "STUDENT" : "TEACHER";
             clearErrors();
+
             hide("screen-role-select");
             hide("screen-access-select");
-
-            if (type === "student") {
-                show("screen-class-select");
-                return;
-            }
-
-            if (type === "teacher") {
-                show("screen-teacher-login");
-                return;
-            }
+            hide("screen-class-select");
+            hide("screen-board-select");
+            hide("screen-school-select");
 
             if (type === "student") {
 
                 document.getElementById(
                     "student-login-subtitle"
                 ).textContent =
-
                     `Class ${appState.selectedClass}
                      • ${appState.selectedBoard}
                      • ${appState.selectedSchool}`;
 
+                show("screen-student-login");
+                return;
 
-                show(
-                    "screen-student-login"
-                );
+            }
 
-
-            } else {
+            if (type === "teacher") {
 
                 document.getElementById(
                     "teacher-login-subtitle"
                 ).textContent =
-
                     `${appState.selectedSchool}
                      • Class ${appState.selectedClass}
                      • ${appState.selectedBoard}`;
 
-
-                show(
-                    "screen-teacher-login"
-                );
+                show("screen-teacher-login");
+                return;
 
             }
 
