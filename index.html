@@ -3620,13 +3620,28 @@
                 }
 
                 try {
+                    /* LOCAL DEMO MODE
+                       Allows the portal flow to be tested when this HTML is opened
+                       directly from disk. It does NOT create a cloud token and therefore
+                       cannot authorize permanent uploads. Production always uses /api/teacher-auth. */
                     if (window.location.protocol === "file:") {
-                        errorBox.innerHTML =
-                            '<strong>Open the deployed ZWITTERION site.</strong><br><br>' +
-                            'This HTML is running from a local file, so production authentication and permanent uploads cannot be tested here.<br><br>' +
-                            '<a href="https://zwitterionclasses.co.in/" target="_blank" rel="noopener" style="display:inline-block;padding:10px 14px;border-radius:10px;background:#06b6d4;color:#fff;text-decoration:none;font-weight:700">Open ZWITTERION Production →</a>';
-                        errorBox.classList.remove("hidden");
-                        return;
+                        if (email === "teacher@zwitterion.demo" && password === "Teacher123!") {
+                            appState.currentUser = email;
+                            appState.currentRole = "TEACHER";
+                            appState.accessType = "teacher";
+                            appState.teacherDemoMode = true;
+
+                            localStorage.setItem("zwitterion_profile", JSON.stringify({
+                                role: "TEACHER",
+                                email: email,
+                                demo: true
+                            }));
+
+                            show("screen-teacher-profile");
+                            return;
+                        }
+
+                        throw new Error("For local testing use teacher@zwitterion.demo / Teacher123!. For permanent authentication, open the deployed ZWITTERION site.");
                     }
 
                     const response = await fetch(apiUrl("/api/teacher-auth"), {
@@ -5412,6 +5427,73 @@
   const oldLaunch=window.launchApp;
   window.launchApp=function(){oldLaunch();const tag=byId('meta-class-board');if(tag&&role()==='TEACHER')tag.textContent='Teacher Workspace';const meta=byId('meta-student');if(meta&&role()==='TEACHER')meta.textContent=appState.currentUser+' • Teacher';};
   save();
+})();
+</script>
+
+<script>
+(function () {
+    function bindTeacherLogin() {
+        const form = document.getElementById("teacher-login-form");
+        if (!form || form.dataset.zwTeacherBound === "1") return;
+        form.dataset.zwTeacherBound = "1";
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const email = (document.getElementById("teacher-email")?.value || "").trim().toLowerCase();
+            const password = document.getElementById("teacher-password")?.value || "";
+            const errorBox = document.getElementById("teacher-login-error");
+            const button = form.querySelector('button[type="submit"]');
+            const fail = message => { if (errorBox) { errorBox.textContent = message; errorBox.classList.remove("hidden"); } };
+            if (errorBox) { errorBox.textContent = ""; errorBox.classList.add("hidden"); }
+            if (!email || !password) return fail("Enter your teacher email and password.");
+            const oldText = button ? button.textContent : "Initialize Session";
+            if (button) { button.disabled = true; button.textContent = "Initializing…"; }
+            try {
+                if (window.location.protocol === "file:") {
+                    if (email !== "teacher@zwitterion.demo" || password !== "Teacher123!") {
+                        throw new Error("Local demo login: teacher@zwitterion.demo / Teacher123!");
+                    }
+                    if (typeof appState !== "undefined") {
+                        appState.currentUser = email;
+                        appState.currentRole = "TEACHER";
+                        appState.accessType = "teacher";
+                        appState.teacherDemoMode = true;
+                    }
+                    localStorage.setItem("zwitterion_profile", JSON.stringify({role:"TEACHER",email:email,demo:true}));
+                    const login = document.getElementById("screen-teacher-login");
+                    const profile = document.getElementById("screen-teacher-profile");
+                    if (login) login.classList.add("hidden");
+                    if (profile) profile.classList.remove("hidden");
+                    return;
+                }
+                const response = await fetch((window.ZWITTERION_API_BASE || "") + "/api/teacher-auth", {
+                    method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"},
+                    body:JSON.stringify({email,password})
+                });
+                const raw = await response.text();
+                let result={};
+                try { result=raw?JSON.parse(raw):{}; } catch (_) { throw new Error("Teacher authentication service returned an invalid response."); }
+                if (!response.ok || !result.token) throw new Error(result.error || "Invalid teacher email or password.");
+                localStorage.setItem("zwitterion_teacher_token", result.token);
+                if (typeof appState !== "undefined") {
+                    appState.currentUser=result.email||email; appState.currentRole="TEACHER"; appState.accessType="teacher"; appState.teacherDemoMode=false;
+                }
+                localStorage.setItem("zwitterion_profile", JSON.stringify({role:"TEACHER",email:result.email||email}));
+                const login = document.getElementById("screen-teacher-login");
+                const profile = document.getElementById("screen-teacher-profile");
+                if (login) login.classList.add("hidden");
+                if (profile) profile.classList.remove("hidden");
+            } catch (error) {
+                console.error("ZWITTERION teacher login:", error);
+                fail(error?.message || "Teacher login failed.");
+            } finally {
+                if (button) { button.disabled=false; button.textContent=oldText; }
+            }
+        });
+    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bindTeacherLogin, {once:true});
+    else bindTeacherLogin();
+    window.addEventListener("load", bindTeacherLogin, {once:true});
 })();
 </script>
 
