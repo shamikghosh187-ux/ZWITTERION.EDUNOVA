@@ -2022,7 +2022,6 @@
     </section>
 
 
-
     <!-- =========================================================
          MAIN APP
     ========================================================== -->
@@ -2604,25 +2603,7 @@
 
 
         function chooseInitialRole(type) {
-            appState.accessType = type;
-            appState.currentRole = type === "student" ? "STUDENT" : "TEACHER";
-            clearErrors();
-
-            hide("screen-role-select");
-            hide("screen-access-select");
-            hide("screen-class-select");
-            hide("screen-board-select");
-            hide("screen-school-select");
-            hide("screen-student-login");
-            hide("screen-teacher-login");
-
-            if (type === "student") {
-                show("screen-class-select");
-                return;
-            }
-
-            document.getElementById("teacher-login-subtitle").textContent = "Teacher Portal";
-            show("screen-teacher-login");
+            setAccessType(type);
         }
 
         function continueWithGoogle(role) {
@@ -3583,6 +3564,32 @@
             );
 
         /* =========================================================
+           PROFILE FORM HANDLERS
+           Keep these inside JavaScript; never leave executable JS in HTML.
+        ========================================================== */
+
+        document.getElementById("student-profile-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            appState.currentUser = (byId("student-first-name").value.trim() + " " + byId("student-last-name").value.trim()).trim();
+            appState.selectedClass = byId("student-class-level").value;
+            appState.selectedBoard = byId("student-board-profile").value;
+            appState.selectedSchool = byId("student-school").value.trim();
+            appState.studentInterest = byId("student-interest").value;
+            hide("screen-student-profile");
+            launchApp();
+        });
+
+        document.getElementById("teacher-profile-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            appState.currentUser = (byId("teacher-first-name").value.trim() + " " + byId("teacher-last-name").value.trim()).trim();
+            appState.selectedBoard = byId("teacher-board-profile").value;
+            appState.selectedSchool = byId("teacher-school").value.trim();
+            appState.teacherSubjects = byId("teacher-subjects").value.trim();
+            hide("screen-teacher-profile");
+            launchApp();
+        });
+
+        /* =========================================================
            TEACHER LOGIN
         ========================================================== */
 
@@ -3607,6 +3614,15 @@
                 errorBox.classList.add("hidden");
 
                 try {
+                    if (window.location.protocol === "file:") {
+                        errorBox.innerHTML = `
+                            <strong>Production login required.</strong><br><br>
+                            This HTML is opened as a local file, so the cloud authentication API cannot safely authenticate this page.<br><br>
+                            <a href="https://zwitterionclasses.co.in/" target="_blank" rel="noopener" style="display:inline-block;padding:10px 14px;border-radius:10px;background:#06b6d4;color:#fff;text-decoration:none;font-weight:700">Open ZWITTERION Production →</a>
+                        `;
+                        errorBox.classList.remove("hidden");
+                        return;
+                    }
                     const response = await fetch(apiUrl("/api/teacher-auth"), {
                         method: "POST",
                         headers: {
@@ -5342,7 +5358,7 @@
 
   window.loadPage=function(page){
     if(role()==='TEACHER' && !page.startsWith('teacher') && !['course-builder','profile','announcements'].includes(page)){ if(!['teacher-dashboard','teacher-courses','teacher-tests','teacher-students','teacher-analytics','teacher-materials'].includes(page))page='teacher-dashboard'; }
-    const renders={dashboard:studentDashboard,courses:studentCourses,lessons:studentLessons,tests:studentTests,results:studentResults,progress:studentProgress,profile:profilePage,question-papers:renderQuestionPapers,notes:renderNotes,pyqs:renderPYQs,'sample-papers':renderSamplePapers,suggestions:renderSuggestions,'teacher-dashboard':teacherDashboard,'teacher-courses':teacherCourses,'course-builder':courseBuilder,'teacher-tests':teacherTests,'teacher-students':teacherStudents,'teacher-analytics':teacherAnalytics,'teacher-materials':teacherMaterials,announcements:announcements};
+    const renders={dashboard:studentDashboard,courses:studentCourses,lessons:studentLessons,tests:studentTests,results:studentResults,progress:studentProgress,profile:profilePage,'question-papers':renderQuestionPapers,notes:renderNotes,pyqs:renderPYQs,'sample-papers':renderSamplePapers,suggestions:renderSuggestions,'teacher-dashboard':teacherDashboard,'teacher-courses':teacherCourses,'course-builder':courseBuilder,'teacher-tests':teacherTests,'teacher-students':teacherStudents,'teacher-analytics':teacherAnalytics,'teacher-materials':teacherMaterials,announcements:announcements};
     (renders[page]||renders.dashboard)();
   };
 
@@ -5388,54 +5404,5 @@
 })();
 </script>
 
-
-<script>
-/* ZWITTERION PORTAL NAVIGATION HARDENING */
-(function () {
-    function el(id) { return document.getElementById(id); }
-    function showScreen(id) {
-        [
-            "screen-role-select", "screen-class-select", "screen-board-select",
-            "screen-school-select", "screen-access-select", "screen-student-login",
-            "screen-teacher-login", "screen-student-profile", "screen-teacher-profile"
-        ].forEach(function (name) {
-            var node = el(name);
-            if (node) node.classList.add("hidden");
-        });
-        var target = el(id);
-        if (target) target.classList.remove("hidden");
-    }
-
-    window.chooseInitialRole = function (type) {
-        if (typeof appState === "undefined") return;
-        appState.accessType = type;
-        appState.currentRole = type === "student" ? "STUDENT" : "TEACHER";
-        if (typeof clearErrors === "function") clearErrors();
-        if (type === "student") {
-            showScreen("screen-class-select");
-        } else {
-            var subtitle = el("teacher-login-subtitle");
-            if (subtitle) subtitle.textContent = "Teacher Portal";
-            showScreen("screen-teacher-login");
-        }
-    };
-
-    window.setAccessType = function (type) {
-        if (typeof appState === "undefined") return;
-        appState.accessType = type;
-        appState.currentRole = type === "student" ? "STUDENT" : "TEACHER";
-        if (typeof clearErrors === "function") clearErrors();
-        if (type === "student") {
-            var ss = el("student-login-subtitle");
-            if (ss) ss.textContent = "Class " + (appState.selectedClass || "") + " • " + (appState.selectedBoard || "") + " • " + (appState.selectedSchool || "");
-            showScreen("screen-student-login");
-        } else {
-            var ts = el("teacher-login-subtitle");
-            if (ts) ts.textContent = (appState.selectedSchool || "") + " • Class " + (appState.selectedClass || "") + " • " + (appState.selectedBoard || "");
-            showScreen("screen-teacher-login");
-        }
-    };
-})();
-</script>
 </body>
 </html>
