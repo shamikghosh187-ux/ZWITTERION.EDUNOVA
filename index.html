@@ -5449,22 +5449,32 @@
             const oldText = button ? button.textContent : "Initialize Session";
             if (button) { button.disabled = true; button.textContent = "Initializing…"; }
             try {
-                if (window.location.protocol === "file:") {
-                    if (email !== "teacher@zwitterion.demo" || password !== "Teacher123!") {
-                        throw new Error("Local demo login: teacher@zwitterion.demo / Teacher123!");
-                    }
+                /*
+                 * DEMO LOGIN: intentionally checked BEFORE production API.
+                 * This makes the published/static HTML testable even when
+                 * /api/teacher-auth or its Vercel environment variables are
+                 * not configured yet. Demo mode is UI-only and does NOT create
+                 * a real cloud authentication token.
+                 */
+                if (email === "teacher@zwitterion.demo" && password === "Teacher123!") {
                     if (typeof appState !== "undefined") {
                         appState.currentUser = email;
                         appState.currentRole = "TEACHER";
                         appState.accessType = "teacher";
                         appState.teacherDemoMode = true;
                     }
+                    localStorage.removeItem("zwitterion_teacher_token");
                     localStorage.setItem("zwitterion_profile", JSON.stringify({role:"TEACHER",email:email,demo:true}));
                     const login = document.getElementById("screen-teacher-login");
                     const profile = document.getElementById("screen-teacher-profile");
                     if (login) login.classList.add("hidden");
                     if (profile) profile.classList.remove("hidden");
                     return;
+                }
+
+                /* Production login */
+                if (window.location.protocol === "file:") {
+                    throw new Error("For local demo use teacher@zwitterion.demo / Teacher123!");
                 }
                 const response = await fetch((window.ZWITTERION_API_BASE || "") + "/api/teacher-auth", {
                     method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"},
