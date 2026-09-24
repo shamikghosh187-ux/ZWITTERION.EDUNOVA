@@ -1,7 +1,7 @@
 import crypto from "crypto";
+import { neon } from "@neondatabase/serverless";
 
 export default async function handler(req, res) {
-  // Only allow POST requests
   if (req.method !== "POST") {
     return res.status(405).json({
       error: "Method not allowed"
@@ -17,38 +17,35 @@ export default async function handler(req, res) {
       school = ""
     } = req.body || {};
 
-    // Check required fields
     if (!method || !identifier) {
       return res.status(400).json({
         error: "Email or mobile number is required."
       });
     }
 
-    // SMS is not enabled yet
     if (method !== "email") {
       return res.status(400).json({
         error: "SMS OTP is not enabled yet. Please use email."
       });
     }
 
-    // Normalize email
     const email = String(identifier)
       .trim()
       .toLowerCase();
 
-    // Basic email validation
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return res.status(400).json({
         error: "Please enter a valid email address."
       });
     }
 
-    // =========================================================
+    // ---------------------------------------------------------
     // ENVIRONMENT VARIABLES
-    // =========================================================
+    // ---------------------------------------------------------
 
     const resendApiKey = process.env.RESEND_API_KEY;
     const otpSecret = process.env.OTP_SECRET;
+    const databaseUrl = process.env.DATABASE_URL;
 
     if (!resendApiKey) {
       console.error("RESEND_API_KEY is missing.");
@@ -66,82 +63,79 @@ export default async function handler(req, res) {
       });
     }
 
-    // =========================================================
-    // GENERATE SECURE OTP
-    // =========================================================
+    if (!databaseUrl) {
+      console.error("DATABASE_URL is missing.");
 
-    // Generate a secure 6-digit OTP
+      return res.status(500).json({
+        error: "Database is not configured."
+      });
+    }
+
+    const sql = neon(databaseUrl);
+
+    // ---------------------------------------------------------
+    // GENERATE OTP
+    // ---------------------------------------------------------
+
     const otp = crypto
       .randomInt(100000, 1000000)
       .toString();
 
-    // OTP expires after 5 minutes
-    const expiresAt =
-      Date.now() + 5 * 60 * 1000;
+    const expiresAt = new Date(
+      Date.now() + 5 * 60 * 1000
+    );
 
-    // Random challenge ID
-    const challengeId =
-      crypto.randomBytes(24).toString("hex");
+    const challengeId = crypto
+      .randomBytes(24)
+      .toString("hex");
 
-    // =========================================================
+    // ---------------------------------------------------------
     // HASH OTP
-    // =========================================================
+    // ---------------------------------------------------------
 
-    // The plain OTP is never stored in the challenge
     const otpHash = crypto
       .createHmac("sha256", otpSecret)
-      .update(
-        `${challengeId}:${email}:${otp}`
-      )
+      .update(`${challengeId}:${email}:${otp}`)
       .digest("hex");
 
-    // =========================================================
-    // CREATE CHALLENGE PAYLOAD
-    // =========================================================
+    // ---------------------------------------------------------
+    // STORE NEWEST OTP
+    // ---------------------------------------------------------
+    //
+    // First invalidate every previous unconsumed challenge
+    // for this email.
+    //
+    // Then insert the new challenge.
+    //
+    // This is done in ONE SQL statement so the transition
+    // happens atomically.
+    // ---------------------------------------------------------
 
-    /*
-      Vercel serverless functions are stateless,
-      so we don't depend on normal in-memory storage.
-    */
-
-    const payload = {
-      challengeId,
-      email,
-      otpHash,
-      expiresAt,
-      className,
-      board,
-      school
-    };
-
-    const payloadString =
-      JSON.stringify(payload);
-
-    // =========================================================
-    // SIGN CHALLENGE
-    // =========================================================
-
-    const signature = crypto
-      .createHmac("sha256", otpSecret)
-      .update(payloadString)
-      .digest("hex");
-
-    // =========================================================
-    // CREATE CHALLENGE TOKEN
-    // =========================================================
-
-    const challengeToken = Buffer
-      .from(
-        JSON.stringify({
-          payload,
-          signature
-        })
+    await sql`
+      WITH invalidated AS (
+        UPDATE student_otp_challenges
+        SET invalidated_at = NOW()
+        WHERE LOWER(student_email) = ${email}
+          AND consumed_at IS NULL
+          AND invalidated_at IS NULL
       )
-      .toString("base64url");
+      INSERT INTO student_otp_challenges (
+        student_email,
+        challenge_id,
+        otp_hash,
+        expires_at
+      )
+      VALUES (
+        ${email},
+        ${challengeId},
+        ${otpHash},
+        ${expiresAt}
+      )
+    `;
 
-    // =========================================================
-    // SEND OTP THROUGH RESEND
-    // =========================================================
+    // ---------------------------------------------------------
+    // SEND EMAIL
+    // ---------------------------------------------------------
 
     const resendResponse = await fetch(
       "https://api.resend.com/emails",
@@ -149,15 +143,11 @@ export default async function handler(req, res) {
         method: "POST",
 
         headers: {
-          "Authorization":
-            `Bearer ${resendApiKey}`,
-
-          "Content-Type":
-            "application/json"
+          Authorization: `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json"
         },
 
         body: JSON.stringify({
-          // VERIFIED ZWITTERION DOMAIN
           from:
             "Zwitterion Classes <noreply@zwitterionclasses.co.in>",
 
@@ -239,16 +229,8 @@ export default async function handler(req, res) {
       }
     );
 
-    // =========================================================
-    // READ RESEND RESPONSE
-    // =========================================================
-
     const resendData =
       await resendResponse.json();
-
-    // =========================================================
-    // HANDLE RESEND ERROR
-    // =========================================================
 
     if (!resendResponse.ok) {
       console.error(
@@ -264,15 +246,16 @@ export default async function handler(req, res) {
       });
     }
 
-    // =========================================================
+    // ---------------------------------------------------------
     // SUCCESS
-    // =========================================================
+    // ---------------------------------------------------------
 
     return res.status(200).json({
       success: true,
 
-      challengeId:
-        challengeToken,
+      // This is now the DATABASE challenge ID,
+      // not a self-contained OTP token.
+      challengeId,
 
       message:
         `A 6-digit OTP was sent to ${maskEmail(email)}.`,
@@ -281,10 +264,6 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    // =========================================================
-    // UNEXPECTED ERROR
-    // =========================================================
-
     console.error(
       "SEND OTP ERROR:",
       error
@@ -297,9 +276,10 @@ export default async function handler(req, res) {
   }
 }
 
-// =========================================================
+
+// =============================================================
 // MASK EMAIL
-// =========================================================
+// =============================================================
 
 function maskEmail(email) {
   const [name, domain] =
