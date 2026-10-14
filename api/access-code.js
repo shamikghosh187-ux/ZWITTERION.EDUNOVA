@@ -17,10 +17,13 @@ export default async function handler(req, res) {
   }
 
   const databaseUrl = process.env.DATABASE_URL;
-  const configuredCode = process.env.STUDENT_ACCESS_CODE;
+  const currentCode = process.env.STUDENT_ACCESS_CODE;
+  const nextCode = process.env.STUDENT_ACCESS_CODE_NEXT;
   const accessSecret = process.env.ACCESS_SESSION_SECRET;
+  const rotationAt = new Date(process.env.STUDENT_ACCESS_CODE_ROTATION_AT || ROTATION_AT);
+  const configuredCode = Date.now() >= rotationAt.getTime() ? nextCode : currentCode;
 
-  if (!databaseUrl || !configuredCode || !accessSecret) {
+  if (!databaseUrl || !currentCode || !accessSecret || Number.isNaN(rotationAt.getTime()) || (Date.now() >= rotationAt.getTime() && !nextCode)) {
     console.error("Access-code configuration is incomplete.");
     return res.status(503).json({ error: "Access service is not configured yet." });
   }
@@ -69,12 +72,6 @@ export default async function handler(req, res) {
 
     if (!enteredCode || enteredCode.length > 200) {
       return res.status(400).json({ error: "Enter the access code provided by Sir." });
-    }
-
-    if (Date.now() >= new Date(ROTATION_AT).getTime()) {
-      return res.status(403).json({
-        error: "The previous access code has expired. Please ask Sir for the current code."
-      });
     }
 
     if (!safeEqual(enteredCode, configuredCode)) {
