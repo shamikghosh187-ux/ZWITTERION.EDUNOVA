@@ -4950,7 +4950,7 @@
   window.buildNavigation=function(){
     const nav=byId('sidebar-nav-container'); if(!nav)return; nav.innerHTML='';
     const student=[
-      ['dashboard','Dashboard','fa-chart-pie'],['courses','My Courses','fa-graduation-cap'],['lessons','Learning Hub','fa-book-open-reader'],['tests','Tests & Exams','fa-file-pen'],['results','Results','fa-square-poll-vertical'],['progress','Progress','fa-chart-line'],['question-papers','Question Papers','fa-file-lines'],['notes','Notes','fa-book-open'],['pyqs','PYQs','fa-clock-rotate-left'],['sample-papers','Sample Papers','fa-file-circle-check'],['suggestions','Suggestions','fa-lightbulb'],['profile','My Profile','fa-user']
+      ['dashboard','Dashboard','fa-chart-pie'],['courses','My Courses','fa-graduation-cap'],['lessons','Learning Hub','fa-book-open-reader'],['tests','Tests & Exams','fa-file-pen'],['results','Results','fa-square-poll-vertical'],['progress','Progress','fa-chart-line'],['question-papers','Question Papers','fa-file-lines'],['notes','Notes','fa-book-open'],['pyqs','PYQs','fa-clock-rotate-left'],['sample-papers','Sample Papers','fa-file-circle-check'],['suggestions','Suggestions','fa-lightbulb'],['admin-portal','Admin Portal','fa-shield-halved'],['profile','My Profile','fa-user']
     ];
     const teacher=[
       ['teacher-dashboard','Dashboard','fa-gauge-high'],['teacher-courses','My Courses','fa-chalkboard'],['course-builder','Course Builder','fa-layer-group'],['teacher-tests','Test Builder','fa-file-circle-plus'],['teacher-students','Students','fa-user-graduate'],['teacher-analytics','Analytics','fa-chart-column'],['teacher-materials','Materials','fa-folder-open'],['announcements','Announcements','fa-bullhorn'],['profile','My Profile','fa-user']
@@ -4962,12 +4962,58 @@
 
   window.loadPage=function(page){
     if(role()==='TEACHER' && !page.startsWith('teacher') && !['course-builder','profile','announcements'].includes(page)){ if(!['teacher-dashboard','teacher-courses','teacher-tests','teacher-students','teacher-analytics','teacher-materials'].includes(page))page='teacher-dashboard'; }
-    const renders={dashboard:studentDashboard,courses:studentCourses,lessons:studentLessons,tests:studentTests,results:studentResults,progress:studentProgress,profile:profilePage,'question-papers':renderQuestionPapers,notes:renderNotes,pyqs:renderPYQs,'sample-papers':renderSamplePapers,suggestions:renderSuggestions,'teacher-dashboard':teacherDashboard,'teacher-courses':teacherCourses,'course-builder':courseBuilder,'teacher-tests':teacherTests,'teacher-students':teacherStudents,'teacher-analytics':teacherAnalytics,'teacher-materials':teacherMaterials,announcements:announcements};
+    const renders={dashboard:studentDashboard,courses:studentCourses,lessons:studentLessons,tests:studentTests,results:studentResults,progress:studentProgress,profile:profilePage,'question-papers':renderQuestionPapers,notes:renderNotes,pyqs:renderPYQs,'sample-papers':renderSamplePapers,suggestions:renderSuggestions,'admin-portal':adminPortal,'teacher-dashboard':teacherDashboard,'teacher-courses':teacherCourses,'course-builder':courseBuilder,'teacher-tests':teacherTests,'teacher-students':teacherStudents,'teacher-analytics':teacherAnalytics,'teacher-materials':teacherMaterials,announcements:announcements};
     (renders[page]||renders.dashboard)();
   };
 
   function header(title,sub){return `<div class="page-header"><h2>${esc(title)}</h2><p>${esc(sub)}</p></div>`}
   function stats(items){return `<div class="lms-stats">${items.map(x=>`<div class="lms-stat"><span>${esc(x[0])}</span><strong>${esc(x[1])}</strong></div>`).join('')}</div>`}
+  async function adminPortal(){
+    vp().innerHTML=header('Admin Portal','Email allowlist • limited preview')+`
+      <section class="teacher-form" style="max-width:720px">
+        <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3>Continue with Sir’s email</h3>
+        <p>Enter the email address configured by the site owner. No password or OTP is requested.</p>
+        <form id="zw-admin-email-form" class="teacher-grid" novalidate>
+          <div class="form-group teacher-grid-full">
+            <label for="zw-admin-email">Authorized email</label>
+            <input id="zw-admin-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="sir@example.com">
+          </div>
+          <div class="form-group teacher-grid-full">
+            <button class="lms-btn primary" type="submit">Continue</button>
+          </div>
+          <p id="zw-admin-email-error" class="hidden" role="alert"></p>
+        </form>
+        <div class="empty-state" style="margin-top:16px">
+          <strong>Important security notice</strong><br>
+          Email allowlisting alone does not prove who is using an address. This screen is a convenience check, not authentication. It cannot grant permission to read, publish, upload, or delete protected content. Those operations remain unavailable until secure server-side authentication and authorization are implemented.
+        </div>
+      </section>`;
+    const form=byId('zw-admin-email-form'); if(!form)return;
+    form.addEventListener('submit',async event=>{
+      event.preventDefault();
+      const email=(byId('zw-admin-email')?.value||'').trim().toLowerCase();
+      const error=byId('zw-admin-email-error');
+      const button=form.querySelector('button[type="submit"]');
+      if(error){error.textContent='';error.classList.add('hidden')}
+      if(!email||email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        if(error){error.textContent='Enter a valid email address.';error.classList.remove('hidden')}return;
+      }
+      if(button){button.disabled=true;button.textContent='Checking…'}
+      try{
+        const response=await fetch('/api/admin-email-check',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email})});
+        const result=await response.json().catch(()=>({}));
+        if(!response.ok)throw new Error(result.error||'Email allowlist check is unavailable.');
+        if(result.allowed!==true)throw new Error('This email is not on the configured allowlist.');
+        vp().innerHTML=header('Admin Portal','Limited preview • no protected actions enabled')+`
+          <div class="lms-hero"><h3>Email allowlist matched</h3><p>The address is on the configured allowlist. This does not verify identity, so the portal remains read-only.</p></div>
+          <div class="empty-state" role="status" style="margin-top:18px"><strong>Publishing and file management are disabled.</strong><br>Secure server-side sign-in and authorization must be connected before admin APIs or uploads can be enabled.</div>
+          <div class="lms-toolbar"><button class="lms-btn" onclick="window.ZLMS.go('dashboard')">Return to dashboard</button></div>`;
+      }catch(err){
+        if(error){error.textContent=err.message||'Could not check the email. Try again later.';error.classList.remove('hidden')}
+      }finally{if(button){button.disabled=false;button.textContent='Continue'}}
+    });
+  }
   function studentDashboard(){
     const avg=Object.keys(db.progress).length?Math.round(Object.values(db.progress).reduce((a,b)=>a+b,0)/Object.keys(db.progress).length):0;
     vp().innerHTML=`<div class="lms-hero"><h1>Welcome to Zwitterion Classes</h1><p>Your learning workspace is ready. Content will appear here when Sir publishes it.</p></div>${stats([['Courses',db.courses.length],['Progress',avg+'%'],['Tests',db.tests.length],['Announcements',db.announcements.length]])}<div class="empty-state" style="margin-top:20px;padding:28px;text-align:center">No learning content has been added yet.</div>`;
