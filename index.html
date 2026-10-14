@@ -3679,6 +3679,11 @@
         ========================================================== */
 
         function openCloudPdf(url, title) {
+            // The dashboard stays open. Ask for the code only when a protected PDF is opened.
+            if (window.ZWITTERION_ACCESS && !window.ZWITTERION_ACCESS.hasAccess()) {
+                window.ZWITTERION_ACCESS.requireAccess(url, title);
+                return;
+            }
             const modal = document.getElementById("pdf-viewer-modal");
             const frame = document.getElementById("pdf-viewer-frame");
             const heading = document.getElementById("pdf-viewer-title");
@@ -4833,15 +4838,15 @@
   #zw-access-message{min-height:24px;margin-top:12px;font-size:13px;color:#fca5a5}
   .zw-access-note{font-size:12px!important;margin:8px 0 0!important;color:#64748b!important}
 </style>
-<div id="zw-access-gate" role="dialog" aria-modal="true" aria-labelledby="zw-access-title">
+<div id="zw-access-gate" hidden role="dialog" aria-modal="true" aria-labelledby="zw-access-title">
   <section class="zw-access-card">
     <div class="zw-access-mark"><span aria-hidden="true">✦</span> ZWITTERION CLASSES</div>
-    <h1 id="zw-access-title">Your learning starts here.</h1>
-    <p>Enter the access code provided by your teacher. Once unlocked on this browser, your access is saved for future visits.</p>
+    <h1 id="zw-access-title">Unlock this PDF</h1>
+    <p>Enter the access code provided by Sir to open this protected learning resource. Once unlocked on this browser, future protected PDFs will open without asking again.</p>
     <form id="zw-access-form">
       <label for="zw-access-code">Student access code</label>
       <input id="zw-access-code" name="code" type="password" autocomplete="off" required maxlength="200" placeholder="Enter your access code">
-      <button id="zw-access-submit" type="submit">Unlock learning materials <span aria-hidden="true">→</span></button>
+      <button id="zw-access-submit" type="submit">Unlock PDF <span aria-hidden="true">→</span></button>
       <div id="zw-access-message" role="status" aria-live="polite"></div>
       <p class="zw-access-note">Need access? Ask Sir for the current code.</p>
     </form>
@@ -4857,6 +4862,12 @@
   const message=document.getElementById("zw-access-message");
   const storageKey="zwitterion_browser_identity_v1";
   const grantKey="zwitterion_access_grant_v1";
+  let hasAccess=false;
+  let pendingPdf=null;
+  window.ZWITTERION_ACCESS={
+    hasAccess:()=>hasAccess,
+    requireAccess:(url,title)=>{pendingPdf={url,title};showGate();}
+  };
   let browserId;
   try {
     browserId=localStorage.getItem(storageKey);
@@ -4869,25 +4880,14 @@
   }
   function showGate(){gate.hidden=false;document.body.style.overflow="hidden";setTimeout(()=>codeInput.focus(),80);}
   function hideGate(){gate.hidden=true;document.body.style.overflow="";}
-  function enterDashboard(){
-    try{
-      if(typeof appState!=="undefined"){
-        appState.selectedClass="11";
-        appState.selectedBoard="CBSE";
-        appState.selectedSchool="ZWITTERION CLASSES";
-        appState.selectedSchoolId="ZWITTERION-CLASSES";
-        appState.accessType="student";
-        appState.currentUser="Student";
-        appState.currentRole="STUDENT";
-      }
-      if(typeof window.launchApp==="function") window.launchApp();
-      else {
-        document.querySelectorAll(".screen-container").forEach(el=>el.classList.add("hidden"));
-        const workspace=document.getElementById("app-workspace");
-        if(workspace) workspace.classList.remove("hidden");
-      }
-    }catch(e){console.error("ZWITTERION dashboard launch:",e);}
+  function finishUnlock(){
+    hasAccess=true;
     hideGate();
+    if(pendingPdf){
+      const item=pendingPdf;
+      pendingPdf=null;
+      if(typeof window.openCloudPdf==="function") window.openCloudPdf(item.url,item.title);
+    }
   }
   async function request(action,code){
     const response=await fetch("/api/access-code",{
@@ -4902,17 +4902,17 @@
     return result;
   }
   async function initialize(){
+    // Do not block or redirect the dashboard. This check only restores PDF access.
     try{
       const result=await request("status","");
       if(result.unlocked){
         if(result.token) sessionStorage.setItem(grantKey,result.token);
-        enterDashboard();
-        return;
+        hasAccess=true;
       }
     }catch(e){
-      message.textContent="We couldn't check saved access. Please check your connection and try again.";
+      // Keep the dashboard usable; a protected PDF click can retry through the unlock flow.
+      console.warn("Could not restore saved PDF access:",e);
     }
-    showGate();
   }
   form.addEventListener("submit",async function(event){
     event.preventDefault();
@@ -4923,12 +4923,12 @@
       const result=await request("unlock",codeInput.value.trim());
       if(!result.unlocked) throw new Error("Access could not be unlocked.");
       if(result.token) sessionStorage.setItem(grantKey,result.token);
-      enterDashboard();
+      finishUnlock();
     }catch(error){
       message.textContent=error.message||"Could not unlock. Please try again.";
     }finally{
       button.disabled=false;
-      button.innerHTML='Unlock learning materials <span aria-hidden="true">→</span>';
+      button.innerHTML='Unlock PDF <span aria-hidden="true">→</span>';
     }
   });
   if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",initialize,{once:true});
