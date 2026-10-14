@@ -4565,6 +4565,18 @@
 
                 }
 
+                // The opening animation leads directly to the dashboard; PDF access is checked separately.
+                if (typeof appState !== "undefined") {
+                    appState.selectedClass = "11";
+                    appState.selectedBoard = "CBSE";
+                    appState.selectedSchool = "ZWITTERION CLASSES";
+                    appState.selectedSchoolId = "ZWITTERION-CLASSES";
+                    appState.accessType = "student";
+                    appState.currentUser = "Student";
+                    appState.currentRole = "STUDENT";
+                }
+                if (typeof window.launchApp === "function") window.launchApp();
+
             },
             2600
         );
