@@ -4669,26 +4669,12 @@
 ========================================================= */
 (function(){
   const KEY='zwitterion_lms_v2';
-  // Chemistry-only seed: no sample physics/mathematics courses or fabricated PDFs.
-  const seed={
-    courses:[
-      {id:'CHEM-11-01',title:'Class 11 Chemistry',subject:'Chemistry',className:'11',board:'CBSE',teacher:'ZWITTERION CLASSES',description:'Chemistry learning materials and lessons published by Sir.',lessons:[],students:0}
-    ],
-    tests:[],
-    announcements:[],
-    progress:{'CHEM-11-01':0}
-  };
-  let db;
-  try { db=JSON.parse(localStorage.getItem(KEY))||seed; } catch(e) { db=seed; }
-  if (!db || typeof db !== 'object') db=seed;
-  // Migrate older demo data so Physics/Mathematics and their demo tests never appear.
-  db.courses=Array.isArray(db.courses)?db.courses.filter(c=>String(c.subject||'').toLowerCase()==='chemistry'):[];
-  if (!db.courses.some(c=>c.id==='CHEM-11-01')) db.courses.unshift(seed.courses[0]);
-  db.tests=Array.isArray(db.tests)?db.tests.filter(t=>db.courses.some(c=>c.id===t.course)):[];
-  db.progress=db.progress&&typeof db.progress==='object'?db.progress:{};
-  Object.keys(db.progress).forEach(id=>{if(!db.courses.some(c=>c.id===id))delete db.progress[id];});
-  db.courses.forEach(c=>{if(typeof db.progress[c.id]!=='number')db.progress[c.id]=0;});
-  db.announcements=Array.isArray(db.announcements)?db.announcements:[];
+  // Start with a completely empty workspace: no preloaded course names,
+  // chapters, lessons, tests, announcements, progress, or sample resources.
+  const seed={courses:[],tests:[],announcements:[],progress:{}};
+  let db=seed;
+  // Replace any older browser-stored demo content with the empty workspace.
+  try { localStorage.setItem(KEY,JSON.stringify(seed)); } catch(e) {}
   const save=()=>localStorage.setItem(KEY,JSON.stringify(db));
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[c]));
   const vp=()=>document.getElementById('content-viewport-container');
@@ -4727,8 +4713,8 @@
   function header(title,sub){return `<div class="page-header"><h2>${esc(title)}</h2><p>${esc(sub)}</p></div>`}
   function stats(items){return `<div class="lms-stats">${items.map(x=>`<div class="lms-stat"><span>${esc(x[0])}</span><strong>${esc(x[1])}</strong></div>`).join('')}</div>`}
   function studentDashboard(){
-    const avg=Math.round(Object.values(db.progress).reduce((a,b)=>a+b,0)/Object.keys(db.progress).length);
-    vp().innerHTML=`<div class="lms-hero"><h1>Welcome back, ${esc(appState.currentUser||'Learner')} 👋</h1><p>Your Zwitterion learning command center. Courses, lessons, tests, results and progress — all in one place.</p></div>${stats([['Enrolled Courses',db.courses.length],['Average Progress',avg+'%'],['Tests Available',db.tests.length],['Learning Streak','7 days']])}<div class="cards-grid">${card('My Courses','Continue your active courses and open the next lesson.','fa-graduation-cap','courses')}${card('Tests & Exams','Take assessments and review your performance.','fa-file-pen','tests')}${card('Progress','See course completion and learning momentum.','fa-chart-line','progress')}${card('Study Library','Question papers, notes, PYQs and sample papers.','fa-books','question-papers')}</div><div style="margin-top:20px">${header('Recent announcements','Updates from your learning workspace')}${db.announcements.map(a=>`<div class="notice"><b>${esc(a.title)}</b><br>${esc(a.text)}<br><small>${esc(a.date)}</small></div>`).join('')}</div>`;
+    const avg=Object.keys(db.progress).length?Math.round(Object.values(db.progress).reduce((a,b)=>a+b,0)/Object.keys(db.progress).length):0;
+    vp().innerHTML=`<div class="lms-hero"><h1>Welcome to Zwitterion Classes</h1><p>Your learning workspace is ready. Content will appear here when Sir publishes it.</p></div>${stats([['Courses',db.courses.length],['Progress',avg+'%'],['Tests',db.tests.length],['Announcements',db.announcements.length]])}<div class="empty-state" style="margin-top:20px;padding:28px;text-align:center">No learning content has been added yet.</div>`;
   }
   function studentCourses(){vp().innerHTML=header('My Courses','Your institute courses and learning paths')+`<div class="cards-grid">${db.courses.map(c=>`<div class="module-card course-card"><div class="course-cover">${esc(c.subject)}</div><div class="course-body"><h3>${esc(c.title)}</h3><div class="course-meta"><span class="pill">Class ${esc(c.className)}</span><span class="pill">${esc(c.board)}</span><span class="pill">${c.lessons.length} lessons</span></div><p>${esc(c.description)}</p><div class="progress-track"><div class="progress-fill" style="width:${db.progress[c.id]||0}%"></div></div><p style="margin:7px 0 12px;font-size:11px">${db.progress[c.id]||0}% complete</p><button class="lms-btn primary" onclick="window.ZLMS.openCourse('${esc(c.id)}')">Open Course</button></div></div>`).join('')}</div>`}
   window.ZLMS.openCourse=id=>{const c=course(id);if(!c)return;vp().innerHTML=header(c.title,`${c.subject} • Class ${c.className} • ${c.teacher}`)+`<div class="lms-hero"><p>${esc(c.description)}</p></div><div class="lesson-list">${c.lessons.map((l,i)=>`<div class="lesson-row"><div class="num">${i+1}</div><div class="grow"><b>${esc(l.title)}</b><br><small>${esc(l.duration)}</small></div><button class="lms-btn" onclick="window.ZLMS.completeLesson('${c.id}',${i})">${i<Math.round((db.progress[c.id]||0)/25)?'Completed ✓':'Start Lesson'}</button></div>`).join('')}</div>`};
