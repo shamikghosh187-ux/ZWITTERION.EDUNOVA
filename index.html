@@ -1491,6 +1491,98 @@
                 transition-duration: .01ms !important;
             }
         }
+
+        /* ARGENTINA-INSPIRED PALETTE — sky blue, white, and sun gold */
+        :root {
+            --bg-main: #e8f4fc;
+            --bg-sidebar: #fdfefe;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f0f8ff;
+            --text-primary: #12304a;
+            --text-secondary: #526d83;
+            --accent-cyan: #168acb;
+            --accent-purple: #3976b9;
+            --accent-glow: rgba(56, 164, 221, .17);
+            --border: #c8dfef;
+            --header-bg: rgba(244, 250, 255, .94);
+            --input-bg: #f2f8fd;
+            --danger: #c83c4d;
+            --success: #087f69;
+        }
+        body {
+            background:
+                radial-gradient(ellipse at 92% 0%, rgba(92, 184, 232, .19), transparent 34%),
+                var(--bg-main);
+            color: var(--text-primary);
+        }
+        .sidebar {
+            background: linear-gradient(180deg, #ffffff 0%, #f2f9ff 100%);
+            border-right-color: #c5dfef;
+        }
+        .sidebar-brand { border-bottom-color: #c5dfef; }
+        .brand-text h2 { color: #123b5a; }
+        .brand-text span { color: #397da8; }
+        .nav-item { color: #46677f; }
+        .nav-item:hover { background: #e3f3fd; color: #123b5a; }
+        .nav-item.active {
+            color: #075b91;
+            background: linear-gradient(100deg, #cdeaff, #e8f6ff);
+            border-color: #91ccef;
+            box-shadow: inset 3px 0 0 #168acb;
+        }
+        .main-wrapper, .content-viewport { background: transparent; }
+        .top-header {
+            border-bottom-color: #c5dfef;
+            background: rgba(247, 251, 255, .91);
+        }
+        .lms-hero {
+            border-color: #8dc9ed;
+            background: linear-gradient(112deg, #bfe6fb 0%, #e6f6ff 57%, #fffdf4 100%);
+            box-shadow: 0 14px 34px rgba(34, 112, 161, .10);
+        }
+        .lms-hero h1 { color: #103957; }
+        .lms-hero p { color: #355c77; }
+        .lms-stat {
+            border-color: #c3dfef;
+            background: linear-gradient(155deg, #ffffff 0%, #f4faff 100%);
+        }
+        .lms-stat strong { color: #116da5; }
+        .module-card, .paper-card, .teacher-form {
+            border-color: #c6deed;
+            box-shadow: 0 7px 22px rgba(24, 94, 139, .055);
+        }
+        .module-card:hover {
+            border-color: #6db8e4;
+            box-shadow: 0 13px 28px rgba(24, 94, 139, .12);
+        }
+        .card-icon {
+            background: #d8efff;
+            color: #0879b8;
+        }
+        .card-link { color: #0879b8; }
+        .paper-open {
+            background: linear-gradient(105deg, #168acb, #126fae);
+            box-shadow: 0 5px 12px rgba(22, 138, 203, .17);
+        }
+        .empty-state {
+            border-color: #8bbfe0;
+            background: rgba(255,255,255,.78);
+        }
+        input, select, textarea { border-color: #c4dbea; }
+        input:focus, select:focus, textarea:focus,
+        .header-search input:focus {
+            border-color: #168acb;
+            box-shadow: 0 0 0 3px rgba(22, 138, 203, .18);
+        }
+        button:focus-visible, a:focus-visible {
+            outline-color: rgba(22, 138, 203, .8);
+        }
+        .sidebar-footer { border-top-color: #c5dfef; }
+        @media (max-width: 700px) {
+            .sidebar { background: #fafdff; }
+            .lms-hero { background: linear-gradient(135deg, #bfe6fb, #eef9ff 78%); }
+        }
+
 </style>
 
 </head>
