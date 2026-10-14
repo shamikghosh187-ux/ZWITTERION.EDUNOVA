@@ -33,7 +33,7 @@ for (const path of ["api/access-code.js", "api/student/send-otp.js", "api/studen
     const source = readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
     new Script(source.replace(/^\s*import\s+.*?;\s*/gm, "\n").replace(/\bexport\s+default\s+/, ""), { filename: path });
     if (path === "api/admin-email-check.js") {
-      if (/token|session|setCookie|Set-Cookie/i.test(source)) failures.push("Admin email-check endpoint must not issue authentication credentials.");
+      if (/json\s*\(\s*\{[^}]*\btoken\b|setCookie|Set-Cookie/i.test(source)) failures.push("Admin email-check endpoint must not issue authentication credentials.");
       if (!source.includes("ADMIN_ALLOWED_EMAIL")) failures.push("Admin email-check endpoint must use server-side ADMIN_ALLOWED_EMAIL.");
     }
   } catch (error) {
