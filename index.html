@@ -1894,33 +1894,9 @@
         };
 
 
-        /* =========================================================
-           DEMO CREDENTIALS
-        ========================================================== */
+        /* No demo credentials belong in the production client. */
 
-        const TEST_STUDENT = {
-
-            id:
-                "BRS1234",
-
-            pin:
-                "8163"
-
-        };
-
-
-        const TEST_TEACHER = {
-
-            email:
-                "teacher@zwitterion.demo",
-
-            password:
-                "Teacher123!"
-
-        };
-
-
-        /* =========================================================
+/* =========================================================
            HELPERS
         ========================================================== */
 
@@ -3215,28 +3191,8 @@
                 }
 
                 try {
-                    /* LOCAL DEMO MODE
-                       Allows the portal flow to be tested when this HTML is opened
-                       directly from disk. It does NOT create a cloud token and therefore
-                       cannot authorize permanent uploads. Production always uses /api/teacher-auth. */
                     if (window.location.protocol === "file:") {
-                        if (email === "teacher@zwitterion.demo" && password === "Teacher123!") {
-                            appState.currentUser = email;
-                            appState.currentRole = "TEACHER";
-                            appState.accessType = "teacher";
-                            appState.teacherDemoMode = true;
-
-                            localStorage.setItem("zwitterion_profile", JSON.stringify({
-                                role: "TEACHER",
-                                email: email,
-                                demo: true
-                            }));
-
-                            show("screen-teacher-profile");
-                            return;
-                        }
-
-                        throw new Error("For local testing use teacher@zwitterion.demo / Teacher123!. For permanent authentication, open the deployed ZWITTERION site.");
+                        throw new Error("Teacher sign-in requires the deployed authentication service.");
                     }
 
                     const response = await fetch(apiUrl("/api/teacher-auth"), {
@@ -5021,9 +4977,9 @@
   window.ZLMS.completeLesson=(id,i)=>{db.progress[id]=Math.min(100,Math.max(db.progress[id]||0,(i+1)*Math.round(100/course(id).lessons.length)));save();window.ZLMS.openCourse(id)};
   function studentLessons(){vp().innerHTML=header('Learning Hub','Jump directly into lessons across your courses')+`<div class="lesson-list">${db.courses.flatMap(c=>c.lessons.map((l,i)=>`<div class="lesson-row"><div class="num">${i+1}</div><div class="grow"><b>${esc(l.title)}</b><br><small>${esc(c.title)} • ${esc(l.duration)}</small></div><button class="lms-btn primary" onclick="window.ZLMS.openCourse('${c.id}')">Open</button></div>`)).join('')}</div>`}
   function studentTests(){vp().innerHTML=header('Tests & Exams','Assessments published by your teachers')+`<div class="paper-list">${db.tests.map(t=>{const c=course(t.course);return `<div class="paper-card"><div class="paper-title">${esc(t.title)}</div><div class="paper-meta"><span class="paper-tag">${t.questions} Questions</span><span class="paper-tag">${t.time} min</span><span class="paper-tag">${t.marks} Marks</span></div><p class="paper-description">${esc(c?.title||'Course assessment')}</p><button class="lms-btn primary" onclick="window.ZLMS.startTest('${t.id}')">Start Test</button></div>`}).join('')}</div>`}
-  window.ZLMS.startTest=id=>{const t=db.tests.find(x=>x.id===id);vp().innerHTML=header(t.title,`${t.questions} questions • ${t.time} minutes • ${t.marks} marks`)+`<div class="lms-hero"><h1>Assessment Ready ⚡</h1><p>This frontend is the assessment shell. Connect your secure question API/database before production. For now you can simulate submission.</p><div class="lms-toolbar"><button class="lms-btn primary" onclick="window.ZLMS.submitTest('${id}')">Submit Demo Attempt</button><button class="lms-btn" onclick="window.ZLMS.go('tests')">Back</button></div></div>`};
-  window.ZLMS.submitTest=id=>{const t=db.tests.find(x=>x.id===id);const score=Math.round(t.marks*(0.72+Math.random()*.24));localStorage.setItem('zwitterion_last_score',score);studentResults()};
-  function studentResults(){const score=localStorage.getItem('zwitterion_last_score')||'—';vp().innerHTML=header('Results','Your assessment history and performance')+stats([['Latest Score',score==='—'?'—':score+' marks'],['Attempts',score==='—'?0:1],['Courses',db.courses.length],['Accuracy','86%']])+`<div class="lms-table-wrap"><table class="lms-table"><thead><tr><th>Assessment</th><th>Course</th><th>Status</th><th>Score</th></tr></thead><tbody>${db.tests.map((t,i)=>`<tr><td>${esc(t.title)}</td><td>${esc(course(t.course)?.title||'')}</td><td><span class="pill">${i===0&&score!=='—'?'Completed':'Available'}</span></td><td>${i===0&&score!=='—'?esc(score)+' / '+t.marks:'—'}</td></tr>`).join('')}</tbody></table></div>`}
+  window.ZLMS.startTest=id=>{const t=db.tests.find(x=>x.id===id);if(!t)return;vp().innerHTML=header(t.title,'Assessment unavailable')+`<div class="empty-state" role="status">Online assessments are not enabled yet. Results will appear here when the secure assessment service is connected.</div><div class="lms-toolbar"><button class="lms-btn" onclick="window.ZLMS.go('tests')">Back to tests</button></div>`};
+  window.ZLMS.submitTest=()=>{alert('Online assessments are not enabled yet. No score has been recorded.')};
+  function studentResults(){vp().innerHTML=header('Results','Your verified assessment results')+`<div class="empty-state" role="status">No verified assessment results are available yet.</div>`}
   function studentProgress(){vp().innerHTML=header('Progress','Track completion across your learning paths')+`<div class="cards-grid">${db.courses.map(c=>`<div class="module-card"><h3>${esc(c.title)}</h3><p>${c.lessons.length} lessons • ${c.students} learners</p><div class="progress-track"><div class="progress-fill" style="width:${db.progress[c.id]||0}%"></div></div><p style="margin-top:8px">${db.progress[c.id]||0}% complete</p></div>`).join('')}</div>`}
   function profilePage(){vp().innerHTML=header('My Profile','Account and learning identity')+`<div class="lms-form"><div class="lms-form-grid"><div><label>Display name</label><input value="${esc(appState.currentUser||'Zwitterion Learner')}" readonly></div><div><label>Role</label><input value="${role()==='TEACHER'?'Teacher':'Student'}" readonly></div><div><label>Institute</label><input value="${esc(appState.selectedSchool||'Zwitterion Classes')}" readonly></div><div><label>Class / Board</label><input value="${esc(appState.selectedClass||'11')} • ${esc(appState.selectedBoard||'CBSE')}" readonly></div><div class="full"><label>Account security</label><div class="notice">Authentication is handled by the backend API. Never put passwords, API keys or database credentials in this HTML.</div></div></div></div>`}
 
@@ -5071,32 +5027,8 @@
             const oldText = button ? button.textContent : "Initialize Session";
             if (button) { button.disabled = true; button.textContent = "Initializing…"; }
             try {
-                /*
-                 * DEMO LOGIN: intentionally checked BEFORE production API.
-                 * This makes the published/static HTML testable even when
-                 * /api/teacher-auth or its Vercel environment variables are
-                 * not configured yet. Demo mode is UI-only and does NOT create
-                 * a real cloud authentication token.
-                 */
-                if (email === "teacher@zwitterion.demo" && password === "Teacher123!") {
-                    if (typeof appState !== "undefined") {
-                        appState.currentUser = email;
-                        appState.currentRole = "TEACHER";
-                        appState.accessType = "teacher";
-                        appState.teacherDemoMode = true;
-                    }
-                    localStorage.removeItem("zwitterion_teacher_token");
-                    localStorage.setItem("zwitterion_profile", JSON.stringify({role:"TEACHER",email:email,demo:true}));
-                    const login = document.getElementById("screen-teacher-login");
-                    const profile = document.getElementById("screen-teacher-profile");
-                    if (login) login.classList.add("hidden");
-                    if (profile) profile.classList.remove("hidden");
-                    return;
-                }
-
-                /* Production login */
                 if (window.location.protocol === "file:") {
-                    throw new Error("For local demo use teacher@zwitterion.demo / Teacher123!");
+                    throw new Error("Teacher sign-in requires the deployed authentication service.");
                 }
                 const response = await fetch((window.ZWITTERION_API_BASE || "") + "/api/teacher-auth", {
                     method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"},
