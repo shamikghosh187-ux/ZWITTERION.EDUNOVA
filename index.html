@@ -3139,7 +3139,7 @@
            Keep these inside JavaScript; never leave executable JS in HTML.
         ========================================================== */
 
-        document.getElementById("student-profile-form").addEventListener("submit", function(event) {
+        document.getElementById("student-profile-form")?.addEventListener("submit", function(event) {
             event.preventDefault();
             appState.currentUser = (byId("student-first-name").value.trim() + " " + byId("student-last-name").value.trim()).trim();
             appState.selectedClass = byId("student-class-level").value;
@@ -3150,7 +3150,7 @@
             launchApp();
         });
 
-        document.getElementById("teacher-profile-form").addEventListener("submit", function(event) {
+        document.getElementById("teacher-profile-form")?.addEventListener("submit", function(event) {
             event.preventDefault();
             appState.currentUser = (byId("teacher-first-name").value.trim() + " " + byId("teacher-last-name").value.trim()).trim();
             appState.selectedBoard = byId("teacher-board-profile").value;
@@ -3166,7 +3166,7 @@
 
         document
             .getElementById("teacher-login-form")
-            .addEventListener("submit", async function(event) {
+            ?.addEventListener("submit", async function(event) {
                 event.preventDefault();
 
                 const form = event.currentTarget;
