@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="ZWITTERION - EDUNOVA Learning Platform">
-    <meta name="theme-color" content="#030712">
+    <meta name="theme-color" content="#f5f7fb">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://zwitterionclasses.co.in/">
     <link rel="icon" type="image/png" href="/favicon.png">
@@ -1296,22 +1296,6 @@
             --danger: #dc2626;
             --success: #0f8a63;
         }
-        [data-theme="dark"] {
-            --bg-main: #10141c;
-            --bg-sidebar: #151a23;
-            --bg-card: #191f2a;
-            --bg-card-hover: #202837;
-            --text-primary: #edf2f7;
-            --text-secondary: #9ba8ba;
-            --accent-cyan: #5eead4;
-            --accent-purple: #a5b4fc;
-            --accent-glow: rgba(94,234,212,.10);
-            --border: #2b3443;
-            --header-bg: rgba(21,26,35,.94);
-            --input-bg: #111722;
-            --danger: #f87171;
-            --success: #34d399;
-        }
         body {
             background: var(--bg-main);
             color: var(--text-primary);
@@ -1364,6 +1348,9 @@
         .sidebar-footer { border-top: 1px solid var(--border); }
         .main-wrapper { background: var(--bg-main); }
         .top-header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
             min-height: 76px;
             padding: 0 34px;
             border-bottom: 1px solid var(--border);
@@ -1690,22 +1677,7 @@
                     </div>
 
 
-                    <button
-                        type="button"
-                        class="theme-toggle"
-                        onclick="toggleTheme()"
-                        aria-label="Toggle theme"
-                    >
 
-                        <i
-                            id="theme-icon"
-                            class="
-                                fa-solid
-                                fa-moon
-                            "
-                        ></i>
-
-                    </button>
 
                 </div>
 
@@ -1752,7 +1724,7 @@
                 null,
 
             currentTheme:
-                "dark"
+                "light"
 
         };
 
