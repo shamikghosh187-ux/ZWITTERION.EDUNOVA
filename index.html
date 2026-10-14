@@ -5496,5 +5496,125 @@
 })();
 </script>
 
+
+<!-- ZWITTERION PERMANENT ACCESS GATE -->
+<style>
+  #zw-access-gate{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 20% 15%,rgba(6,182,212,.16),transparent 34%),radial-gradient(circle at 85% 85%,rgba(168,85,247,.16),transparent 34%),#030712;color:#f8fafc;font-family:Inter,system-ui,sans-serif}
+  #zw-access-gate[hidden]{display:none!important}
+  .zw-access-card{width:min(100%,440px);padding:clamp(24px,5vw,38px);border:1px solid rgba(148,163,184,.25);border-radius:24px;background:rgba(15,23,42,.94);box-shadow:0 24px 90px rgba(0,0,0,.42)}
+  .zw-access-mark{display:inline-flex;align-items:center;gap:9px;margin-bottom:24px;color:#67e8f9;font-size:12px;font-weight:800;letter-spacing:3px}
+  .zw-access-card h1{font-family:Orbitron,Inter,sans-serif;font-size:clamp(23px,5vw,31px);line-height:1.2;margin:0 0 12px}
+  .zw-access-card p{color:#a5b4c7;line-height:1.65;margin:0 0 22px}
+  .zw-access-card label{display:block;font-size:13px;font-weight:700;margin:0 0 8px}
+  #zw-access-code{width:100%;padding:14px 15px;border:1px solid #334155;border-radius:12px;background:#020617;color:#f8fafc;outline:none}
+  #zw-access-code:focus{border-color:#22d3ee;box-shadow:0 0 0 3px rgba(34,211,238,.13)}
+  #zw-access-submit{width:100%;margin-top:13px;padding:14px;border:0;border-radius:12px;background:linear-gradient(100deg,#06b6d4,#0f766e);color:#fff;font-weight:800;cursor:pointer}
+  #zw-access-submit:disabled{opacity:.6;cursor:wait}
+  #zw-access-message{min-height:24px;margin-top:12px;font-size:13px;color:#fca5a5}
+  .zw-access-note{font-size:12px!important;margin:8px 0 0!important;color:#64748b!important}
+</style>
+<div id="zw-access-gate" hidden role="dialog" aria-modal="true" aria-labelledby="zw-access-title">
+  <section class="zw-access-card">
+    <div class="zw-access-mark"><span aria-hidden="true">✦</span> ZWITTERION CLASSES</div>
+    <h1 id="zw-access-title">Your learning starts here.</h1>
+    <p>Enter the access code provided by your teacher. Once unlocked on this browser, your access is saved for future visits.</p>
+    <form id="zw-access-form">
+      <label for="zw-access-code">Student access code</label>
+      <input id="zw-access-code" name="code" type="password" autocomplete="off" required maxlength="200" placeholder="Enter your access code">
+      <button id="zw-access-submit" type="submit">Unlock learning materials <span aria-hidden="true">→</span></button>
+      <div id="zw-access-message" role="status" aria-live="polite"></div>
+      <p class="zw-access-note">Need access? Ask Sir for the current code.</p>
+    </form>
+  </section>
+</div>
+<script>
+(function(){
+  "use strict";
+  const gate=document.getElementById("zw-access-gate");
+  const form=document.getElementById("zw-access-form");
+  const codeInput=document.getElementById("zw-access-code");
+  const button=document.getElementById("zw-access-submit");
+  const message=document.getElementById("zw-access-message");
+  const storageKey="zwitterion_browser_identity_v1";
+  const grantKey="zwitterion_access_grant_v1";
+  let browserId;
+  try {
+    browserId=localStorage.getItem(storageKey);
+    if(!browserId){
+      browserId=crypto.randomUUID();
+      localStorage.setItem(storageKey,browserId);
+    }
+  } catch(e) {
+    browserId=crypto.randomUUID();
+  }
+  function showGate(){gate.hidden=false;document.body.style.overflow="hidden";setTimeout(()=>codeInput.focus(),80);}
+  function hideGate(){gate.hidden=true;document.body.style.overflow="";}
+  function enterDashboard(){
+    try{
+      if(typeof appState!=="undefined"){
+        appState.selectedClass="11";
+        appState.selectedBoard="CBSE";
+        appState.selectedSchool="ZWITTERION CLASSES";
+        appState.selectedSchoolId="ZWITTERION-CLASSES";
+        appState.accessType="student";
+        appState.currentUser="Student";
+        appState.currentRole="STUDENT";
+      }
+      if(typeof window.launchApp==="function") window.launchApp();
+      else {
+        document.querySelectorAll(".screen-container").forEach(el=>el.classList.add("hidden"));
+        const workspace=document.getElementById("app-workspace");
+        if(workspace) workspace.classList.remove("hidden");
+      }
+    }catch(e){console.error("ZWITTERION dashboard launch:",e);}
+    hideGate();
+  }
+  async function request(action,code){
+    const response=await fetch("/api/access-code",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Accept":"application/json"},
+      cache:"no-store",
+      body:JSON.stringify({action,browserId,code:code||""})
+    });
+    let result={};
+    try{result=await response.json();}catch(_){}
+    if(!response.ok) throw new Error(result.error||"Access check failed. Please try again.");
+    return result;
+  }
+  async function initialize(){
+    try{
+      const result=await request("status","");
+      if(result.unlocked){
+        if(result.token) sessionStorage.setItem(grantKey,result.token);
+        enterDashboard();
+        return;
+      }
+    }catch(e){
+      message.textContent="We couldn't check saved access. Please check your connection and try again.";
+    }
+    showGate();
+  }
+  form.addEventListener("submit",async function(event){
+    event.preventDefault();
+    message.textContent="";
+    button.disabled=true;
+    button.textContent="Checking code…";
+    try{
+      const result=await request("unlock",codeInput.value.trim());
+      if(!result.unlocked) throw new Error("Access could not be unlocked.");
+      if(result.token) sessionStorage.setItem(grantKey,result.token);
+      enterDashboard();
+    }catch(error){
+      message.textContent=error.message||"Could not unlock. Please try again.";
+    }finally{
+      button.disabled=false;
+      button.innerHTML='Unlock learning materials <span aria-hidden="true">→</span>';
+    }
+  });
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",initialize,{once:true});
+  else initialize();
+})();
+</script>
+
 </body>
 </html>
