@@ -1492,97 +1492,89 @@
             }
         }
 
-        /* ARGENTINA-INSPIRED PALETTE — sky blue, white, and sun gold */
+        /* REFINED ARGENTINA PALETTE — restrained sky blue, soft white, subtle gold */
         :root {
-            --bg-main: #e8f4fc;
-            --bg-sidebar: #fdfefe;
+            --bg-main: #f0f6fa;
+            --bg-sidebar: #fbfdff;
             --bg-card: #ffffff;
-            --bg-card-hover: #f0f8ff;
-            --text-primary: #12304a;
-            --text-secondary: #526d83;
-            --accent-cyan: #168acb;
-            --accent-purple: #3976b9;
-            --accent-glow: rgba(56, 164, 221, .17);
-            --border: #c8dfef;
-            --header-bg: rgba(244, 250, 255, .94);
-            --input-bg: #f2f8fd;
-            --danger: #c83c4d;
-            --success: #087f69;
+            --bg-card-hover: #f6faff;
+            --text-primary: #203449;
+            --text-secondary: #64788a;
+            --accent-cyan: #4b91bd;
+            --accent-purple: #6387a8;
+            --accent-glow: rgba(75, 145, 189, .10);
+            --border: #dbe6ee;
+            --header-bg: rgba(250, 252, 254, .95);
+            --input-bg: #f8fbfd;
+            --danger: #c64b56;
+            --success: #287d68;
         }
         body {
-            background:
-                radial-gradient(ellipse at 92% 0%, rgba(92, 184, 232, .19), transparent 34%),
-                var(--bg-main);
+            background: var(--bg-main);
             color: var(--text-primary);
         }
         .sidebar {
-            background: linear-gradient(180deg, #ffffff 0%, #f2f9ff 100%);
-            border-right-color: #c5dfef;
+            background: #fbfdff;
+            border-right-color: #dbe6ee;
         }
-        .sidebar-brand { border-bottom-color: #c5dfef; }
-        .brand-text h2 { color: #123b5a; }
-        .brand-text span { color: #397da8; }
-        .nav-item { color: #46677f; }
-        .nav-item:hover { background: #e3f3fd; color: #123b5a; }
+        .sidebar-brand, .sidebar-footer { border-color: #e0e9f0; }
+        .brand-text h2 { color: #233f56; }
+        .brand-text span { color: #71899b; }
+        .nav-item { color: #5c7183; }
+        .nav-item:hover { background: #edf5fa; color: #263f53; }
         .nav-item.active {
-            color: #075b91;
-            background: linear-gradient(100deg, #cdeaff, #e8f6ff);
-            border-color: #91ccef;
-            box-shadow: inset 3px 0 0 #168acb;
+            color: #2e6e97;
+            background: #e8f2f8;
+            border-color: #d4e5f0;
+            box-shadow: inset 2px 0 0 #78afd0;
         }
         .main-wrapper, .content-viewport { background: transparent; }
         .top-header {
-            border-bottom-color: #c5dfef;
-            background: rgba(247, 251, 255, .91);
+            border-bottom-color: #dbe6ee;
+            background: var(--header-bg);
         }
         .lms-hero {
-            border-color: #8dc9ed;
-            background: linear-gradient(112deg, #bfe6fb 0%, #e6f6ff 57%, #fffdf4 100%);
-            box-shadow: 0 14px 34px rgba(34, 112, 161, .10);
+            border-color: #d3e4ef;
+            background: linear-gradient(110deg, #e0eff8 0%, #edf6fb 62%, #f8fbfd 100%);
+            box-shadow: 0 8px 24px rgba(39, 86, 116, .045);
         }
-        .lms-hero h1 { color: #103957; }
-        .lms-hero p { color: #355c77; }
+        .lms-hero h1 { color: #24465e; }
+        .lms-hero p { color: #526d80; }
         .lms-stat {
-            border-color: #c3dfef;
-            background: linear-gradient(155deg, #ffffff 0%, #f4faff 100%);
+            border-color: #dce7ef;
+            background: #ffffff;
+            box-shadow: 0 4px 16px rgba(39, 86, 116, .035);
         }
-        .lms-stat strong { color: #116da5; }
+        .lms-stat strong { color: #477fa3; }
         .module-card, .paper-card, .teacher-form {
-            border-color: #c6deed;
-            box-shadow: 0 7px 22px rgba(24, 94, 139, .055);
+            border-color: #dce7ef;
+            box-shadow: 0 4px 16px rgba(39, 86, 116, .035);
         }
         .module-card:hover {
-            border-color: #6db8e4;
-            box-shadow: 0 13px 28px rgba(24, 94, 139, .12);
+            border-color: #b8d4e5;
+            box-shadow: 0 8px 22px rgba(39, 86, 116, .07);
         }
-        .card-icon {
-            background: #d8efff;
-            color: #0879b8;
-        }
-        .card-link { color: #0879b8; }
+        .card-icon { background: #edf5fa; color: #4b86ab; }
+        .card-link { color: #477fa3; }
         .paper-open {
-            background: linear-gradient(105deg, #168acb, #126fae);
-            box-shadow: 0 5px 12px rgba(22, 138, 203, .17);
+            background: #4b91bd;
+            box-shadow: none;
         }
+        .paper-open:hover { background: #3e80aa; }
         .empty-state {
-            border-color: #8bbfe0;
-            background: rgba(255,255,255,.78);
+            border-color: #cbdbe6;
+            background: rgba(255,255,255,.8);
         }
-        input, select, textarea { border-color: #c4dbea; }
-        input:focus, select:focus, textarea:focus,
-        .header-search input:focus {
-            border-color: #168acb;
-            box-shadow: 0 0 0 3px rgba(22, 138, 203, .18);
+        input, select, textarea { border-color: #d5e2eb; }
+        input:focus, select:focus, textarea:focus, .header-search input:focus {
+            border-color: #78afd0;
+            box-shadow: 0 0 0 3px rgba(75, 145, 189, .11);
         }
-        button:focus-visible, a:focus-visible {
-            outline-color: rgba(22, 138, 203, .8);
-        }
-        .sidebar-footer { border-top-color: #c5dfef; }
+        button:focus-visible, a:focus-visible { outline-color: rgba(75, 145, 189, .65); }
         @media (max-width: 700px) {
-            .sidebar { background: #fafdff; }
-            .lms-hero { background: linear-gradient(135deg, #bfe6fb, #eef9ff 78%); }
+            .sidebar { background: #fbfdff; }
+            .lms-hero { background: linear-gradient(120deg, #e0eff8, #f4f9fc); }
         }
-
 </style>
 
 </head>
