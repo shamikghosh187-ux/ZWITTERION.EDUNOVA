@@ -1492,88 +1492,88 @@
             }
         }
 
-        /* REFINED ARGENTINA PALETTE — restrained sky blue, soft white, subtle gold */
+        /* QUIET ARGENTINA-INSPIRED ACADEMIC THEME — near-neutral, blue only as an accent */
         :root {
-            --bg-main: #f0f6fa;
-            --bg-sidebar: #fbfdff;
+            --bg-main: #f7f8fa;
+            --bg-sidebar: #ffffff;
             --bg-card: #ffffff;
-            --bg-card-hover: #f6faff;
-            --text-primary: #203449;
-            --text-secondary: #64788a;
-            --accent-cyan: #4b91bd;
-            --accent-purple: #6387a8;
-            --accent-glow: rgba(75, 145, 189, .10);
-            --border: #dbe6ee;
-            --header-bg: rgba(250, 252, 254, .95);
-            --input-bg: #f8fbfd;
-            --danger: #c64b56;
-            --success: #287d68;
+            --bg-card-hover: #fafbfd;
+            --text-primary: #252f3b;
+            --text-secondary: #727d89;
+            --accent-cyan: #6b91ad;
+            --accent-purple: #7d8fa2;
+            --accent-glow: rgba(93, 135, 166, .07);
+            --border: #e7eaee;
+            --header-bg: rgba(255,255,255,.97);
+            --input-bg: #fbfcfd;
+            --danger: #bf515a;
+            --success: #417968;
         }
-        body {
-            background: var(--bg-main);
-            color: var(--text-primary);
-        }
+        body { background: var(--bg-main); color: var(--text-primary); }
         .sidebar {
-            background: #fbfdff;
-            border-right-color: #dbe6ee;
+            background: #ffffff;
+            border-right: 1px solid #e8ebef;
+            box-shadow: none;
         }
-        .sidebar-brand, .sidebar-footer { border-color: #e0e9f0; }
-        .brand-text h2 { color: #233f56; }
-        .brand-text span { color: #71899b; }
-        .nav-item { color: #5c7183; }
-        .nav-item:hover { background: #edf5fa; color: #263f53; }
+        .sidebar-brand, .sidebar-footer { border-color: #eceff2; }
+        .brand-text h2 { color: #293846; }
+        .brand-text span { color: #8a969f; }
+        .nav-item { color: #707d88; }
+        .nav-item:hover { background: #f6f8fa; color: #344654; }
         .nav-item.active {
-            color: #2e6e97;
-            background: #e8f2f8;
-            border-color: #d4e5f0;
-            box-shadow: inset 2px 0 0 #78afd0;
+            color: #476b85;
+            background: #f0f5f8;
+            border-color: #e5edf2;
+            box-shadow: none;
         }
         .main-wrapper, .content-viewport { background: transparent; }
         .top-header {
-            border-bottom-color: #dbe6ee;
+            border-bottom: 1px solid #e8ebef;
             background: var(--header-bg);
+            backdrop-filter: blur(10px);
         }
         .lms-hero {
-            border-color: #d3e4ef;
-            background: linear-gradient(110deg, #e0eff8 0%, #edf6fb 62%, #f8fbfd 100%);
-            box-shadow: 0 8px 24px rgba(39, 86, 116, .045);
-        }
-        .lms-hero h1 { color: #24465e; }
-        .lms-hero p { color: #526d80; }
-        .lms-stat {
-            border-color: #dce7ef;
+            border: 1px solid #e4e9ed;
+            border-radius: 16px;
             background: #ffffff;
-            box-shadow: 0 4px 16px rgba(39, 86, 116, .035);
+            box-shadow: 0 3px 12px rgba(30, 45, 58, .025);
         }
-        .lms-stat strong { color: #477fa3; }
-        .module-card, .paper-card, .teacher-form {
-            border-color: #dce7ef;
-            box-shadow: 0 4px 16px rgba(39, 86, 116, .035);
-        }
-        .module-card:hover {
-            border-color: #b8d4e5;
-            box-shadow: 0 8px 22px rgba(39, 86, 116, .07);
-        }
-        .card-icon { background: #edf5fa; color: #4b86ab; }
-        .card-link { color: #477fa3; }
-        .paper-open {
-            background: #4b91bd;
+        .lms-hero h1 { color: #293c4b; }
+        .lms-hero p { color: #727f89; }
+        .lms-stat {
+            border: 1px solid #e7eaee;
+            background: #ffffff;
             box-shadow: none;
         }
-        .paper-open:hover { background: #3e80aa; }
+        .lms-stat strong { color: #526f84; }
+        .module-card, .paper-card, .teacher-form {
+            border: 1px solid #e7eaee;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(30, 45, 58, .02);
+        }
+        .module-card:hover {
+            border-color: #d6e0e7;
+            box-shadow: 0 4px 14px rgba(30, 45, 58, .04);
+            transform: translateY(-1px);
+        }
+        .card-icon { background: #f1f5f7; color: #6b879b; }
+        .card-link { color: #5e7e94; }
+        .paper-open { background: #668ba5; box-shadow: none; }
+        .paper-open:hover { background: #587b94; }
         .empty-state {
-            border-color: #cbdbe6;
-            background: rgba(255,255,255,.8);
+            border: 1px dashed #dce2e7;
+            background: #ffffff;
+            color: #7a858f;
         }
-        input, select, textarea { border-color: #d5e2eb; }
+        input, select, textarea { border-color: #e0e5e9; }
         input:focus, select:focus, textarea:focus, .header-search input:focus {
-            border-color: #78afd0;
-            box-shadow: 0 0 0 3px rgba(75, 145, 189, .11);
+            border-color: #9ab4c7;
+            box-shadow: 0 0 0 2px rgba(93, 135, 166, .08);
         }
-        button:focus-visible, a:focus-visible { outline-color: rgba(75, 145, 189, .65); }
+        button:focus-visible, a:focus-visible { outline-color: rgba(93, 135, 166, .55); }
         @media (max-width: 700px) {
-            .sidebar { background: #fbfdff; }
-            .lms-hero { background: linear-gradient(120deg, #e0eff8, #f4f9fc); }
+            .sidebar { background: #ffffff; }
+            .lms-hero { background: #ffffff; }
         }
 </style>
 
