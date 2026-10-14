@@ -4668,17 +4668,26 @@
 ========================================================= */
 (function(){
   const KEY='zwitterion_lms_v2';
+  // Chemistry-only seed: no sample physics/mathematics courses or fabricated PDFs.
   const seed={
     courses:[
-      {id:'PHY-11-01',title:'Physics — Mechanics Core',subject:'Physics',className:'11',board:'CBSE',teacher:'Physics Faculty',description:'Kinematics, Newtonian mechanics, work-energy and rotational foundations.',lessons:[{id:'l1',title:'Units & Dimensions',duration:'42 min'},{id:'l2',title:'Kinematics I — Motion',duration:'58 min'},{id:'l3',title:'Newton’s Laws',duration:'64 min'},{id:'l4',title:'Work, Power & Energy',duration:'51 min'}],students:28},
-      {id:'CHEM-11-01',title:'Chemistry — Mole & Atomic Structure',subject:'Chemistry',className:'11',board:'CBSE',teacher:'Chemistry Faculty',description:'Mole concept, atomic structure and electronic configuration.',lessons:[{id:'l5',title:'Mole Concept',duration:'48 min'},{id:'l6',title:'Structure of Atom',duration:'55 min'},{id:'l7',title:'Quantum Numbers',duration:'44 min'}],students:31},
-      {id:'MATH-11-01',title:'Mathematics — Advanced Foundations',subject:'Mathematics',className:'11',board:'CBSE',teacher:'Mathematics Faculty',description:'Functions, limits, vectors and problem-solving foundations.',lessons:[{id:'l8',title:'Functions',duration:'50 min'},{id:'l9',title:'Limits',duration:'47 min'},{id:'l10',title:'Vectors',duration:'61 min'}],students:26}
+      {id:'CHEM-11-01',title:'Class 11 Chemistry',subject:'Chemistry',className:'11',board:'CBSE',teacher:'ZWITTERION CLASSES',description:'Chemistry learning materials and lessons published by Sir.',lessons:[],students:0}
     ],
-    tests:[{id:'T-001',title:'Mechanics Boss Fight',course:'PHY-11-01',questions:20,time:35,marks:80,status:'Published'},{id:'T-002',title:'Mole Concept Challenge',course:'CHEM-11-01',questions:25,time:40,marks:100,status:'Published'}],
-    announcements:[{id:1,title:'Welcome to Zwitterion Classes',text:'Your learning workspace is now live. Complete lessons, tests and track your progress.',date:new Date().toLocaleDateString()}],
-    progress:{'PHY-11-01':62,'CHEM-11-01':34,'MATH-11-01':18}
+    tests:[],
+    announcements:[],
+    progress:{'CHEM-11-01':0}
   };
-  let db; try{db=JSON.parse(localStorage.getItem(KEY))||seed}catch(e){db=seed}
+  let db;
+  try { db=JSON.parse(localStorage.getItem(KEY))||seed; } catch(e) { db=seed; }
+  if (!db || typeof db !== 'object') db=seed;
+  // Migrate older demo data so Physics/Mathematics and their demo tests never appear.
+  db.courses=Array.isArray(db.courses)?db.courses.filter(c=>String(c.subject||'').toLowerCase()==='chemistry'):[];
+  if (!db.courses.some(c=>c.id==='CHEM-11-01')) db.courses.unshift(seed.courses[0]);
+  db.tests=Array.isArray(db.tests)?db.tests.filter(t=>db.courses.some(c=>c.id===t.course)):[];
+  db.progress=db.progress&&typeof db.progress==='object'?db.progress:{};
+  Object.keys(db.progress).forEach(id=>{if(!db.courses.some(c=>c.id===id))delete db.progress[id];});
+  db.courses.forEach(c=>{if(typeof db.progress[c.id]!=='number')db.progress[c.id]=0;});
+  db.announcements=Array.isArray(db.announcements)?db.announcements:[];
   const save=()=>localStorage.setItem(KEY,JSON.stringify(db));
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[c]));
   const vp=()=>document.getElementById('content-viewport-container');
@@ -4737,8 +4746,8 @@
   window.ZLMS.addLesson=id=>{const title=prompt('Lesson title?');if(!title)return;const c=course(id);c.lessons.push({id:'l'+Date.now(),title,duration:'45 min'});save();window.ZLMS.editCourse(id)};
   window.ZLMS.deleteLesson=(id,i)=>{const c=course(id);c.lessons.splice(i,1);save();window.ZLMS.editCourse(id)};
   window.ZLMS.deleteCourse=id=>{if(!confirm('Delete this course?'))return;db.courses=db.courses.filter(c=>c.id!==id);delete db.progress[id];save();teacherCourses()};
-  function courseBuilder(){vp().innerHTML=header('Course Builder','Create a new course for your students')+`<form class="lms-form" onsubmit="window.ZLMS.createCourse(event)"><div class="lms-form-grid"><div><label>Course title</label><input id="cb-title" required placeholder="e.g. Physics — Rotational Motion"></div><div><label>Subject</label><input id="cb-subject" required placeholder="Physics"></div><div><label>Class</label><select id="cb-class"><option>9</option><option>10</option><option selected>11</option><option>12</option></select></div><div><label>Board</label><select id="cb-board"><option>CBSE</option><option>ICSE</option><option>ISC</option><option>WBCHSE</option></select></div><div class="full"><label>Description</label><textarea id="cb-desc" required placeholder="What will students learn?"></textarea></div><div class="full"><button class="lms-btn primary" type="submit">Create Course</button></div></div></form>`}
-  window.ZLMS.createCourse=e=>{e.preventDefault();const id='COURSE-'+Date.now();db.courses.push({id,title:byId('cb-title').value,subject:byId('cb-subject').value,className:byId('cb-class').value,board:byId('cb-board').value,teacher:appState.currentUser||'Teacher',description:byId('cb-desc').value,lessons:[],students:0});db.progress[id]=0;save();teacherCourses()};
+  function courseBuilder(){vp().innerHTML=header('Course Builder','Create a new course for your students')+`<form class="lms-form" onsubmit="window.ZLMS.createCourse(event)"><div class="lms-form-grid"><div><label>Course title</label><input id="cb-title" required placeholder="e.g. Class 11 Chemistry"></div><div><label>Subject</label><input id="cb-subject" value="Chemistry" readonly></div><div><label>Class</label><select id="cb-class"><option>9</option><option>10</option><option selected>11</option><option>12</option></select></div><div><label>Board</label><select id="cb-board"><option>CBSE</option><option>ICSE</option><option>ISC</option><option>WBCHSE</option></select></div><div class="full"><label>Description</label><textarea id="cb-desc" required placeholder="What will students learn?"></textarea></div><div class="full"><button class="lms-btn primary" type="submit">Create Course</button></div></div></form>`}
+  window.ZLMS.createCourse=e=>{e.preventDefault();const id='CHEM-'+Date.now();db.courses.push({id,title:byId('cb-title').value,subject:'Chemistry',className:byId('cb-class').value,board:byId('cb-board').value,teacher:appState.currentUser||'Teacher',description:byId('cb-desc').value,lessons:[],students:0});db.progress[id]=0;save();teacherCourses()};
   function teacherTests(){vp().innerHTML=header('Test Builder','Create and publish assessments')+`<div class="lms-toolbar"><button class="lms-btn primary" onclick="window.ZLMS.newTest()">+ Create Test</button></div><div class="lms-table-wrap"><table class="lms-table"><thead><tr><th>Test</th><th>Course</th><th>Questions</th><th>Time</th><th>Status</th><th>Action</th></tr></thead><tbody>${db.tests.map(t=>`<tr><td>${esc(t.title)}</td><td>${esc(course(t.course)?.title||'')}</td><td>${t.questions}</td><td>${t.time} min</td><td><span class="pill">${esc(t.status)}</span></td><td><button class="lms-btn danger" onclick="window.ZLMS.deleteTest('${t.id}')">Delete</button></td></tr>`).join('')}</tbody></table></div>`}
   window.ZLMS.newTest=()=>{const title=prompt('Test title?');if(!title)return;const c=db.courses[0];db.tests.push({id:'T-'+Date.now(),title,course:c.id,questions:10,time:20,marks:40,status:'Published'});save();teacherTests()};
   window.ZLMS.deleteTest=id=>{db.tests=db.tests.filter(t=>t.id!==id);save();teacherTests()};
