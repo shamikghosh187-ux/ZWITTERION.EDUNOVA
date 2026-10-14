@@ -3806,6 +3806,7 @@
                                     id="paper-subject"
                                     type="text"
                                     value="Chemistry"
+                                    readonly
                                 >
                             </div>
 
@@ -3914,7 +3915,7 @@
             const title = document.getElementById("paper-title").value.trim();
             const type = document.getElementById("content-type").value;
             const examType = document.getElementById("paper-exam-type").value;
-            const subject = document.getElementById("paper-subject").value.trim() || "General";
+            const subject = "Chemistry";
             const topic = document.getElementById("paper-topic").value.trim();
             const description = document.getElementById("paper-description").value.trim();
             const fileInput = document.getElementById("paper-file");
