@@ -29,7 +29,7 @@ for (let i = 0; i < scripts.length; i += 1) {
 for (const path of ["api/access-code.js", "api/student/send-otp.js", "api/student/verify-otp.js"]) {
   try {
     const source = readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
-    new Script(source.replace(/^\s*import\s+.*?;\s*/gm, "\n"), { filename: path });
+    new Script(source.replace(/^\s*import\s+.*?;\s*/gm, "\n").replace(/\bexport\s+default\s+/, ""), { filename: path });
   } catch (error) {
     failures.push(`Could not parse ${path}: ${error.message}`);
   }
