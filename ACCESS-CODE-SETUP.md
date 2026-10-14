@@ -5,11 +5,13 @@
 - A successful unlock is recorded in Neon in `student_access_grants`.
 - Returning browsers remain unlocked after the shared code rotates.
 - The current code expires for new unlocks at **2027-03-10 00:00 IST**.
-- After expiry, set a new `STUDENT_ACCESS_CODE` in Vercel and update `ROTATION_AT` in `api/access-code.js` to the next rotation date before redeploying.
+- The server automatically switches to `STUDENT_ACCESS_CODE_NEXT` at the configured rotation timestamp. Before a later rotation, move the desired current code into `STUDENT_ACCESS_CODE`, set the new replacement in `STUDENT_ACCESS_CODE_NEXT`, and update `STUDENT_ACCESS_CODE_ROTATION_AT`.
 
 ## Vercel environment variables
 Add these to the Vercel project for Production and Preview as appropriate:
-- `STUDENT_ACCESS_CODE`: the current code supplied by the teacher. Keep it secret; never put it in frontend JavaScript.
+- `STUDENT_ACCESS_CODE`: the code accepted before the rotation date. Keep it secret; never put it in frontend JavaScript.
+- `STUDENT_ACCESS_CODE_NEXT`: the replacement code accepted from the rotation date onward. Set it before March 10, 2027.
+- `STUDENT_ACCESS_CODE_ROTATION_AT`: optional ISO-8601 timestamp with timezone, defaulting to `2027-03-10T00:00:00+05:30`.
 - `ACCESS_SESSION_SECRET`: a long random secret (at least 32 random bytes).
 - `DATABASE_URL`: the existing Neon connection string.
 
