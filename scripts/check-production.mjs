@@ -9,6 +9,8 @@ assert(/<title>Zwitterion Classes<\/title>/i.test(html), "Document title must be
 assert(/name="description" content="Zwitterion Classes/i.test(html), "SEO description must use Zwitterion Classes branding.");
 assert(!/teacher@zwitterion\.demo|Teacher123!|Submit Demo Attempt/.test(html), "Production HTML must not expose demo credentials or demo assessment submission.");
 assert(!/Accuracy','86%/.test(html), "Production HTML must not show a fabricated accuracy statistic.");
+assert(html.includes("admin-portal") && html.includes("This screen is a convenience check, not authentication"), "Admin Portal must disclose email-only limitations.");
+assert(html.includes("/api/admin-email-check"), "Admin Portal email-check endpoint is missing.");
 
 const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
 assert(scripts.length > 0, "No inline scripts were found.");
@@ -26,10 +28,14 @@ for (let i = 0; i < scripts.length; i += 1) {
   }
 }
 
-for (const path of ["api/access-code.js", "api/student/send-otp.js", "api/student/verify-otp.js"]) {
+for (const path of ["api/access-code.js", "api/student/send-otp.js", "api/student/verify-otp.js", "api/admin-email-check.js"]) {
   try {
     const source = readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
     new Script(source.replace(/^\s*import\s+.*?;\s*/gm, "\n").replace(/\bexport\s+default\s+/, ""), { filename: path });
+    if (path === "api/admin-email-check.js") {
+      if (/token|session|setCookie|Set-Cookie/i.test(source)) failures.push("Admin email-check endpoint must not issue authentication credentials.");
+      if (!source.includes("ADMIN_ALLOWED_EMAIL")) failures.push("Admin email-check endpoint must use server-side ADMIN_ALLOWED_EMAIL.");
+    }
   } catch (error) {
     failures.push(`Could not parse ${path}: ${error.message}`);
   }
