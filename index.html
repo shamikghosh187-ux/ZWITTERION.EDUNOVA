@@ -4672,9 +4672,23 @@
   // Start with a completely empty workspace: no preloaded course names,
   // chapters, lessons, tests, announcements, progress, or sample resources.
   const seed={courses:[],tests:[],announcements:[],progress:{}};
+  const EMPTY_INIT_KEY='zwitterion_empty_workspace_initialized_v1';
   let db=seed;
-  // Replace any older browser-stored demo content with the empty workspace.
-  try { localStorage.setItem(KEY,JSON.stringify(seed)); } catch(e) {}
+  try {
+    if(localStorage.getItem(EMPTY_INIT_KEY)==='1') {
+      const stored=JSON.parse(localStorage.getItem(KEY)||'null');
+      if(stored && typeof stored==='object') db=stored;
+    } else {
+      // Clear legacy/demo content once; future content added by Sir must persist.
+      localStorage.setItem(KEY,JSON.stringify(seed));
+      localStorage.setItem(EMPTY_INIT_KEY,'1');
+    }
+  } catch(e) { db=seed; }
+  if(!db || typeof db!=='object') db=seed;
+  db.courses=Array.isArray(db.courses)?db.courses:[];
+  db.tests=Array.isArray(db.tests)?db.tests:[];
+  db.announcements=Array.isArray(db.announcements)?db.announcements:[];
+  db.progress=db.progress&&typeof db.progress==='object'?db.progress:{};
   const save=()=>localStorage.setItem(KEY,JSON.stringify(db));
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[c]));
   const vp=()=>document.getElementById('content-viewport-container');
