@@ -4970,85 +4970,39 @@
   function stats(items){return `<div class="lms-stats">${items.map(x=>`<div class="lms-stat"><span>${esc(x[0])}</span><strong>${esc(x[1])}</strong></div>`).join('')}</div>`}
   function adminPortal(){
     const ADMIN_EMAIL = 'tndeo000@gmail.com';
-    const DEMO_PASSWORD = 'ZwitterionDemo!2026';
-    vp().innerHTML=header('Admin Portal','Email access • preview only')+`
+    vp().innerHTML=header('Admin Portal','Authentication setup required')+`
       <section class="teacher-form" style="max-width:720px">
         <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
         <h3>Admin access</h3>
-        <p>Enter the configured admin email. A password prompt will appear next.</p>
+        <p>Use the configured administrator email. Secure password verification is not connected yet.</p>
         <form id="zw-admin-email-form" class="teacher-grid" novalidate>
           <div class="form-group teacher-grid-full">
             <label for="zw-admin-email">Admin email</label>
             <input id="zw-admin-email" name="email" type="email" autocomplete="username" required maxlength="254" placeholder="tndeo000@gmail.com">
           </div>
           <div class="form-group teacher-grid-full">
-            <button class="lms-btn primary" type="submit">Continue</button>
+            <button class="lms-btn primary" type="submit">Check setup</button>
           </div>
           <p id="zw-admin-email-error" class="hidden" role="alert"></p>
         </form>
-        <div class="empty-state" style="margin-top:16px">
-          <strong>Demo mode only</strong><br>
-          This temporary browser-side demo is not secure authentication. Do not use real credentials here. Uploading, publishing, downloading protected files, and deleting resources remain disabled until verified server-side authentication is connected.
+        <div class="empty-state" style="margin-top:18px">
+          <strong>Secure sign-in is not configured.</strong><br>
+          This portal will not accept a hardcoded demo password or pretend that an administrator is authenticated. Connect Supabase Auth and a server-verified admin allowlist before enabling access.
         </div>
-      </section>
-      <div id="zw-admin-password-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="zw-admin-password-title" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:20px">
-        <section class="teacher-form" style="width:min(100%,440px);background:var(--card,#111827);box-shadow:0 24px 80px rgba(0,0,0,.45)">
-          <h3 id="zw-admin-password-title">Enter demo password</h3>
-          <p>Temporary demo access only. This password is visible in the source code and must never be used for a real account.</p>
-          <form id="zw-admin-password-form" class="teacher-grid" novalidate>
-            <div class="form-group teacher-grid-full">
-              <label for="zw-admin-password">Demo password</label>
-              <input id="zw-admin-password" name="password" type="password" autocomplete="current-password" required maxlength="128" placeholder="Enter demo password">
-            </div>
-            <p id="zw-admin-password-error" class="hidden" role="alert"></p>
-            <div class="form-group teacher-grid-full" style="display:flex;gap:10px;flex-wrap:wrap">
-              <button class="lms-btn primary" type="submit">Open Admin Portal</button>
-              <button class="lms-btn" id="zw-admin-password-cancel" type="button">Cancel</button>
-            </div>
-          </form>
-        </section>
-      </div>`;
+      </section>`;
     const emailForm=byId('zw-admin-email-form');
     const emailInput=byId('zw-admin-email');
     const emailError=byId('zw-admin-email-error');
-    const modal=byId('zw-admin-password-modal');
-    const passwordForm=byId('zw-admin-password-form');
-    const passwordInput=byId('zw-admin-password');
-    const passwordError=byId('zw-admin-password-error');
-    if(!emailForm||!modal||!passwordForm)return;
+    if(!emailForm)return;
     emailForm.addEventListener('submit',event=>{
       event.preventDefault();
       const email=(emailInput?.value||'').trim().toLowerCase();
-      if(emailError){emailError.textContent='';emailError.classList.add('hidden')}
-      if(email!==ADMIN_EMAIL){
-        if(emailError){emailError.textContent='That email does not match the configured admin email.';emailError.classList.remove('hidden')}
-        return;
+      if(emailError){
+        emailError.textContent=email===ADMIN_EMAIL
+          ? 'The email is configured, but secure authentication is not connected yet. Admin sign-in is unavailable until Supabase Auth is set up.'
+          : 'That email does not match the configured administrator email.';
+        emailError.classList.remove('hidden');
       }
-      modal.classList.remove('hidden');
-      modal.style.display='flex';
-      passwordInput?.focus();
-    });
-    const closeModal=()=>{
-      modal.style.display='none';
-      modal.classList.add('hidden');
-      passwordForm.reset();
-      if(passwordError){passwordError.textContent='';passwordError.classList.add('hidden')}
-    };
-    byId('zw-admin-password-cancel')?.addEventListener('click',closeModal);
-    modal.addEventListener('click',event=>{if(event.target===modal)closeModal()});
-    passwordForm.addEventListener('submit',event=>{
-      event.preventDefault();
-      const password=passwordInput?.value||'';
-      if(password!==DEMO_PASSWORD){
-        if(passwordError){passwordError.textContent='Incorrect demo password. Try again.';passwordError.classList.remove('hidden')}
-        passwordInput?.focus();
-        return;
-      }
-      closeModal();
-      vp().innerHTML=header('Admin Portal','Demo preview • protected actions disabled')+`
-        <div class="lms-hero"><h3>Demo admin access granted</h3><p>You have opened the preview portal using temporary demo credentials. This is not a verified administrator session.</p></div>
-        <div class="empty-state" role="status" style="margin-top:18px"><strong>Resource management is not connected yet.</strong><br>Real uploads, publishing, protected downloads, and deletion remain disabled until Supabase Auth, server-side authorization, private storage, and quota controls are configured.</div>
-        <div class="lms-toolbar"><button class="lms-btn" onclick="window.ZLMS.go('dashboard')">Return to dashboard</button></div>`;
     });
   }
   function studentDashboard(){
