@@ -1,19 +1,26 @@
-# Zwitterion Classes — Admin email allowlist (UI check only)
+# Zwitterion Classes — Admin Portal demo access
 
-## Configuration
+## Temporary preview credentials
 
-In the Vercel project, add the environment variable:
+The current Admin Portal uses a deliberately temporary, client-side demo flow:
 
-- `ADMIN_ALLOWED_EMAIL`: Sir's authorized email address.
+- Demo email: `admin-demo@zwitterionclasses.co.in`
+- Demo password: `ZwitterionDemo!2026`
 
-Redeploy the relevant preview after configuring the variable so the serverless function can read it.
+Entering the demo email opens a password modal. A successful demo password opens a read-only preview screen.
 
 ## Important security boundary
 
-The Admin Portal asks for an email and checks it against the configured allowlist without a password or OTP, as requested. **This is not authentication.** Anyone can submit an email address to the public check endpoint, and a matching result does not prove that the visitor owns that inbox.
+**These are public demo credentials, not real authentication.** The email and password are embedded in the browser HTML and can be read by anyone. Do not use them for a real account, do not reuse the password elsewhere, and do not treat the demo screen as proof that a visitor is an administrator.
 
-The endpoint `/api/admin-email-check` issues no session, token, cookie, or role credential. It exists only to control the portal's informational UI. Do not use its `allowed` response to authorize any server operation.
+The demo flow must not authorize any protected server operation. Real uploads, publishing, protected downloads, and deletion remain disabled until server-verified authentication and authorization are implemented.
 
-Admin content reads/writes, uploads, publishing, and deletion must remain disabled until a separate, verified server-side authentication and authorization mechanism is implemented. Every protected API must independently validate that mechanism. Do not rely on client-side role flags, localStorage, or this allowlist response.
+## Before production
 
-The endpoint reveals whether a submitted address matches the configured allowlist. Add rate limiting/abuse monitoring before treating it as a hardened production feature.
+1. Replace the client-side demo gate with Supabase Auth (email/password or magic link) for Sir's real account.
+2. Restrict admin access with server-side identity checks and role authorization; never trust a client-side flag.
+3. Keep PDFs in a private Supabase Storage bucket and issue access only after server-side authorization.
+4. Apply database/storage RLS policies, file-size limits, and free-tier quota checks. Do not enable automatic paid upgrades.
+5. Store server secrets only in deployment environment variables. Never place a Supabase service-role key in `index.html` or other browser code.
+
+The old `/api/admin-email-check` endpoint is not used by the demo sign-in flow. It is only an allowlist convenience endpoint and does not issue a session, token, cookie, or role credential.
