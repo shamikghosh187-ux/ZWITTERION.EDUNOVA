@@ -4969,17 +4969,17 @@
   function header(title,sub){return `<div class="page-header"><h2>${esc(title)}</h2><p>${esc(sub)}</p></div>`}
   function stats(items){return `<div class="lms-stats">${items.map(x=>`<div class="lms-stat"><span>${esc(x[0])}</span><strong>${esc(x[1])}</strong></div>`).join('')}</div>`}
   function adminPortal(){
-    const DEMO_EMAIL = 'admin-demo@zwitterionclasses.co.in';
+    const ADMIN_EMAIL = 'tndeo000@gmail.com';
     const DEMO_PASSWORD = 'ZwitterionDemo!2026';
-    vp().innerHTML=header('Admin Portal','Demo access • preview only')+`
+    vp().innerHTML=header('Admin Portal','Email access • preview only')+`
       <section class="teacher-form" style="max-width:720px">
         <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
         <h3>Admin access</h3>
-        <p>Enter the temporary demo email. A password prompt will appear next.</p>
+        <p>Enter the configured admin email. A password prompt will appear next.</p>
         <form id="zw-admin-email-form" class="teacher-grid" novalidate>
           <div class="form-group teacher-grid-full">
             <label for="zw-admin-email">Admin email</label>
-            <input id="zw-admin-email" name="email" type="email" autocomplete="username" required maxlength="254" placeholder="admin-demo@zwitterionclasses.co.in">
+            <input id="zw-admin-email" name="email" type="email" autocomplete="username" required maxlength="254" placeholder="tndeo000@gmail.com">
           </div>
           <div class="form-group teacher-grid-full">
             <button class="lms-btn primary" type="submit">Continue</button>
@@ -5020,8 +5020,8 @@
       event.preventDefault();
       const email=(emailInput?.value||'').trim().toLowerCase();
       if(emailError){emailError.textContent='';emailError.classList.add('hidden')}
-      if(email!==DEMO_EMAIL){
-        if(emailError){emailError.textContent='That is not the temporary demo email. Use the demo email shown in the placeholder.';emailError.classList.remove('hidden')}
+      if(email!==ADMIN_EMAIL){
+        if(emailError){emailError.textContent='That email does not match the configured admin email.';emailError.classList.remove('hidden')}
         return;
       }
       modal.classList.remove('hidden');
