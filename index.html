@@ -4969,40 +4969,47 @@
   function header(title,sub){return `<div class="page-header"><h2>${esc(title)}</h2><p>${esc(sub)}</p></div>`}
   function stats(items){return `<div class="lms-stats">${items.map(x=>`<div class="lms-stat"><span>${esc(x[0])}</span><strong>${esc(x[1])}</strong></div>`).join('')}</div>`}
   function adminPortal(){
+    // Client-side preview gate only. Never use this for production authentication:
+    // credentials in browser JavaScript can be inspected by anyone who loads the page.
     const ADMIN_EMAIL = 'tndeo000@gmail.com';
-    vp().innerHTML=header('Admin Portal','Authentication setup required')+`
+    const ADMIN_PASSWORD = 'tndzwitterion123';
+    vp().innerHTML=header('Admin Portal','Administrator access')+`
       <section class="teacher-form" style="max-width:720px">
         <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
         <h3>Admin access</h3>
-        <p>Use the configured administrator email. Secure password verification is not connected yet.</p>
-        <form id="zw-admin-email-form" class="teacher-grid" novalidate>
+        <p>Sign in to open the administrator preview.</p>
+        <form id="zw-admin-login-form" class="teacher-grid" novalidate>
           <div class="form-group teacher-grid-full">
             <label for="zw-admin-email">Admin email</label>
             <input id="zw-admin-email" name="email" type="email" autocomplete="username" required maxlength="254" placeholder="tndeo000@gmail.com">
           </div>
           <div class="form-group teacher-grid-full">
-            <button class="lms-btn primary" type="submit">Check setup</button>
+            <label for="zw-admin-password">Password</label>
+            <input id="zw-admin-password" name="password" type="password" autocomplete="current-password" required maxlength="128" placeholder="Enter password">
           </div>
-          <p id="zw-admin-email-error" class="hidden" role="alert"></p>
+          <div class="form-group teacher-grid-full">
+            <button class="lms-btn primary" type="submit">Sign in</button>
+          </div>
+          <p id="zw-admin-login-error" class="hidden" role="alert"></p>
         </form>
-        <div class="empty-state" style="margin-top:18px">
-          <strong>Secure sign-in is not configured.</strong><br>
-          This portal will not accept a hardcoded demo password or pretend that an administrator is authenticated. Connect Supabase Auth and a server-verified admin allowlist before enabling access.
-        </div>
       </section>`;
-    const emailForm=byId('zw-admin-email-form');
+    const form=byId('zw-admin-login-form');
     const emailInput=byId('zw-admin-email');
-    const emailError=byId('zw-admin-email-error');
-    if(!emailForm)return;
-    emailForm.addEventListener('submit',event=>{
+    const passwordInput=byId('zw-admin-password');
+    const error=byId('zw-admin-login-error');
+    if(!form)return;
+    form.addEventListener('submit',event=>{
       event.preventDefault();
       const email=(emailInput?.value||'').trim().toLowerCase();
-      if(emailError){
-        emailError.textContent=email===ADMIN_EMAIL
-          ? 'The email is configured, but secure authentication is not connected yet. Admin sign-in is unavailable until Supabase Auth is set up.'
-          : 'That email does not match the configured administrator email.';
-        emailError.classList.remove('hidden');
+      const password=passwordInput?.value||'';
+      if(email!==ADMIN_EMAIL||password!==ADMIN_PASSWORD){
+        if(error){error.textContent='Email or password is incorrect. Try again.';error.classList.remove('hidden')}
+        return;
       }
+      vp().innerHTML=header('Admin Portal','Administrator access')+`
+        <div class="lms-hero"><h3>Welcome to the Admin Portal</h3><p>Administrator preview opened successfully.</p></div>
+        <div class="empty-state" role="status" style="margin-top:18px"><strong>Resource management is not connected.</strong><br>Uploading, publishing, protected downloads, and deletion remain unavailable until server-side authentication, authorization, and private storage are configured.</div>
+        <div class="lms-toolbar"><button class="lms-btn" onclick="window.ZLMS.go('dashboard')">Return to dashboard</button></div>`;
     });
   }
   function studentDashboard(){
