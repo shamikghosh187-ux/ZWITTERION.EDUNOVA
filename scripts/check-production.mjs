@@ -9,8 +9,9 @@ assert(/<title>Zwitterion Classes<\/title>/i.test(html), "Document title must be
 assert(/name="description" content="Zwitterion Classes/i.test(html), "SEO description must use Zwitterion Classes branding.");
 assert(!/teacher@zwitterion\.demo|Teacher123!|Submit Demo Attempt/.test(html), "Production HTML must not expose demo credentials or demo assessment submission.");
 assert(!/Accuracy','86%/.test(html), "Production HTML must not show a fabricated accuracy statistic.");
-assert(html.includes("admin-portal") && html.includes("This screen is a convenience check, not authentication"), "Admin Portal must disclose email-only limitations.");
-assert(html.includes("/api/admin-email-check"), "Admin Portal email-check endpoint is missing.");
+assert(html.includes("admin-portal") && html.includes("Demo mode only") && html.includes("This is not a verified administrator session"), "Admin Portal must disclose that demo access is not authentication.");
+assert(html.includes("admin-demo@zwitterionclasses.co.in") && html.includes("ZwitterionDemo!2026"), "Temporary demo admin credentials must be present for preview.");
+assert(html.includes("zw-admin-password-modal") && html.includes("zw-admin-password-form"), "Admin Portal password modal is missing.");
 
 const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
 assert(scripts.length > 0, "No inline scripts were found.");
@@ -46,5 +47,5 @@ if (failures.length) {
   for (const failure of failures) console.error(`- ${failure}`);
   process.exitCode = 1;
 } else {
-  console.log(`Production smoke checks passed: ${scripts.length} inline scripts, branding, demo-data guardrails, and API syntax.`);
+  console.log(`Production smoke checks passed: ${scripts.length} inline scripts, branding, demo-login warning, demo-data guardrails, and API syntax.`);
 }
