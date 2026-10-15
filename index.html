@@ -5079,8 +5079,46 @@
   window.ZLMS.deleteTest=id=>{db.tests=db.tests.filter(t=>t.id!==id);save();teacherTests()};
   function teacherStudents(){const rows=db.courses.flatMap(c=>Array.from({length:Math.min(c.students,8)},(_,i)=>({name:'Student '+String(i+1).padStart(2,'0'),course:c.title,progress:(db.progress[c.id]||0)+((i*7)%18)})));vp().innerHTML=header('Students','Learners enrolled in your courses')+`<div class="lms-table-wrap"><table class="lms-table"><thead><tr><th>Student</th><th>Course</th><th>Progress</th><th>Activity</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.course)}</td><td><div style="min-width:120px"><div class="progress-track"><div class="progress-fill" style="width:${Math.min(r.progress,100)}%"></div></div><small>${Math.min(r.progress,100)}%</small></div></td><td><span class="pill">Active</span></td></tr>`).join('')}</tbody></table></div>`}
   function teacherAnalytics(){const avg=Math.round(Object.values(db.progress).reduce((a,b)=>a+b,0)/Object.keys(db.progress).length);vp().innerHTML=header('Analytics','High-level teaching and learning metrics')+stats([['Average Completion',avg+'%'],['Total Learners',db.courses.reduce((a,c)=>a+c.students,0)],['Courses',db.courses.length],['Assessments',db.tests.length]])+`<div class="cards-grid">${db.courses.map(c=>`<div class="module-card"><h3>${esc(c.title)}</h3><p>${c.students} enrolled learners</p><div class="progress-track"><div class="progress-fill" style="width:${db.progress[c.id]||0}%"></div></div><p style="margin-top:8px">${db.progress[c.id]||0}% average completion</p></div>`).join('')}</div>`}
-  function teacherMaterials(){vp().innerHTML=header('Materials','Manage PDFs, notes and learning resources')+`<div class="lms-hero"><h1>Resource Library</h1><p>Use your existing Vercel Blob upload flow for real files. This panel is the LMS management surface.</p><div class="lms-toolbar"><button class="lms-btn primary" onclick="window.ZLMS.addMaterial()">+ Add Resource</button></div></div><div class="cards-grid"><div class="module-card"><h3>PDF Question Papers</h3><p>Upload and organize exam papers by class, subject and year.</p></div><div class="module-card"><h3>Lecture Notes</h3><p>Attach notes to courses and lessons.</p></div><div class="module-card"><h3>PYQs & Samples</h3><p>Build a searchable practice library.</p></div></div>`}
-  window.ZLMS.addMaterial=()=>alert('Connect this action to /api/upload and your content database for production file storage.');
+  function teacherMaterials(){
+    vp().innerHTML=header('Resource Library','Admin upload workspace • private PDFs')+`
+      <div class="lms-hero">
+        <h1>Upload learning resources</h1>
+        <p>Prepare question papers, notes, and practice PDFs for the student library. Only publish real files after verifying the content.</p>
+        <div class="lms-toolbar"><button class="lms-btn primary" id="zw-open-upload">+ Add Resource</button></div>
+      </div>
+      <section class="teacher-form" id="zw-resource-form-wrap" style="max-width:900px;display:none">
+        <h3>New resource</h3>
+        <p>PDF only • Maximum 10 MB per file in this initial free-tier-safe setup. Storage usage must be checked before uploads are enabled.</p>
+        <form id="zw-resource-form" class="teacher-grid" novalidate>
+          <div class="form-group"><label for="zw-resource-title">Resource title</label><input id="zw-resource-title" name="title" required maxlength="120" placeholder="e.g. Class 11 Thermodynamics Notes"></div>
+          <div class="form-group"><label for="zw-resource-type">Resource type</label><select id="zw-resource-type" name="type" required><option value="notes">Lecture notes</option><option value="question-paper">Question paper</option><option value="pyq">Previous-year questions</option><option value="sample-paper">Sample paper</option><option value="worksheet">Worksheet</option></select></div>
+          <div class="form-group"><label for="zw-resource-class">Class</label><select id="zw-resource-class" name="className" required><option value="11">Class 11</option><option value="12">Class 12</option></select></div>
+          <div class="form-group"><label for="zw-resource-subject">Subject</label><select id="zw-resource-subject" name="subject" required><option value="Chemistry">Chemistry</option><option value="Physics">Physics</option><option value="Mathematics">Mathematics</option><option value="Biology">Biology</option><option value="Other">Other</option></select></div>
+          <div class="form-group teacher-grid-full"><label for="zw-resource-description">Description (optional)</label><textarea id="zw-resource-description" name="description" maxlength="500" rows="3" placeholder="Short description for students"></textarea></div>
+          <div class="form-group teacher-grid-full"><label for="zw-resource-file">PDF file</label><input id="zw-resource-file" name="file" type="file" accept="application/pdf,.pdf" required></div>
+          <div class="form-group teacher-grid-full" style="display:flex;gap:10px;flex-wrap:wrap"><button class="lms-btn primary" type="submit" disabled>Upload disabled until secure admin authentication is configured</button><button class="lms-btn" id="zw-resource-cancel" type="button">Cancel</button></div>
+          <p class="teacher-grid-full" id="zw-resource-status" role="status">Uploads are intentionally disabled in this preview. The demo email/password does not create a verified admin session.</p>
+        </form>
+      </section>
+      <div class="cards-grid">
+        <div class="module-card"><h3>PDF Question Papers</h3><p>Organize papers by class, subject, and year after secure upload is connected.</p></div>
+        <div class="module-card"><h3>Lecture Notes</h3><p>Keep notes private until Sir chooses to publish them.</p></div>
+        <div class="module-card"><h3>PYQs & Samples</h3><p>Build a searchable practice library from verified resources.</p></div>
+      </div>
+      <div class="empty-state" style="margin-top:18px"><strong>No resources uploaded yet.</strong><br>The library will remain empty until Sir uploads real files. Demo mode does not create sample records.</div>`;
+    const open=byId('zw-open-upload');
+    const wrap=byId('zw-resource-form-wrap');
+    const form=byId('zw-resource-form');
+    const cancel=byId('zw-resource-cancel');
+    open?.addEventListener('click',()=>{if(wrap)wrap.style.display='block';byId('zw-resource-title')?.focus()});
+    cancel?.addEventListener('click',()=>{if(wrap)wrap.style.display='none';form?.reset()});
+    form?.addEventListener('submit',event=>{
+      event.preventDefault();
+      const status=byId('zw-resource-status');
+      if(status)status.textContent='Upload blocked: connect verified Supabase Auth, private Storage policies, server-side authorization, and free-tier quota checks before uploading.';
+    });
+  }
+  window.ZLMS.addMaterial=()=>window.ZLMS.go('teacher-materials');
   function announcements(){vp().innerHTML=header('Announcements','Communicate important updates to your learners')+`<form class="lms-form" onsubmit="window.ZLMS.publishAnnouncement(event)"><div class="lms-form-grid"><div><label>Title</label><input id="ann-title" required></div><div><label>Date</label><input id="ann-date" type="date" value="${new Date().toISOString().slice(0,10)}"></div><div class="full"><label>Message</label><textarea id="ann-text" required></textarea></div><div class="full"><button class="lms-btn primary">Publish Announcement</button></div></div></form><div style="margin-top:20px">${db.announcements.map(a=>`<div class="notice"><b>${esc(a.title)}</b><br>${esc(a.text)}<br><small>${esc(a.date)}</small></div>`).join('')}</div>`}
   window.ZLMS.publishAnnouncement=e=>{e.preventDefault();db.announcements.unshift({id:Date.now(),title:byId('ann-title').value,text:byId('ann-text').value,date:byId('ann-date').value});save();announcements()};
 
