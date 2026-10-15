@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ZWITTERION - EDUNOVA Learning Platform">
+    <meta name="description" content="Zwitterion Classes — Learn • Practice • Master">
     <meta name="theme-color" content="#f5f7fb">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://zwitterionclasses.co.in/">
     <link rel="icon" type="image/png" href="/favicon.png">
 
-    <title>ZWITTERION // V1</title>
+    <title>Zwitterion Classes</title>
 
     <!-- Icons -->
     <link
@@ -1757,7 +1757,7 @@
                 <div class="header-actions">
 
                     <div class="version-pill">
-                        V1 CORE
+                        ZWITTERION CLASSES
                     </div>
 
 
@@ -1894,33 +1894,9 @@
         };
 
 
-        /* =========================================================
-           DEMO CREDENTIALS
-        ========================================================== */
+        /* No demo credentials belong in the production client. */
 
-        const TEST_STUDENT = {
-
-            id:
-                "BRS1234",
-
-            pin:
-                "8163"
-
-        };
-
-
-        const TEST_TEACHER = {
-
-            email:
-                "teacher@zwitterion.demo",
-
-            password:
-                "Teacher123!"
-
-        };
-
-
-        /* =========================================================
+/* =========================================================
            HELPERS
         ========================================================== */
 
@@ -3163,7 +3139,7 @@
            Keep these inside JavaScript; never leave executable JS in HTML.
         ========================================================== */
 
-        document.getElementById("student-profile-form").addEventListener("submit", function(event) {
+        document.getElementById("student-profile-form")?.addEventListener("submit", function(event) {
             event.preventDefault();
             appState.currentUser = (byId("student-first-name").value.trim() + " " + byId("student-last-name").value.trim()).trim();
             appState.selectedClass = byId("student-class-level").value;
@@ -3174,7 +3150,7 @@
             launchApp();
         });
 
-        document.getElementById("teacher-profile-form").addEventListener("submit", function(event) {
+        document.getElementById("teacher-profile-form")?.addEventListener("submit", function(event) {
             event.preventDefault();
             appState.currentUser = (byId("teacher-first-name").value.trim() + " " + byId("teacher-last-name").value.trim()).trim();
             appState.selectedBoard = byId("teacher-board-profile").value;
@@ -3190,7 +3166,7 @@
 
         document
             .getElementById("teacher-login-form")
-            .addEventListener("submit", async function(event) {
+            ?.addEventListener("submit", async function(event) {
                 event.preventDefault();
 
                 const form = event.currentTarget;
@@ -3215,28 +3191,8 @@
                 }
 
                 try {
-                    /* LOCAL DEMO MODE
-                       Allows the portal flow to be tested when this HTML is opened
-                       directly from disk. It does NOT create a cloud token and therefore
-                       cannot authorize permanent uploads. Production always uses /api/teacher-auth. */
                     if (window.location.protocol === "file:") {
-                        if (email === "teacher@zwitterion.demo" && password === "Teacher123!") {
-                            appState.currentUser = email;
-                            appState.currentRole = "TEACHER";
-                            appState.accessType = "teacher";
-                            appState.teacherDemoMode = true;
-
-                            localStorage.setItem("zwitterion_profile", JSON.stringify({
-                                role: "TEACHER",
-                                email: email,
-                                demo: true
-                            }));
-
-                            show("screen-teacher-profile");
-                            return;
-                        }
-
-                        throw new Error("For local testing use teacher@zwitterion.demo / Teacher123!. For permanent authentication, open the deployed ZWITTERION site.");
+                        throw new Error("Teacher sign-in requires the deployed authentication service.");
                     }
 
                     const response = await fetch(apiUrl("/api/teacher-auth"), {
@@ -3628,7 +3584,7 @@
                             appState.selectedBoard
                         )}
 
-                        • ZWITTERION V1
+                        • ZWITTERION CLASSES
 
                     </p>
 
@@ -4994,7 +4950,7 @@
   window.buildNavigation=function(){
     const nav=byId('sidebar-nav-container'); if(!nav)return; nav.innerHTML='';
     const student=[
-      ['dashboard','Dashboard','fa-chart-pie'],['courses','My Courses','fa-graduation-cap'],['lessons','Learning Hub','fa-book-open-reader'],['tests','Tests & Exams','fa-file-pen'],['results','Results','fa-square-poll-vertical'],['progress','Progress','fa-chart-line'],['question-papers','Question Papers','fa-file-lines'],['notes','Notes','fa-book-open'],['pyqs','PYQs','fa-clock-rotate-left'],['sample-papers','Sample Papers','fa-file-circle-check'],['suggestions','Suggestions','fa-lightbulb'],['profile','My Profile','fa-user']
+      ['dashboard','Dashboard','fa-chart-pie'],['courses','My Courses','fa-graduation-cap'],['lessons','Learning Hub','fa-book-open-reader'],['tests','Tests & Exams','fa-file-pen'],['results','Results','fa-square-poll-vertical'],['progress','Progress','fa-chart-line'],['question-papers','Question Papers','fa-file-lines'],['notes','Notes','fa-book-open'],['pyqs','PYQs','fa-clock-rotate-left'],['sample-papers','Sample Papers','fa-file-circle-check'],['suggestions','Suggestions','fa-lightbulb'],['admin-portal','Admin Portal','fa-shield-halved'],['profile','My Profile','fa-user']
     ];
     const teacher=[
       ['teacher-dashboard','Dashboard','fa-gauge-high'],['teacher-courses','My Courses','fa-chalkboard'],['course-builder','Course Builder','fa-layer-group'],['teacher-tests','Test Builder','fa-file-circle-plus'],['teacher-students','Students','fa-user-graduate'],['teacher-analytics','Analytics','fa-chart-column'],['teacher-materials','Materials','fa-folder-open'],['announcements','Announcements','fa-bullhorn'],['profile','My Profile','fa-user']
@@ -5006,12 +4962,58 @@
 
   window.loadPage=function(page){
     if(role()==='TEACHER' && !page.startsWith('teacher') && !['course-builder','profile','announcements'].includes(page)){ if(!['teacher-dashboard','teacher-courses','teacher-tests','teacher-students','teacher-analytics','teacher-materials'].includes(page))page='teacher-dashboard'; }
-    const renders={dashboard:studentDashboard,courses:studentCourses,lessons:studentLessons,tests:studentTests,results:studentResults,progress:studentProgress,profile:profilePage,'question-papers':renderQuestionPapers,notes:renderNotes,pyqs:renderPYQs,'sample-papers':renderSamplePapers,suggestions:renderSuggestions,'teacher-dashboard':teacherDashboard,'teacher-courses':teacherCourses,'course-builder':courseBuilder,'teacher-tests':teacherTests,'teacher-students':teacherStudents,'teacher-analytics':teacherAnalytics,'teacher-materials':teacherMaterials,announcements:announcements};
+    const renders={dashboard:studentDashboard,courses:studentCourses,lessons:studentLessons,tests:studentTests,results:studentResults,progress:studentProgress,profile:profilePage,'question-papers':renderQuestionPapers,notes:renderNotes,pyqs:renderPYQs,'sample-papers':renderSamplePapers,suggestions:renderSuggestions,'admin-portal':adminPortal,'teacher-dashboard':teacherDashboard,'teacher-courses':teacherCourses,'course-builder':courseBuilder,'teacher-tests':teacherTests,'teacher-students':teacherStudents,'teacher-analytics':teacherAnalytics,'teacher-materials':teacherMaterials,announcements:announcements};
     (renders[page]||renders.dashboard)();
   };
 
   function header(title,sub){return `<div class="page-header"><h2>${esc(title)}</h2><p>${esc(sub)}</p></div>`}
   function stats(items){return `<div class="lms-stats">${items.map(x=>`<div class="lms-stat"><span>${esc(x[0])}</span><strong>${esc(x[1])}</strong></div>`).join('')}</div>`}
+  async function adminPortal(){
+    vp().innerHTML=header('Admin Portal','Email allowlist • limited preview')+`
+      <section class="teacher-form" style="max-width:720px">
+        <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3>Continue with Sir’s email</h3>
+        <p>Enter the email address configured by the site owner. No password or OTP is requested.</p>
+        <form id="zw-admin-email-form" class="teacher-grid" novalidate>
+          <div class="form-group teacher-grid-full">
+            <label for="zw-admin-email">Authorized email</label>
+            <input id="zw-admin-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="sir@example.com">
+          </div>
+          <div class="form-group teacher-grid-full">
+            <button class="lms-btn primary" type="submit">Continue</button>
+          </div>
+          <p id="zw-admin-email-error" class="hidden" role="alert"></p>
+        </form>
+        <div class="empty-state" style="margin-top:16px">
+          <strong>Important security notice</strong><br>
+          Email allowlisting alone does not prove who is using an address. This screen is a convenience check, not authentication. It cannot grant permission to read, publish, upload, or delete protected content. Those operations remain unavailable until secure server-side authentication and authorization are implemented.
+        </div>
+      </section>`;
+    const form=byId('zw-admin-email-form'); if(!form)return;
+    form.addEventListener('submit',async event=>{
+      event.preventDefault();
+      const email=(byId('zw-admin-email')?.value||'').trim().toLowerCase();
+      const error=byId('zw-admin-email-error');
+      const button=form.querySelector('button[type="submit"]');
+      if(error){error.textContent='';error.classList.add('hidden')}
+      if(!email||email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        if(error){error.textContent='Enter a valid email address.';error.classList.remove('hidden')}return;
+      }
+      if(button){button.disabled=true;button.textContent='Checking…'}
+      try{
+        const response=await fetch('/api/admin-email-check',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email})});
+        const result=await response.json().catch(()=>({}));
+        if(!response.ok)throw new Error(result.error||'Email allowlist check is unavailable.');
+        if(result.allowed!==true)throw new Error('This email is not on the configured allowlist.');
+        vp().innerHTML=header('Admin Portal','Limited preview • no protected actions enabled')+`
+          <div class="lms-hero"><h3>Email allowlist matched</h3><p>The address is on the configured allowlist. This does not verify identity, so the portal remains read-only.</p></div>
+          <div class="empty-state" role="status" style="margin-top:18px"><strong>Publishing and file management are disabled.</strong><br>Secure server-side sign-in and authorization must be connected before admin APIs or uploads can be enabled.</div>
+          <div class="lms-toolbar"><button class="lms-btn" onclick="window.ZLMS.go('dashboard')">Return to dashboard</button></div>`;
+      }catch(err){
+        if(error){error.textContent=err.message||'Could not check the email. Try again later.';error.classList.remove('hidden')}
+      }finally{if(button){button.disabled=false;button.textContent='Continue'}}
+    });
+  }
   function studentDashboard(){
     const avg=Object.keys(db.progress).length?Math.round(Object.values(db.progress).reduce((a,b)=>a+b,0)/Object.keys(db.progress).length):0;
     vp().innerHTML=`<div class="lms-hero"><h1>Welcome to Zwitterion Classes</h1><p>Your learning workspace is ready. Content will appear here when Sir publishes it.</p></div>${stats([['Courses',db.courses.length],['Progress',avg+'%'],['Tests',db.tests.length],['Announcements',db.announcements.length]])}<div class="empty-state" style="margin-top:20px;padding:28px;text-align:center">No learning content has been added yet.</div>`;
@@ -5021,9 +5023,9 @@
   window.ZLMS.completeLesson=(id,i)=>{db.progress[id]=Math.min(100,Math.max(db.progress[id]||0,(i+1)*Math.round(100/course(id).lessons.length)));save();window.ZLMS.openCourse(id)};
   function studentLessons(){vp().innerHTML=header('Learning Hub','Jump directly into lessons across your courses')+`<div class="lesson-list">${db.courses.flatMap(c=>c.lessons.map((l,i)=>`<div class="lesson-row"><div class="num">${i+1}</div><div class="grow"><b>${esc(l.title)}</b><br><small>${esc(c.title)} • ${esc(l.duration)}</small></div><button class="lms-btn primary" onclick="window.ZLMS.openCourse('${c.id}')">Open</button></div>`)).join('')}</div>`}
   function studentTests(){vp().innerHTML=header('Tests & Exams','Assessments published by your teachers')+`<div class="paper-list">${db.tests.map(t=>{const c=course(t.course);return `<div class="paper-card"><div class="paper-title">${esc(t.title)}</div><div class="paper-meta"><span class="paper-tag">${t.questions} Questions</span><span class="paper-tag">${t.time} min</span><span class="paper-tag">${t.marks} Marks</span></div><p class="paper-description">${esc(c?.title||'Course assessment')}</p><button class="lms-btn primary" onclick="window.ZLMS.startTest('${t.id}')">Start Test</button></div>`}).join('')}</div>`}
-  window.ZLMS.startTest=id=>{const t=db.tests.find(x=>x.id===id);vp().innerHTML=header(t.title,`${t.questions} questions • ${t.time} minutes • ${t.marks} marks`)+`<div class="lms-hero"><h1>Assessment Ready ⚡</h1><p>This frontend is the assessment shell. Connect your secure question API/database before production. For now you can simulate submission.</p><div class="lms-toolbar"><button class="lms-btn primary" onclick="window.ZLMS.submitTest('${id}')">Submit Demo Attempt</button><button class="lms-btn" onclick="window.ZLMS.go('tests')">Back</button></div></div>`};
-  window.ZLMS.submitTest=id=>{const t=db.tests.find(x=>x.id===id);const score=Math.round(t.marks*(0.72+Math.random()*.24));localStorage.setItem('zwitterion_last_score',score);studentResults()};
-  function studentResults(){const score=localStorage.getItem('zwitterion_last_score')||'—';vp().innerHTML=header('Results','Your assessment history and performance')+stats([['Latest Score',score==='—'?'—':score+' marks'],['Attempts',score==='—'?0:1],['Courses',db.courses.length],['Accuracy','86%']])+`<div class="lms-table-wrap"><table class="lms-table"><thead><tr><th>Assessment</th><th>Course</th><th>Status</th><th>Score</th></tr></thead><tbody>${db.tests.map((t,i)=>`<tr><td>${esc(t.title)}</td><td>${esc(course(t.course)?.title||'')}</td><td><span class="pill">${i===0&&score!=='—'?'Completed':'Available'}</span></td><td>${i===0&&score!=='—'?esc(score)+' / '+t.marks:'—'}</td></tr>`).join('')}</tbody></table></div>`}
+  window.ZLMS.startTest=id=>{const t=db.tests.find(x=>x.id===id);if(!t)return;vp().innerHTML=header(t.title,'Assessment unavailable')+`<div class="empty-state" role="status">Online assessments are not enabled yet. Results will appear here when the secure assessment service is connected.</div><div class="lms-toolbar"><button class="lms-btn" onclick="window.ZLMS.go('tests')">Back to tests</button></div>`};
+  window.ZLMS.submitTest=()=>{alert('Online assessments are not enabled yet. No score has been recorded.')};
+  function studentResults(){vp().innerHTML=header('Results','Your verified assessment results')+`<div class="empty-state" role="status">No verified assessment results are available yet.</div>`}
   function studentProgress(){vp().innerHTML=header('Progress','Track completion across your learning paths')+`<div class="cards-grid">${db.courses.map(c=>`<div class="module-card"><h3>${esc(c.title)}</h3><p>${c.lessons.length} lessons • ${c.students} learners</p><div class="progress-track"><div class="progress-fill" style="width:${db.progress[c.id]||0}%"></div></div><p style="margin-top:8px">${db.progress[c.id]||0}% complete</p></div>`).join('')}</div>`}
   function profilePage(){vp().innerHTML=header('My Profile','Account and learning identity')+`<div class="lms-form"><div class="lms-form-grid"><div><label>Display name</label><input value="${esc(appState.currentUser||'Zwitterion Learner')}" readonly></div><div><label>Role</label><input value="${role()==='TEACHER'?'Teacher':'Student'}" readonly></div><div><label>Institute</label><input value="${esc(appState.selectedSchool||'Zwitterion Classes')}" readonly></div><div><label>Class / Board</label><input value="${esc(appState.selectedClass||'11')} • ${esc(appState.selectedBoard||'CBSE')}" readonly></div><div class="full"><label>Account security</label><div class="notice">Authentication is handled by the backend API. Never put passwords, API keys or database credentials in this HTML.</div></div></div></div>`}
 
@@ -5071,32 +5073,8 @@
             const oldText = button ? button.textContent : "Initialize Session";
             if (button) { button.disabled = true; button.textContent = "Initializing…"; }
             try {
-                /*
-                 * DEMO LOGIN: intentionally checked BEFORE production API.
-                 * This makes the published/static HTML testable even when
-                 * /api/teacher-auth or its Vercel environment variables are
-                 * not configured yet. Demo mode is UI-only and does NOT create
-                 * a real cloud authentication token.
-                 */
-                if (email === "teacher@zwitterion.demo" && password === "Teacher123!") {
-                    if (typeof appState !== "undefined") {
-                        appState.currentUser = email;
-                        appState.currentRole = "TEACHER";
-                        appState.accessType = "teacher";
-                        appState.teacherDemoMode = true;
-                    }
-                    localStorage.removeItem("zwitterion_teacher_token");
-                    localStorage.setItem("zwitterion_profile", JSON.stringify({role:"TEACHER",email:email,demo:true}));
-                    const login = document.getElementById("screen-teacher-login");
-                    const profile = document.getElementById("screen-teacher-profile");
-                    if (login) login.classList.add("hidden");
-                    if (profile) profile.classList.remove("hidden");
-                    return;
-                }
-
-                /* Production login */
                 if (window.location.protocol === "file:") {
-                    throw new Error("For local demo use teacher@zwitterion.demo / Teacher123!");
+                    throw new Error("Teacher sign-in requires the deployed authentication service.");
                 }
                 const response = await fetch((window.ZWITTERION_API_BASE || "") + "/api/teacher-auth", {
                     method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"},
