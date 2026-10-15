@@ -12,6 +12,12 @@ assert(!/Accuracy','86%/.test(html), "Production HTML must not show a fabricated
 assert(html.includes("admin-portal") && html.includes("Demo mode only") && html.includes("This is not a verified administrator session"), "Admin Portal must disclose that demo access is not authentication.");
 assert(html.includes("admin-demo@zwitterionclasses.co.in") && html.includes("ZwitterionDemo!2026"), "Temporary demo admin credentials must be present for preview.");
 assert(html.includes("zw-admin-password-modal") && html.includes("zw-admin-password-form"), "Admin Portal password modal is missing.");
+assert(html.includes("zw-resource-form") && html.includes("zw-resource-file") && html.includes("Upload disabled until secure admin authentication is configured"), "Resource upload form must remain present but disabled until verified auth is configured.");
+assert(html.includes("No resources uploaded yet") && html.includes("demo email/password does not create a verified admin session"), "Resource library must remain empty in demo mode.");
+const resourceSchema = readFileSync(new URL("../supabase/resource-library.sql", import.meta.url), "utf8");
+assert(resourceSchema.includes("public.admin_users") && resourceSchema.includes("public.resources"), "Supabase resource schema is missing admin and resource tables.");
+assert(resourceSchema.includes("public = false") && resourceSchema.includes("class-resources"), "Supabase resource bucket must remain private.");
+assert(resourceSchema.includes("file_size_bytes <= 10485760") && resourceSchema.includes("application/pdf"), "Resource schema must enforce PDF-only 10 MiB limits.");
 
 const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
 assert(scripts.length > 0, "No inline scripts were found.");
@@ -47,5 +53,5 @@ if (failures.length) {
   for (const failure of failures) console.error(`- ${failure}`);
   process.exitCode = 1;
 } else {
-  console.log(`Production smoke checks passed: ${scripts.length} inline scripts, branding, demo-login warning, demo-data guardrails, and API syntax.`);
+  console.log(`Production smoke checks passed: ${scripts.length} inline scripts, branding, demo-login warning, upload-disabled guardrails, resource schema checks, and API syntax.`);
 }
