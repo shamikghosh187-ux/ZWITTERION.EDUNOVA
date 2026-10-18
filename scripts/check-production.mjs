@@ -9,11 +9,11 @@ assert(/<title>Zwitterion Classes<\/title>/i.test(html), "Document title must be
 assert(/name="description" content="Zwitterion Classes/i.test(html), "SEO description must use Zwitterion Classes branding.");
 assert(!/teacher@zwitterion\.demo|Teacher123!|Submit Demo Attempt/.test(html), "Production HTML must not expose demo credentials or demo assessment submission.");
 assert(!/Accuracy','86%/.test(html), "Production HTML must not show a fabricated accuracy statistic.");
-assert(html.includes("admin-portal") && html.includes("Demo mode only") && html.includes("This is not a verified administrator session"), "Admin Portal must disclose that demo access is not authentication.");
-assert(html.includes("admin-demo@zwitterionclasses.co.in") && html.includes("ZwitterionDemo!2026"), "Temporary demo admin credentials must be present for preview.");
-assert(html.includes("zw-admin-password-modal") && html.includes("zw-admin-password-form"), "Admin Portal password modal is missing.");
+assert(html.includes("admin-portal") && html.includes("Administrator access") && html.includes("Sign in to open the administrator preview."), "Admin Portal preview entry point is missing.");
+assert(!html.includes("admin-demo@zwitterionclasses.co.in") && !html.includes("ZwitterionDemo!2026"), "Retired demo admin credentials must not return.");
+assert(html.includes("zw-admin-login-form") && html.includes("zw-admin-email") && html.includes("zw-admin-password") && html.includes("Your email"), "Admin Portal email/password sign-in form is missing.");
 assert(html.includes("zw-resource-form") && html.includes("zw-resource-file") && html.includes("Upload disabled until secure admin authentication is configured"), "Resource upload form must remain present but disabled until verified auth is configured.");
-assert(html.includes("No resources uploaded yet") && html.includes("demo email/password does not create a verified admin session"), "Resource library must remain empty in demo mode.");
+assert(html.includes("No resources uploaded yet") && html.includes("Uploading, publishing, protected downloads, and deletion remain unavailable until server-side authentication"), "Resource library must remain empty and protected actions disabled until server-side authentication.");
 const resourceSchema = readFileSync(new URL("../supabase/resource-library.sql", import.meta.url), "utf8");
 assert(resourceSchema.includes("public.admin_users") && resourceSchema.includes("public.resources"), "Supabase resource schema is missing admin and resource tables.");
 assert(resourceSchema.includes("public = false") && resourceSchema.includes("class-resources"), "Supabase resource bucket must remain private.");
@@ -53,5 +53,5 @@ if (failures.length) {
   for (const failure of failures) console.error(`- ${failure}`);
   process.exitCode = 1;
 } else {
-  console.log(`Production smoke checks passed: ${scripts.length} inline scripts, branding, demo-login warning, upload-disabled guardrails, resource schema checks, and API syntax.`);
+  console.log(`Production smoke checks passed: ${scripts.length} inline scripts, branding, admin preview sign-in, upload-disabled guardrails, private resource schema checks, and API syntax.`);
 }
