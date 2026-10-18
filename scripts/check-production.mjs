@@ -18,6 +18,8 @@ const resourceSchema = readFileSync(new URL("../supabase/resource-library.sql", 
 assert(resourceSchema.includes("public.admin_users") && resourceSchema.includes("public.resources"), "Supabase resource schema is missing admin and resource tables.");
 assert(resourceSchema.includes("public = false") && resourceSchema.includes("class-resources"), "Supabase resource bucket must remain private.");
 assert(resourceSchema.includes("file_size_bytes <= 10485760") && resourceSchema.includes("application/pdf"), "Resource schema must enforce PDF-only 10 MiB limits.");
+assert(resourceSchema.includes("storage.foldername(name))[1] = auth.uid()::text") && resourceSchema.includes("Admins can update own private resource PDFs") && resourceSchema.includes("Admins can delete own private resource PDFs"), "Storage writes must be limited to the signed-in admin's own folder.");
+assert(resourceSchema.includes("lower(file_name) like '%.pdf'") && resourceSchema.includes("storage_path ~"), "Resource metadata must validate PDF filenames and user-scoped storage paths.");
 
 const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
 assert(scripts.length > 0, "No inline scripts were found.");
