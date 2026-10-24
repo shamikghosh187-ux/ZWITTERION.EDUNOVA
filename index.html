@@ -1575,6 +1575,54 @@
             .sidebar { background: #f7fbfe; }
             .lms-hero { background: #dceffa; }
         }
+
+/* Dashboard layout: intentionally scoped to the student home screen. */
+.dashboard-hero{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:250px;padding:clamp(24px,4vw,42px);background:linear-gradient(112deg,#fff 0%,#f0f5ff 64%,#f2efff 100%)}
+.dashboard-hero-copy{position:relative;z-index:2;max-width:650px}
+.dashboard-eyebrow,.dashboard-kicker{display:inline-flex;align-items:center;gap:8px;color:#315fce;font-size:10px;font-weight:850;letter-spacing:.14em}
+.dashboard-hero h1{margin:15px 0 12px;font-family:Inter,system-ui,sans-serif;font-size:clamp(30px,4vw,46px);line-height:1.08;font-weight:850;letter-spacing:-.055em;color:#192744}
+.dashboard-hero h1 span{color:#315fce}
+.dashboard-hero-copy>p{max-width:510px;font-size:14px;line-height:1.8;color:#66758d}
+.dashboard-hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.dashboard-hero-actions .lms-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:43px;padding:0 15px}
+.dashboard-hero-art{position:relative;display:grid;place-items:center;flex:0 0 205px;width:205px;height:190px}
+.dashboard-art-book{z-index:2;width:105px;height:105px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.8);border-radius:30px;background:linear-gradient(145deg,#fff,#e4ecff);color:#315fce;font-size:42px;box-shadow:0 18px 38px rgba(49,95,206,.18);transform:rotate(-8deg)}
+.dashboard-art-orbit{position:absolute;border:1px solid rgba(49,95,206,.18);border-radius:50%;transform:rotate(-25deg)}
+.orbit-one{width:175px;height:105px}.orbit-two{width:205px;height:145px;transform:rotate(32deg)}
+.art-spark{position:absolute;color:#7c67d9;font-size:28px}.spark-one{right:10px;top:23px}.spark-two{left:12px;bottom:23px;color:#d99a36}
+.dashboard-section{margin-top:27px}
+.dashboard-section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:14px}
+.dashboard-section-heading h2{margin-top:5px;font-size:20px;letter-spacing:-.035em;color:#1c2940}
+.dashboard-section-heading p{margin-top:5px;color:#7a879b;font-size:12px;line-height:1.6}
+.dashboard-live{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #dcefe6;border-radius:99px;background:#f2fbf6;color:#21805a;font-size:10px;font-weight:750;white-space:nowrap}
+.dashboard-live span{width:6px;height:6px;border-radius:50%;background:#26a269}
+.dashboard-stats{margin:0}
+.dashboard-stats .lms-stat{display:grid;grid-template-columns:42px 1fr;column-gap:12px;align-items:center;padding:17px}
+.dashboard-stats .stat-icon{grid-row:span 2;width:42px;height:42px;display:grid;place-items:center;border-radius:13px;font-size:16px}
+.stat-blue{background:#edf3ff;color:#315fce}.stat-violet{background:#f2efff;color:#7958cc}.stat-amber{background:#fff5e5;color:#b97818}.stat-green{background:#eaf8f0;color:#18845a}
+.dashboard-stats .lms-stat span{margin:0;font-size:11px}.dashboard-stats .lms-stat strong{font-size:27px;margin:3px 0 1px}.dashboard-stats .lms-stat small{grid-column:2;color:#8a96a9;font-size:10px;line-height:1.5}
+.dashboard-quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.dashboard-quick-card{display:flex;align-items:center;gap:13px;min-width:0;padding:17px;text-align:left;border:1px solid #e5eaf2;border-radius:15px;background:#fff;color:#1c2940;cursor:pointer;box-shadow:0 4px 18px rgba(26,45,80,.025);transition:transform .18s,border-color .18s,box-shadow .18s}
+.dashboard-quick-card:hover{transform:translateY(-2px);border-color:#cbd9fb;box-shadow:0 10px 24px rgba(35,71,140,.07)}
+.quick-icon{display:grid;place-items:center;flex:0 0 43px;width:43px;height:43px;border-radius:13px;background:#edf3ff;color:#315fce;font-size:16px}
+.quick-1{background:#f2efff;color:#7958cc}.quick-2{background:#fff5e5;color:#b97818}.quick-3{background:#eaf8f0;color:#18845a}
+.quick-card-copy{display:grid;gap:5px;min-width:0;flex:1}.quick-card-copy strong{font-size:13px;font-weight:800}.quick-card-copy small{font-size:11px;color:#7a879b;line-height:1.55}
+.quick-arrow{color:#9aa6b8;font-size:12px}
+.dashboard-bottom-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+.dashboard-panel{min-width:0;padding:20px;border:1px solid #e5eaf2;border-radius:17px;background:#fff;box-shadow:0 5px 22px rgba(26,45,80,.03)}
+.dashboard-panel-heading{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.panel-icon{display:grid;place-items:center;flex:0 0 39px;width:39px;height:39px;border-radius:12px;background:#edf3ff;color:#315fce}
+.panel-icon-warm{background:#fff5e5;color:#b97818}
+.dashboard-panel-heading>div{flex:1;min-width:0}.dashboard-panel-heading h3{font-size:14px;font-weight:800;color:#1c2940}.dashboard-panel-heading p{margin-top:4px;color:#8390a4;font-size:11px}
+.text-action{display:inline-flex;align-items:center;gap:7px;border:0;background:transparent;color:#315fce;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
+.dashboard-empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px 12px 12px}
+.dashboard-empty-icon{display:grid;place-items:center;width:52px;height:52px;margin-bottom:12px;border-radius:16px;background:#f1f5fc;color:#6681b8;font-size:21px}
+.dashboard-empty strong{font-size:13px;color:#34435c}.dashboard-empty p{max-width:240px;margin:6px 0 12px;color:#8591a4;font-size:11px;line-height:1.65}
+.study-plan-list{display:grid;gap:13px}.study-plan-list>div{display:flex;align-items:flex-start;gap:11px}.study-plan-list>div>span{display:grid;place-items:center;flex:0 0 29px;width:29px;height:29px;border-radius:9px;background:#f0f4fc;color:#315fce;font-size:10px;font-weight:850}.study-plan-list p{display:grid;gap:4px}.study-plan-list b{color:#34435c;font-size:12px}.study-plan-list small{color:#8591a4;font-size:11px;line-height:1.5}
+@media(max-width:1050px){.dashboard-hero-art{flex-basis:150px;width:150px;transform:scale(.85)}.dashboard-stats .lms-stat{grid-template-columns:36px 1fr;column-gap:9px;padding:14px}.dashboard-stats .stat-icon{width:36px;height:36px}}
+@media(max-width:700px){.dashboard-hero{min-height:0}.dashboard-hero-art{display:none}.dashboard-hero h1{font-size:32px}.dashboard-section{margin-top:22px}.dashboard-bottom-grid{grid-template-columns:1fr}.dashboard-quick-grid{gap:10px}.dashboard-quick-card{padding:13px;gap:10px}.quick-icon{width:37px;height:37px;flex-basis:37px}.dashboard-section-heading h2{font-size:18px}}
+@media(max-width:420px){.dashboard-quick-grid{grid-template-columns:1fr}.dashboard-hero-actions{display:grid}.dashboard-hero-actions .lms-btn{width:100%}.dashboard-live{font-size:9px}}
+
 </style>
 
 </head>
@@ -5013,8 +5061,46 @@
     });
   }
   function studentDashboard(){
-    const avg=Object.keys(db.progress).length?Math.round(Object.values(db.progress).reduce((a,b)=>a+b,0)/Object.keys(db.progress).length):0;
-    vp().innerHTML=`<div class="lms-hero"><h1>Welcome to Zwitterion Classes</h1><p>Your learning workspace is ready. Content will appear here when Sir publishes it.</p></div>${stats([['Courses',db.courses.length],['Progress',avg+'%'],['Tests',db.tests.length],['Announcements',db.announcements.length]])}<div class="empty-state" style="margin-top:20px;padding:28px;text-align:center">No learning content has been added yet.</div>`;
+    const progressKeys=Object.keys(db.progress);
+    const avg=progressKeys.length?Math.round(Object.values(db.progress).reduce((a,b)=>a+(Number(b)||0),0)/progressKeys.length):0;
+    const quickLinks=[
+      ['question-papers','Question Papers','Browse exam papers and practice material.','fa-file-lines'],
+      ['notes','Class Notes','Open notes and study resources.','fa-book-open'],
+      ['pyqs','Previous Year Questions','Practice with past questions.','fa-clock-rotate-left'],
+      ['sample-papers','Sample Papers','Prepare with sample question sets.','fa-file-circle-check']
+    ];
+    vp().innerHTML=`
+      <section class="lms-hero dashboard-hero">
+        <div class="dashboard-hero-copy">
+          <span class="dashboard-eyebrow"><i class="fa-solid fa-sparkles"></i> YOUR LEARNING SPACE</span>
+          <h1>Learn with clarity.<br><span>Improve every day.</span></h1>
+          <p>Your study materials, courses and practice resources—all organised in one place.</p>
+          <div class="dashboard-hero-actions">
+            <button class="lms-btn primary" type="button" onclick="window.ZLMS.go('question-papers')"><i class="fa-solid fa-book-open"></i> Explore study materials</button>
+            <button class="lms-btn" type="button" onclick="window.ZLMS.go('courses')">View my courses <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+        <div class="dashboard-hero-art" aria-hidden="true"><div class="dashboard-art-orbit orbit-one"></div><div class="dashboard-art-orbit orbit-two"></div><div class="dashboard-art-book"><i class="fa-solid fa-book-open-reader"></i></div><span class="art-spark spark-one">✦</span><span class="art-spark spark-two">✧</span></div>
+      </section>
+      <section class="dashboard-section" aria-label="Learning overview">
+        <div class="dashboard-section-heading"><div><span class="dashboard-kicker">AT A GLANCE</span><h2>Your learning overview</h2></div><span class="dashboard-live"><span></span> Workspace ready</span></div>
+        <div class="lms-stats dashboard-stats">
+          <article class="lms-stat"><div class="stat-icon stat-blue"><i class="fa-solid fa-graduation-cap"></i></div><span>Available courses</span><strong>${db.courses.length}</strong><small>Courses published by your teacher</small></article>
+          <article class="lms-stat"><div class="stat-icon stat-violet"><i class="fa-solid fa-chart-line"></i></div><span>Learning progress</span><strong>${avg}%</strong><small>Based on your saved progress</small></article>
+          <article class="lms-stat"><div class="stat-icon stat-amber"><i class="fa-solid fa-file-circle-check"></i></div><span>Practice tests</span><strong>${db.tests.length}</strong><small>Tests currently available</small></article>
+          <article class="lms-stat"><div class="stat-icon stat-green"><i class="fa-solid fa-bullhorn"></i></div><span>Announcements</span><strong>${db.announcements.length}</strong><small>Updates from your teacher</small></article>
+        </div>
+      </section>
+      <section class="dashboard-section">
+        <div class="dashboard-section-heading"><div><span class="dashboard-kicker">PICK UP WHERE YOU NEED</span><h2>Study materials</h2><p>Jump straight to the resources you need today.</p></div></div>
+        <div class="dashboard-quick-grid">${quickLinks.map((item,index)=>`<button type="button" class="dashboard-quick-card" onclick="window.ZLMS.go('${item[0]}')"><span class="quick-icon quick-${index}"><i class="fa-solid ${item[3]}"></i></span><span class="quick-card-copy"><strong>${item[1]}</strong><small>${item[2]}</small></span><span class="quick-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span></button>`).join('')}</div>
+      </section>
+      <section class="dashboard-section dashboard-bottom-grid">
+        <div class="dashboard-panel"><div class="dashboard-panel-heading"><span class="panel-icon"><i class="fa-solid fa-bookmark"></i></span><div><h3>Continue learning</h3><p>Your courses in one place</p></div><button type="button" class="text-action" onclick="window.ZLMS.go('courses')">View all <i class="fa-solid fa-arrow-right"></i></button></div>
+          ${db.courses.length?'<div class="empty-state">Open <b>My Courses</b> to continue your lessons.</div>':'<div class="dashboard-empty"><span class="dashboard-empty-icon"><i class="fa-solid fa-book-open"></i></span><strong>Your course list is waiting</strong><p>Courses will appear here when they are published.</p><button type="button" class="text-action" onclick="window.ZLMS.go(\'courses\')">Browse courses <i class="fa-solid fa-arrow-right"></i></button></div>'}
+        </div>
+        <div class="dashboard-panel"><div class="dashboard-panel-heading"><span class="panel-icon panel-icon-warm"><i class="fa-solid fa-lightbulb"></i></span><div><h3>A simple study plan</h3><p>Small steps, consistent progress</p></div></div><div class="study-plan-list"><div><span>01</span><p><b>Choose a topic</b><small>Start with one subject or chapter.</small></p></div><div><span>02</span><p><b>Study the material</b><small>Read notes and review examples.</small></p></div><div><span>03</span><p><b>Practise questions</b><small>Use papers and tests to check understanding.</small></p></div></div></div>
+      </section>`;
   }
   function studentCourses(){vp().innerHTML=header('My Courses','Your institute courses and learning paths')+`<div class="cards-grid">${db.courses.map(c=>`<div class="module-card course-card"><div class="course-cover">${esc(c.subject)}</div><div class="course-body"><h3>${esc(c.title)}</h3><div class="course-meta"><span class="pill">Class ${esc(c.className)}</span><span class="pill">${esc(c.board)}</span><span class="pill">${c.lessons.length} lessons</span></div><p>${esc(c.description)}</p><div class="progress-track"><div class="progress-fill" style="width:${db.progress[c.id]||0}%"></div></div><p style="margin:7px 0 12px;font-size:11px">${db.progress[c.id]||0}% complete</p><button class="lms-btn primary" onclick="window.ZLMS.openCourse('${esc(c.id)}')">Open Course</button></div></div>`).join('')}</div>`}
   window.ZLMS.openCourse=id=>{const c=course(id);if(!c)return;vp().innerHTML=header(c.title,`${c.subject} • Class ${c.className} • ${c.teacher}`)+`<div class="lms-hero"><p>${esc(c.description)}</p></div><div class="lesson-list">${c.lessons.map((l,i)=>`<div class="lesson-row"><div class="num">${i+1}</div><div class="grow"><b>${esc(l.title)}</b><br><small>${esc(l.duration)}</small></div><button class="lms-btn" onclick="window.ZLMS.completeLesson('${c.id}',${i})">${i<Math.round((db.progress[c.id]||0)/25)?'Completed ✓':'Start Lesson'}</button></div>`).join('')}</div>`};
@@ -5162,232 +5248,85 @@
 
         
         /* =========================================================
-           ZWITTERION UI REFRESH — Examin8-inspired learning workspace
-           Preserves existing screens and functionality.
-        ========================================================== */
-        :root {
-            --bg-main: #f4f7fb;
-            --bg-sidebar: #ffffff;
-            --bg-card: #ffffff;
-            --bg-card-hover: #f3f7ff;
-            --text-primary: #172033;
-            --text-secondary: #667085;
-            --accent-cyan: #2563eb;
-            --accent-purple: #7c3aed;
-            --accent-glow: rgba(37, 99, 235, 0.09);
-            --border: #e5eaf2;
-            --header-bg: rgba(255, 255, 255, 0.94);
-            --input-bg: #f7f9fc;
-            --success: #15956b;
-            --danger: #dc3545;
-        }
-
-        body {
-            background: #f4f7fb;
-            color: #172033;
-            overflow: hidden;
-        }
-
-        .sidebar {
-            background: #fff;
-            border-right: 1px solid #e7ebf2;
-            box-shadow: 5px 0 24px rgba(15, 23, 42, .025);
-        }
-
-        .sidebar-brand {
-            padding: 23px 20px;
-            border-bottom: 1px solid #edf0f5;
-        }
-
-        .sidebar-nav { padding: 18px 12px; }
-
-        .nav-item {
-            min-height: 44px;
-            margin-bottom: 5px;
-            padding: 11px 14px;
-            border-radius: 11px;
-            font-size: 13px;
-            font-weight: 600;
-            transition: background .18s ease, color .18s ease, transform .18s ease;
-        }
-
-        .nav-item:hover {
-            background: #f3f6fc;
-            color: #2456c7;
-            transform: translateX(2px);
-        }
-
-        .nav-item.active {
-            background: #edf3ff;
-            color: #2456c7;
-            border-color: #e0eaff;
-            box-shadow: inset 3px 0 0 #3168df;
-        }
-
-        .sidebar-footer {
-            border-top: 1px solid #edf0f5;
-            background: #fff;
-        }
-
-        .top-header {
-            background: rgba(255,255,255,.94);
-            border-bottom: 1px solid #e8edf4;
-            box-shadow: 0 4px 20px rgba(15,23,42,.025);
-            backdrop-filter: blur(16px);
-        }
-
-        .header-search {
-            border: 1px solid #e5eaf2;
-            border-radius: 12px;
-            background: #f7f9fc;
-            transition: border-color .2s ease, box-shadow .2s ease;
-        }
-
-        .header-search:focus-within {
-            border-color: #8eafff;
-            box-shadow: 0 0 0 4px rgba(49,104,223,.09);
-        }
-
-        .content-viewport {
-            background: #f4f7fb;
-            padding: clamp(18px, 3vw, 34px);
-        }
-
-        .page-header { margin-bottom: 25px; }
-
-        .page-header h1,
-        .page-header h2 {
-            color: #172033;
-            letter-spacing: -.035em;
-            font-weight: 800;
-        }
-
-        .cards-grid {
-            gap: 18px;
-        }
-
-        .module-card,
-        .paper-card,
-        .course-card,
-        .lms-stat,
-        .lms-hero,
-        .teacher-grid > *,
-        .teacher-grid-full > *,
-        .content-card,
-        .zw-access-card {
-            border: 1px solid #e7ebf2;
-            border-radius: 18px;
-            background: #fff;
-            box-shadow: 0 5px 22px rgba(26, 45, 80, .035);
-            transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-        }
-
-        .module-card:hover,
-        .paper-card:hover,
-        .course-card:hover {
-            transform: translateY(-3px);
-            border-color: #cbd9fb;
-            box-shadow: 0 14px 34px rgba(35, 71, 140, .09);
-        }
-
-        .card-icon {
-            border-radius: 14px;
-        }
-
-        .paper-card {
-            padding: 20px;
-        }
-
-        .paper-title {
-            color: #172033;
-            font-weight: 750;
-            letter-spacing: -.015em;
-        }
-
-        .paper-meta,
-        .paper-description {
-            color: #667085;
-            line-height: 1.65;
-        }
-
-        .paper-tag {
-            border-radius: 999px;
-            font-weight: 700;
-            letter-spacing: .01em;
-        }
-
-        button,
-        .card-link,
-        .paper-open,
-        input,
-        select,
-        textarea {
-            border-radius: 10px;
-        }
-
-        button:not(.nav-item):not(.close-button) {
-            transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
-        }
-
-        button:not(.nav-item):not(.close-button):hover {
-            filter: brightness(1.02);
-        }
-
-        button:not(.nav-item):not(.close-button):active {
-            transform: translateY(1px);
-        }
-
-        input, select, textarea {
-            border-color: #dfe5ef;
-            background: #fff;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #7fa3f8;
-            box-shadow: 0 0 0 4px rgba(49,104,223,.09);
-        }
-
-        .empty-state {
-            border: 1px dashed #d4ddeb;
-            border-radius: 18px;
-            background: rgba(255,255,255,.72);
-            padding: 36px 22px;
-        }
-
-        .lms-hero {
-            background: linear-gradient(120deg, #ffffff 0%, #f0f5ff 100%);
-        }
-
-        .lms-stat {
-            padding: 18px;
-        }
-
-        .pdf-viewer-modal {
-            backdrop-filter: blur(8px);
-        }
-
-        @media (max-width: 900px) {
-            .content-viewport { padding: 20px 16px; }
-            .cards-grid { gap: 14px; }
-            .sidebar-brand { padding: 18px 15px; }
-        }
-
-        @media (max-width: 600px) {
-            .content-viewport { padding: 16px 12px; }
-            .page-header { margin-bottom: 18px; }
-            .module-card, .paper-card, .course-card { border-radius: 14px; }
-            .paper-card { padding: 16px; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                scroll-behavior: auto !important;
-                transition-duration: .01ms !important;
-                animation-duration: .01ms !important;
-                animation-iteration-count: 1 !important;
-            }
-        }
+   ZWITTERION LEARNING WORKSPACE — polished responsive UI
+   Visual layer only; existing navigation and data flows remain.
+========================================================== */
+:root{
+  --bg-main:#f5f7fb;--bg-sidebar:#fff;--bg-card:#fff;--bg-card-hover:#f6f8ff;
+  --text-primary:#17233b;--text-secondary:#66758d;--accent-cyan:#315fce;
+  --accent-purple:#7457d8;--accent-glow:rgba(49,95,206,.10);--border:#e5eaf2;
+  --header-bg:rgba(255,255,255,.94);--input-bg:#f8faff;--success:#13865c;--danger:#d43d4f;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg-main);color:var(--text-primary);overflow:hidden;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit}
+button{touch-action:manipulation}
+.app-container{background:var(--bg-main)}
+.sidebar{background:#fff;border-right:1px solid #e5eaf2;box-shadow:6px 0 28px rgba(22,39,71,.025)}
+.sidebar-brand{padding:22px 20px;border-bottom:1px solid #edf0f5;gap:12px}
+.logo-badge-small{border:0;border-radius:12px;box-shadow:0 4px 12px rgba(49,95,206,.12)}
+.brand-text h2{font-family:Inter,system-ui,sans-serif;font-size:14px;font-weight:800;letter-spacing:.035em;color:#17233b}
+.brand-text span{font-size:10px;letter-spacing:.11em;font-weight:700;color:#8a96aa}
+.sidebar-nav{padding:18px 12px}
+.nav-item{min-height:44px;margin:3px 0;padding:11px 13px;border:1px solid transparent;border-radius:11px;color:#65738a;font-size:13px;font-weight:600;transition:background .18s ease,color .18s ease,border-color .18s ease}
+.nav-item i{font-size:14px}
+.nav-item:hover{background:#f5f7fc;color:#315fce;transform:none}
+.nav-item.active{background:#edf3ff;color:#2857bd;border-color:#e1eaff;box-shadow:inset 3px 0 0 #315fce;font-weight:750}
+.sidebar-footer{border-top:1px solid #edf0f5;background:#fff}
+.main-wrapper{background:var(--bg-main)}
+.top-header{height:72px;flex-basis:72px;padding:0 clamp(18px,3vw,36px);background:var(--header-bg);border-bottom:1px solid #e7ebf3;box-shadow:0 3px 18px rgba(21,38,71,.025);backdrop-filter:blur(16px)}
+.header-search{width:min(440px,48vw);border:1px solid #e4e9f2;border-radius:13px;background:#f7f9fd;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.header-search:focus-within{border-color:#9ab5f5;box-shadow:0 0 0 4px rgba(49,95,206,.09)}
+.header-search input{background:transparent;border:0;min-height:43px}
+.content-viewport{background:var(--bg-main);padding:clamp(20px,3vw,38px);overscroll-behavior:contain}
+.page-header{margin:0 0 24px}
+.page-header h1,.page-header h2{font-family:Inter,system-ui,sans-serif;color:#17233b;font-weight:800;letter-spacing:-.04em;line-height:1.2}
+.page-header h2{font-size:clamp(22px,2.2vw,29px)}
+.page-header p{margin-top:8px;color:#718097;font-size:13px;line-height:1.7}
+.cards-grid,.paper-list{gap:18px}
+.module-card,.paper-card,.course-card,.lms-stat,.lms-hero,.teacher-form,.lms-form,.lesson-row,.content-card{border:1px solid #e5eaf2;border-radius:17px;background:#fff;box-shadow:0 5px 22px rgba(26,45,80,.035)}
+.module-card,.paper-card,.course-card{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.module-card:hover,.paper-card:hover,.course-card:hover{transform:translateY(-3px);border-color:#cbd9fb;box-shadow:0 14px 34px rgba(35,71,140,.09)}
+.module-card{padding:22px}
+.module-card h3,.paper-title{color:#1c2940;font-weight:750;letter-spacing:-.02em}
+.module-card p,.paper-description,.paper-meta{color:#718097;line-height:1.7}
+.card-icon{width:46px;height:46px;border-radius:14px;background:#edf3ff;color:#315fce}
+.paper-card{padding:21px}
+.paper-tag,.pill{padding:6px 10px;border-radius:999px;background:#edf3ff;color:#315fce;font-size:10px;font-weight:800}
+.course-cover{background:radial-gradient(circle at 18% 18%,rgba(255,255,255,.22),transparent 35%),linear-gradient(130deg,#1f3d82,#426fe0 62%,#7b72df);font-family:Inter,system-ui,sans-serif;font-weight:800;letter-spacing:.01em}
+.course-card{overflow:hidden}
+.lms-hero{padding:clamp(22px,3vw,34px);background:linear-gradient(115deg,#fff 0%,#f0f5ff 66%,#f6f3ff 100%);position:relative;overflow:hidden}
+.lms-hero h1,.lms-hero h2,.lms-hero h3{color:#17233b;letter-spacing:-.035em}
+.lms-hero p{color:#65748b;line-height:1.75}
+.lms-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin:18px 0}
+.lms-stat{padding:19px;min-width:0}
+.lms-stat span{display:block;color:#718097;font-size:12px;font-weight:650;margin-bottom:9px}
+.lms-stat strong{display:block;color:#17233b;font-size:clamp(22px,2.2vw,30px);letter-spacing:-.04em}
+.lms-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0}
+.lms-btn,.btn-primary,.paper-open{border-radius:10px;font-weight:750;transition:transform .16s,box-shadow .16s,background .16s}
+.lms-btn.primary,.btn-primary,.paper-open{background:#315fce;color:#fff;border:1px solid #315fce;box-shadow:0 5px 12px rgba(49,95,206,.13)}
+.lms-btn.primary:hover,.btn-primary:hover,.paper-open:hover{background:#244eaf;box-shadow:0 8px 18px rgba(49,95,206,.2)}
+.lms-btn:not(.primary){background:#fff;border:1px solid #dfe6f1;color:#34435c}
+input,select,textarea,.form-group input,.form-group select,.form-group textarea,.lms-form input,.lms-form select,.lms-form textarea{border-color:#dfe6f1;background:#fff;color:#17233b;border-radius:10px}
+input:focus,select:focus,textarea:focus,.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#8aa9f2;box-shadow:0 0 0 4px rgba(49,95,206,.09)}
+.empty-state{padding:30px 22px;border:1px dashed #cfd9e8;border-radius:16px;background:rgba(255,255,255,.78);color:#738198;line-height:1.7}
+.empty-state strong{color:#24334c}
+.lesson-row{padding:14px 16px}
+.lesson-row .num{background:#edf3ff;color:#315fce}
+.progress-track{height:7px;border-radius:99px;background:#e9eef7;overflow:hidden}
+.progress-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,#315fce,#7b72df)}
+#pdf-viewer-modal{box-shadow:0 0 0 1px rgba(15,23,42,.08)}
+.pdf-viewer-toolbar{background:#17233b}
+#zw-access-gate{background:rgba(15,23,42,.66);backdrop-filter:blur(8px)}
+.zw-access-card{background:#fff!important;border:1px solid #e5eaf2!important;box-shadow:0 24px 80px rgba(15,23,42,.22)!important}
+.zw-access-card h1{color:#17233b!important}.zw-access-card p{color:#64748b!important}
+#zw-access-code{background:#f8faff;color:#17233b;border-color:#dfe6f1}
+#zw-access-submit{background:#315fce}
+:focus-visible{outline:3px solid rgba(49,95,206,.5);outline-offset:3px}
+@media(max-width:1000px){.lms-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.content-viewport{padding:24px}}
+@media(max-width:700px){.top-header{padding:9px 12px}.content-viewport{padding:18px 13px}.lms-stats{gap:10px}.lms-stat{padding:15px}.lms-hero{padding:22px 18px}.cards-grid,.paper-list{grid-template-columns:1fr;gap:13px}.module-card,.paper-card{padding:18px}}
+@media(max-width:420px){.lms-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.lms-stat strong{font-size:22px}.page-header h2{font-size:21px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
 
     </style>
 <div id="zw-access-gate" hidden role="dialog" aria-modal="true" aria-labelledby="zw-access-title">
