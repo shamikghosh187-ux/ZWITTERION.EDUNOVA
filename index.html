@@ -5159,7 +5159,237 @@
   #zw-access-submit:disabled{opacity:.6;cursor:wait}
   #zw-access-message{min-height:24px;margin-top:12px;font-size:13px;color:#fca5a5}
   .zw-access-note{font-size:12px!important;margin:8px 0 0!important;color:#64748b!important}
-</style>
+
+        
+        /* =========================================================
+           ZWITTERION UI REFRESH — Examin8-inspired learning workspace
+           Preserves existing screens and functionality.
+        ========================================================== */
+        :root {
+            --bg-main: #f4f7fb;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f3f7ff;
+            --text-primary: #172033;
+            --text-secondary: #667085;
+            --accent-cyan: #2563eb;
+            --accent-purple: #7c3aed;
+            --accent-glow: rgba(37, 99, 235, 0.09);
+            --border: #e5eaf2;
+            --header-bg: rgba(255, 255, 255, 0.94);
+            --input-bg: #f7f9fc;
+            --success: #15956b;
+            --danger: #dc3545;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #172033;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            background: #fff;
+            border-right: 1px solid #e7ebf2;
+            box-shadow: 5px 0 24px rgba(15, 23, 42, .025);
+        }
+
+        .sidebar-brand {
+            padding: 23px 20px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .sidebar-nav { padding: 18px 12px; }
+
+        .nav-item {
+            min-height: 44px;
+            margin-bottom: 5px;
+            padding: 11px 14px;
+            border-radius: 11px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background .18s ease, color .18s ease, transform .18s ease;
+        }
+
+        .nav-item:hover {
+            background: #f3f6fc;
+            color: #2456c7;
+            transform: translateX(2px);
+        }
+
+        .nav-item.active {
+            background: #edf3ff;
+            color: #2456c7;
+            border-color: #e0eaff;
+            box-shadow: inset 3px 0 0 #3168df;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid #edf0f5;
+            background: #fff;
+        }
+
+        .top-header {
+            background: rgba(255,255,255,.94);
+            border-bottom: 1px solid #e8edf4;
+            box-shadow: 0 4px 20px rgba(15,23,42,.025);
+            backdrop-filter: blur(16px);
+        }
+
+        .header-search {
+            border: 1px solid #e5eaf2;
+            border-radius: 12px;
+            background: #f7f9fc;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .header-search:focus-within {
+            border-color: #8eafff;
+            box-shadow: 0 0 0 4px rgba(49,104,223,.09);
+        }
+
+        .content-viewport {
+            background: #f4f7fb;
+            padding: clamp(18px, 3vw, 34px);
+        }
+
+        .page-header { margin-bottom: 25px; }
+
+        .page-header h1,
+        .page-header h2 {
+            color: #172033;
+            letter-spacing: -.035em;
+            font-weight: 800;
+        }
+
+        .cards-grid {
+            gap: 18px;
+        }
+
+        .module-card,
+        .paper-card,
+        .course-card,
+        .lms-stat,
+        .lms-hero,
+        .teacher-grid > *,
+        .teacher-grid-full > *,
+        .content-card,
+        .zw-access-card {
+            border: 1px solid #e7ebf2;
+            border-radius: 18px;
+            background: #fff;
+            box-shadow: 0 5px 22px rgba(26, 45, 80, .035);
+            transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+        }
+
+        .module-card:hover,
+        .paper-card:hover,
+        .course-card:hover {
+            transform: translateY(-3px);
+            border-color: #cbd9fb;
+            box-shadow: 0 14px 34px rgba(35, 71, 140, .09);
+        }
+
+        .card-icon {
+            border-radius: 14px;
+        }
+
+        .paper-card {
+            padding: 20px;
+        }
+
+        .paper-title {
+            color: #172033;
+            font-weight: 750;
+            letter-spacing: -.015em;
+        }
+
+        .paper-meta,
+        .paper-description {
+            color: #667085;
+            line-height: 1.65;
+        }
+
+        .paper-tag {
+            border-radius: 999px;
+            font-weight: 700;
+            letter-spacing: .01em;
+        }
+
+        button,
+        .card-link,
+        .paper-open,
+        input,
+        select,
+        textarea {
+            border-radius: 10px;
+        }
+
+        button:not(.nav-item):not(.close-button) {
+            transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+        }
+
+        button:not(.nav-item):not(.close-button):hover {
+            filter: brightness(1.02);
+        }
+
+        button:not(.nav-item):not(.close-button):active {
+            transform: translateY(1px);
+        }
+
+        input, select, textarea {
+            border-color: #dfe5ef;
+            background: #fff;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #7fa3f8;
+            box-shadow: 0 0 0 4px rgba(49,104,223,.09);
+        }
+
+        .empty-state {
+            border: 1px dashed #d4ddeb;
+            border-radius: 18px;
+            background: rgba(255,255,255,.72);
+            padding: 36px 22px;
+        }
+
+        .lms-hero {
+            background: linear-gradient(120deg, #ffffff 0%, #f0f5ff 100%);
+        }
+
+        .lms-stat {
+            padding: 18px;
+        }
+
+        .pdf-viewer-modal {
+            backdrop-filter: blur(8px);
+        }
+
+        @media (max-width: 900px) {
+            .content-viewport { padding: 20px 16px; }
+            .cards-grid { gap: 14px; }
+            .sidebar-brand { padding: 18px 15px; }
+        }
+
+        @media (max-width: 600px) {
+            .content-viewport { padding: 16px 12px; }
+            .page-header { margin-bottom: 18px; }
+            .module-card, .paper-card, .course-card { border-radius: 14px; }
+            .paper-card { padding: 16px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                transition-duration: .01ms !important;
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+
+    </style>
 <div id="zw-access-gate" hidden role="dialog" aria-modal="true" aria-labelledby="zw-access-title">
   <section class="zw-access-card">
     <div class="zw-access-mark"><span aria-hidden="true">✦</span> ZWITTERION CLASSES</div>
