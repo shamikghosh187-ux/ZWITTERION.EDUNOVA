@@ -2685,9 +2685,8 @@
 
         }
 
-        byId(
-            "student-otp-request-form"
-        ).addEventListener(
+        const studentOtpRequestForm = byId("student-otp-request-form");
+        if (studentOtpRequestForm) studentOtpRequestForm.addEventListener(
             "submit",
             async function(event) {
 
@@ -3763,10 +3762,10 @@
                 ? "https://zwitterionclasses.co.in"
                 : "";
 
-        const ZWITTERION_API_BASE = window.ZWITTERION_API_BASE;
-
         function apiUrl(path) {
-            return ZWITTERION_API_BASE + path;
+            // Read from window at call time: this script can be invoked before
+            // the cloud-library section has finished initializing.
+            return (window.ZWITTERION_API_BASE || "") + path;
         }
 
         function teacherToken() {
