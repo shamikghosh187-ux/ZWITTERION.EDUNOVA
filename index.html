@@ -3975,6 +3975,14 @@
                                 notice.style.cssText = "position:fixed;z-index:99999;left:50%;bottom:24px;transform:translateX(-50%);width:min(92vw,460px);display:flex;align-items:flex-start;gap:12px;padding:16px 18px;background:var(--card-bg,#111827);color:var(--text-color,#f9fafb);border:1px solid #f59e0b;border-radius:14px;box-shadow:0 12px 36px rgba(0,0,0,.28);font:inherit";
                                 notice.querySelector("button").addEventListener("click", function() { notice.remove(); });
                                 document.body.appendChild(notice);
+                                notice.animate([
+                                    { transform: "translateX(-50%) translateX(0)" },
+                                    { transform: "translateX(-50%) translateX(-5px)" },
+                                    { transform: "translateX(-50%) translateX(5px)" },
+                                    { transform: "translateX(-50%) translateX(-3px)" },
+                                    { transform: "translateX(-50%) translateX(3px)" },
+                                    { transform: "translateX(-50%) translateX(0)" }
+                                ], { duration: 280, easing: "ease-in-out" });
                                 window.setTimeout(function() { if (notice.isConnected) notice.remove(); }, 6000);
                                 return;
                             }
