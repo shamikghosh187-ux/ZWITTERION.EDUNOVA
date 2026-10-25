@@ -3808,7 +3808,7 @@
                     const supabase = await window.zwSupabaseReady;
                     const { data: resources, error } = await supabase
                         .from("resource_library")
-                        .select("id,title,description,class_level,subject,file_name,file_path,published,created_at")
+                        .select("id,title,description,class_level,subject,file_name,file_path,published,is_locked,created_at")
                         .eq("published", true)
                         .order("created_at", { ascending: false });
 
@@ -3831,7 +3831,8 @@
                                 subject: resource.subject || "General",
                                 fileName: resource.file_name,
                                 filePath: resource.file_path,
-                                // Access is granted only when this exact resource is published.
+                                isLocked: Boolean(resource.is_locked),
+                                // Access is granted only when this exact resource is published and unlocked.
                                 url: "",
                                 privateResource: true
                             };
@@ -3940,9 +3941,9 @@
                                             class="paper-open"
                                             data-published-file-path="${escapeHtml(item.filePath || "")}"
                                             data-published-file-title="${escapeHtml(item.title || item.fileName || "PDF")}"
+                                            data-published-file-locked="${item.isLocked ? "true" : "false"}"
                                         >
-                                            <i class="fa-solid fa-file-pdf"></i>
-                                            View PDF
+                                            ${item.isLocked ? '<i class="fa-solid fa-lock"></i> PDF Locked' : '<i class="fa-solid fa-file-pdf"></i> View PDF'}
                                         </button>
                                     ` : `
                                         <button
@@ -3963,6 +3964,10 @@
                     // JSON strings inside HTML attributes can be split by quotes and break clicks.
                     list.querySelectorAll("[data-published-file-path]").forEach(function(button) {
                         button.addEventListener("click", function() {
+                            if (button.dataset.publishedFileLocked === 'true') {
+                                window.alert('🔒 PDF Locked\\n\\nThis study material is temporarily unavailable. Please check back later.');
+                                return;
+                            }
                             openPublishedResourcePdf(
                                 button.dataset.publishedFilePath,
                                 button.dataset.publishedFileTitle || "PDF"
@@ -5136,7 +5141,7 @@
       if (!list || !adminClient || !adminUser) return;
       list.innerHTML = '<p>Loading resources…</p>';
       const { data, error } = await adminClient.from('resource_library')
-        .select('id,title,description,class_level,subject,file_path,file_name,file_size_bytes,published,created_at')
+        .select('id,title,description,class_level,subject,file_path,file_name,file_size_bytes,published,is_locked,created_at')
         .order('created_at', { ascending: false });
       if (error) { list.textContent = 'Could not load resources: ' + error.message; return; }
       if (!data || !data.length) { list.innerHTML = '<div class="empty-state">No resources uploaded yet.</div>'; return; }
@@ -5147,7 +5152,7 @@
         const title = document.createElement('strong');
         title.textContent = item.title || item.file_name;
         const detail = document.createElement('p');
-        detail.textContent = [item.class_level, item.subject, item.published ? 'Published metadata' : 'Draft', (Number(item.file_size_bytes || 0) / 1048576).toFixed(2) + ' MiB'].join(' · ');
+        detail.textContent = [item.class_level, item.subject, item.published ? 'Published metadata' : 'Draft', item.is_locked ? '🔒 PDF LOCKED' : '🔓 PDF UNLOCKED', (Number(item.file_size_bytes || 0) / 1048576).toFixed(2) + ' MiB'].join(' · ');
         const actions = document.createElement('div');
         actions.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:10px';
         const open = document.createElement('button');
@@ -5179,7 +5184,18 @@
           setStatus('Resource deleted.');
           await loadResources();
         });
-        actions.append(open, toggle, remove);
+        const lock = document.createElement('button');
+        lock.type = 'button'; lock.className = 'lms-btn'; lock.textContent = item.is_locked ? 'Unlock PDF' : 'Lock PDF';
+        lock.setAttribute('aria-label', (item.is_locked ? 'Unlock ' : 'Lock ') + (item.title || item.file_name));
+        lock.addEventListener('click', async () => {
+          lock.disabled = true;
+          const nextLocked = !item.is_locked;
+          const { error: lockError } = await adminClient.from('resource_library').update({ is_locked: nextLocked }).eq('id', item.id);
+          if (lockError) { lock.disabled = false; setStatus('Could not ' + (nextLocked ? 'lock' : 'unlock') + ' PDF: ' + lockError.message, true); return; }
+          setStatus(nextLocked ? 'PDF locked. Students can still see it, but cannot open it.' : 'PDF unlocked. Students can open it again.');
+          await loadResources();
+        });
+        actions.append(open, toggle, lock, remove);
         row.append(title, detail, actions);
         list.append(row);
       }
