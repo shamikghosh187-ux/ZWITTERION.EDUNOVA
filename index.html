@@ -1765,7 +1765,7 @@
         class="app-container hidden"
     >
 
-        <aside class="sidebar">
+        <aside class="sidebar" id="zw-mobile-sidebar">
 
             <div>
 
@@ -1831,6 +1831,10 @@
         <div class="main-wrapper">
 
             <header class="top-header">
+
+                <button type="button" id="zw-mobile-menu-toggle" class="zw-mobile-menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="zw-mobile-sidebar">
+                    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                </button>
 
                 <div class="header-search">
 
@@ -5909,6 +5913,46 @@ html[data-theme="dark"] .zw-access-card p{color:#9ba9c1!important}
         .zw-resource-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.zw-resource-link{min-width:0;display:flex;align-items:center;gap:14px;padding:17px;border:1px solid var(--border);border-radius:16px;background:var(--bg-card);color:var(--text-primary);text-align:left;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s}.zw-resource-icon{flex:0 0 43px;grid-row:auto}.zw-resource-link>span:nth-child(2){min-width:0;display:flex;flex-direction:column;gap:5px}.zw-resource-link strong{font-size:12px;font-weight:800}.zw-resource-link small{font-size:10px;color:var(--text-secondary);line-height:1.6}.zw-resource-arrow{margin-left:auto;color:var(--text-secondary);font-size:11px}.zw-dashboard-note{display:flex;align-items:center;gap:8px;margin-top:20px;color:var(--text-secondary);font-size:10px;line-height:1.6}.zw-dashboard-note i{color:var(--success)}
         @media(max-width:1100px){.zw-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.zw-hero-art{flex-basis:170px;transform:scale(.88)}}@media(max-width:680px){.zw-dashboard-hero{min-height:0;padding:24px 19px}.zw-hero-art{display:none}.zw-dashboard-hero h1{font-size:29px}.zw-hero-actions{align-items:stretch;flex-direction:column}.zw-button{width:100%}.zw-section-heading{align-items:flex-start;flex-direction:column}.zw-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.zw-stat-card{padding:13px;grid-template-columns:34px minmax(0,1fr);column-gap:9px}.zw-stat-icon{width:34px;height:34px;font-size:13px}.zw-stat-card strong{font-size:23px}.zw-stat-label{font-size:8px}.zw-stat-card small{font-size:9px}.zw-resource-grid{grid-template-columns:1fr}.zw-resource-link{padding:14px}}
 
+    <style id="zw-mobile-navigation">
+
+        /* Mobile navigation and student-area layout */
+        .zw-mobile-menu-toggle { display:none; }
+        @media (max-width: 700px) {
+          #app-workspace { position:relative; height:100dvh; min-height:0; }
+          #zw-mobile-menu-toggle {
+            display:inline-flex; align-items:center; justify-content:center; flex:0 0 44px;
+            width:44px; height:44px; border:1px solid var(--border); border-radius:12px;
+            color:var(--text-primary); background:var(--bg-card); cursor:pointer;
+          }
+          .sidebar {
+            position:fixed; z-index:10020; top:0; bottom:0; left:0;
+            width:min(84vw,300px); max-width:300px; height:100dvh;
+            transform:translateX(-105%); transition:transform .22s ease;
+            box-shadow:none; overflow-y:auto; overscroll-behavior:contain;
+          }
+          .sidebar.zw-mobile-sidebar-open {
+            transform:translateX(0); box-shadow:18px 0 48px rgba(0,0,0,.25);
+          }
+          #app-workspace.zw-mobile-nav-open::after {
+            content:""; position:fixed; z-index:10010; inset:0;
+            background:rgba(2,6,23,.56); backdrop-filter:blur(2px);
+          }
+          .main-wrapper { width:100%; min-width:0; }
+          .top-header { height:62px; flex-basis:62px; padding:0 12px; gap:10px; }
+          .header-search { flex:1; width:auto; min-width:0; }
+          .header-search input { min-width:0; }
+          .header-actions { gap:8px; }
+          .version-pill { display:none; }
+          .content-viewport { padding:18px 14px calc(24px + env(safe-area-inset-bottom)); }
+          .page-header h2 { font-size:clamp(18px,5vw,22px); overflow-wrap:anywhere; }
+          .cards-grid { grid-template-columns:minmax(0,1fr); gap:12px; }
+          .module-card { min-width:0; padding:17px; }
+          .paper-card { min-width:0; overflow-wrap:anywhere; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .sidebar { transition:none !important; }
+        }
+    </style>
     </style>
 <div id="zw-access-gate" hidden role="dialog" aria-modal="true" aria-labelledby="zw-access-title">
   <section class="zw-access-card">
@@ -5924,6 +5968,40 @@ html[data-theme="dark"] .zw-access-card p{color:#9ba9c1!important}
     </form>
   </section>
 </div>
+<script>
+(function(){
+  const workspace=document.getElementById("app-workspace");
+  const sidebar=document.getElementById("zw-mobile-sidebar");
+  const toggle=document.getElementById("zw-mobile-menu-toggle");
+  if(!workspace||!sidebar||!toggle) return;
+  function closeMenu(){
+    sidebar.classList.remove("zw-mobile-sidebar-open");
+    workspace.classList.remove("zw-mobile-nav-open");
+    toggle.setAttribute("aria-expanded","false");
+    toggle.setAttribute("aria-label","Open navigation menu");
+    toggle.innerHTML='<i class="fa-solid fa-bars" aria-hidden="true"></i>';
+  }
+  function openMenu(){
+    sidebar.classList.add("zw-mobile-sidebar-open");
+    workspace.classList.add("zw-mobile-nav-open");
+    toggle.setAttribute("aria-expanded","true");
+    toggle.setAttribute("aria-label","Close navigation menu");
+    toggle.innerHTML='<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
+  }
+  toggle.addEventListener("click",function(){
+    sidebar.classList.contains("zw-mobile-sidebar-open")?closeMenu():openMenu();
+  });
+  workspace.addEventListener("click",function(event){
+    if(workspace.classList.contains("zw-mobile-nav-open") && event.target.closest("#zw-mobile-sidebar")) {
+      if(event.target.closest("button,a,[role='button']")) closeMenu();
+    } else if(workspace.classList.contains("zw-mobile-nav-open") && !event.target.closest("#zw-mobile-menu-toggle")) {
+      closeMenu();
+    }
+  });
+  document.addEventListener("keydown",function(event){if(event.key==="Escape") closeMenu();});
+  window.addEventListener("resize",function(){if(window.innerWidth>700) closeMenu();});
+})();
+</script>
 <script>
 (function(){
   "use strict";
