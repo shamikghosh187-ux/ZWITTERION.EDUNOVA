@@ -3965,7 +3965,17 @@
                     list.querySelectorAll("[data-published-file-path]").forEach(function(button) {
                         button.addEventListener("click", function() {
                             if (button.dataset.publishedFileLocked === 'true') {
-                                window.alert('🔒 PDF Locked\\n\\nThis study material is temporarily unavailable. Please check back later.');
+                                const existingNotice = document.getElementById("zw-pdf-lock-notice");
+                                if (existingNotice) existingNotice.remove();
+                                const notice = document.createElement("div");
+                                notice.id = "zw-pdf-lock-notice";
+                                notice.setAttribute("role", "status");
+                                notice.setAttribute("aria-live", "polite");
+                                notice.innerHTML = '<span style="font-size:1.2rem" aria-hidden="true">🔒</span><div><strong>PDF Locked</strong><p style="margin:4px 0 0">This study material is temporarily unavailable. Please check back later.</p></div><button type="button" aria-label="Dismiss message" style="margin-left:auto;background:transparent;border:0;color:inherit;font-size:1.2rem;cursor:pointer;padding:0 4px">×</button>';
+                                notice.style.cssText = "position:fixed;z-index:99999;left:50%;bottom:24px;transform:translateX(-50%);width:min(92vw,460px);display:flex;align-items:flex-start;gap:12px;padding:16px 18px;background:var(--card-bg,#111827);color:var(--text-color,#f9fafb);border:1px solid #f59e0b;border-radius:14px;box-shadow:0 12px 36px rgba(0,0,0,.28);font:inherit";
+                                notice.querySelector("button").addEventListener("click", function() { notice.remove(); });
+                                document.body.appendChild(notice);
+                                window.setTimeout(function() { if (notice.isConnected) notice.remove(); }, 6000);
                                 return;
                             }
                             openPublishedResourcePdf(
