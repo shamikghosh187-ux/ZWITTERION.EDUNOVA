@@ -3944,7 +3944,7 @@
                                             onclick="openPublishedResourcePdf(${JSON.stringify(item.filePath)}, ${JSON.stringify(item.title || item.fileName || 'PDF')})"
                                         >
                                             <i class="fa-solid fa-file-pdf"></i>
-                                            Open / Download
+                                            View PDF
                                         </button>
                                     ` : `
                                         <button
@@ -4084,7 +4084,7 @@
             } finally {
                 if (button && button instanceof HTMLButtonElement) {
                     button.disabled = false;
-                    button.textContent = button.dataset.originalText || "Open / Download";
+                    button.textContent = button.dataset.originalText || "View PDF";
                     delete button.dataset.originalText;
                 }
             }
