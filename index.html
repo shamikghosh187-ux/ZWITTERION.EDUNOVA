@@ -3833,7 +3833,8 @@
                                 description: resource.description || "",
                                 subject: resource.subject || "General",
                                 fileName: resource.file_name,
-                                // Private PDFs are deliberately not given public URLs.
+                                filePath: resource.file_path,
+                                // Access is granted only when this exact resource is published.
                                 url: "",
                                 privateResource: true
                             };
@@ -3937,9 +3938,13 @@
 
                                 <div class="content-card-actions">
                                     ${item.privateResource ? `
-                                        <button type="button" class="paper-open" disabled title="The PDF is private; secure student download access must be enabled first.">
-                                            <i class="fa-solid fa-lock"></i>
-                                            Download access pending
+                                        <button
+                                            type="button"
+                                            class="paper-open"
+                                            onclick="openPublishedResourcePdf(${JSON.stringify(item.filePath)}, ${JSON.stringify(item.title || item.fileName || 'PDF')})"
+                                        >
+                                            <i class="fa-solid fa-file-pdf"></i>
+                                            Open / Download
                                         </button>
                                     ` : `
                                         <button
@@ -4041,6 +4046,48 @@
             modal.classList.add("active");
             modal.setAttribute("aria-hidden", "false");
             document.body.style.overflow = "hidden";
+        }
+
+        async function openPublishedResourcePdf(filePath, title) {
+            const modal = document.getElementById("pdf-viewer-modal");
+            const frame = document.getElementById("pdf-viewer-frame");
+            const heading = document.getElementById("pdf-viewer-title");
+            if (!modal || !frame || !heading || !filePath) return;
+
+            const button = document.activeElement;
+            if (button && button instanceof HTMLButtonElement) {
+                button.disabled = true;
+                button.dataset.originalText = button.textContent;
+                button.textContent = "Loading PDF...";
+            }
+
+            try {
+                const supabase = await window.zwSupabaseReady;
+                const { data, error } = await supabase.storage
+                    .from("class-resources")
+                    .download(filePath);
+                if (error) throw error;
+
+                const blobUrl = URL.createObjectURL(data);
+                if (frame.dataset.generatedBlobUrl) {
+                    URL.revokeObjectURL(frame.dataset.generatedBlobUrl);
+                }
+                frame.dataset.generatedBlobUrl = blobUrl;
+                heading.textContent = title || "PDF";
+                frame.src = blobUrl;
+                modal.classList.add("active");
+                modal.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
+            } catch (error) {
+                console.error("Published PDF download failed:", error);
+                alert("This published PDF could not be opened. Please refresh the page and try again.");
+            } finally {
+                if (button && button instanceof HTMLButtonElement) {
+                    button.disabled = false;
+                    button.textContent = button.dataset.originalText || "Open / Download";
+                    delete button.dataset.originalText;
+                }
+            }
         }
 
         function closeCloudPdf() {
