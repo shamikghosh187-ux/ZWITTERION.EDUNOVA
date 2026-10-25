@@ -4978,47 +4978,77 @@
   function header(title,sub){return `<div class="page-header"><h2>${esc(title)}</h2><p>${esc(sub)}</p></div>`}
   function stats(items){return `<div class="lms-stats">${items.map(x=>`<div class="lms-stat"><span>${esc(x[0])}</span><strong>${esc(x[1])}</strong></div>`).join('')}</div>`}
   function adminPortal(){
-    // Client-side preview gate only. Never use this for production authentication:
-    // credentials in browser JavaScript can be inspected by anyone who loads the page.
+    // Client-side preview gate only; this is not secure production authentication.
     const ADMIN_EMAIL = 'tndeo000@gmail.com';
     const ADMIN_PASSWORD = 'tndzwitterion123';
+    const renderUpload = () => {
+      vp().innerHTML=header('Admin Portal','Resource management')+`
+        <section class="lms-hero" style="margin-bottom:22px">
+          <div><span class="dashboard-kicker">ADMIN WORKSPACE</span><h2 style="margin:8px 0">Study material manager</h2><p>Prepare PDFs for the student library. Uploading and publishing will activate once secure server-side admin authentication and storage are connected.</p></div>
+        </section>
+        <div class="lms-stats dashboard-stats" style="margin-bottom:22px">
+          <article class="lms-stat"><div class="stat-icon stat-blue"><i class="fa-solid fa-file-pdf"></i></div><span>Resources listed</span><strong>0</strong><small>Connected library required</small></article>
+          <article class="lms-stat"><div class="stat-icon stat-violet"><i class="fa-solid fa-cloud-arrow-up"></i></div><span>Upload status</span><strong style="font-size:18px">Not connected</strong><small>No files have been uploaded</small></article>
+          <article class="lms-stat"><div class="stat-icon stat-amber"><i class="fa-solid fa-shield-halved"></i></div><span>Access control</span><strong style="font-size:18px">Pending</strong><small>Server-side verification required</small></article>
+        </div>
+        <section class="teacher-form" style="max-width:100%">
+          <div class="card-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+          <h3>Upload a study resource</h3>
+          <p>PDF files up to 10 MiB are accepted by this form for preparation. This preview does not transmit or save files.</p>
+          <form id="zw-resource-upload-form" class="teacher-grid">
+            <div class="form-group"><label for="zw-resource-title">Resource title *</label><input id="zw-resource-title" required maxlength="120" placeholder="e.g. Class 11 Physics — Kinematics"></div>
+            <div class="form-group"><label for="zw-resource-subject">Subject *</label><select id="zw-resource-subject" required><option value="">Choose subject</option><option>Physics</option><option>Chemistry</option><option>Mathematics</option><option>Biology</option><option>English</option><option>Other</option></select></div>
+            <div class="form-group"><label for="zw-resource-class">Class *</label><select id="zw-resource-class" required><option value="">Choose class</option><option>Class 6</option><option>Class 7</option><option>Class 8</option><option>Class 9</option><option>Class 10</option><option>Class 11</option><option>Class 12</option><option>JEE</option><option>NEET</option></select></div>
+            <div class="form-group"><label for="zw-resource-category">Category *</label><select id="zw-resource-category" required><option value="">Choose category</option><option>Notes</option><option>Question Papers</option><option>Previous Year Questions</option><option>Sample Papers</option><option>Assignments</option><option>Other</option></select></div>
+            <div class="form-group teacher-grid-full"><label for="zw-resource-description">Description (optional)</label><textarea id="zw-resource-description" rows="3" maxlength="500" placeholder="What will students learn from this resource?"></textarea></div>
+            <div class="form-group teacher-grid-full"><label for="zw-resource-file">PDF file *</label><input id="zw-resource-file" type="file" accept="application/pdf,.pdf" required><small id="zw-resource-file-meta">PDF only · maximum 10 MiB</small></div>
+            <div class="form-group teacher-grid-full"><label class="form-check" style="display:flex;align-items:center;gap:10px"><input id="zw-resource-published" type="checkbox" style="width:auto"> Mark as published (will take effect only after storage is connected)</label></div>
+            <div class="form-group teacher-grid-full" style="display:flex;gap:10px;flex-wrap:wrap"><button class="lms-btn primary" id="zw-resource-prepare" type="submit"><i class="fa-solid fa-clipboard-check"></i> Validate resource</button><button class="lms-btn" type="button" id="zw-resource-reset">Clear form</button></div>
+            <p id="zw-resource-upload-status" class="teacher-grid-full" role="status" aria-live="polite"></p>
+          </form>
+          <div class="empty-state" style="margin-top:18px"><strong><i class="fa-solid fa-lock"></i> Uploads are not live yet.</strong><br>This screen currently validates your selected PDF locally. A secure server-side admin session, private Supabase Storage upload, metadata save, and publish/unpublish API must be connected before any file can be saved or shown to students.</div>
+        </section>
+        <div class="lms-toolbar" style="margin-top:18px"><button class="lms-btn" type="button" onclick="window.ZLMS.go('dashboard')"><i class="fa-solid fa-arrow-left"></i> Return to dashboard</button></div>`;
+      const form=byId('zw-resource-upload-form'), fileInput=byId('zw-resource-file'), meta=byId('zw-resource-file-meta'), status=byId('zw-resource-upload-status');
+      fileInput?.addEventListener('change',()=>{
+        const file=fileInput.files?.[0];
+        if(!file){meta.textContent='PDF only · maximum 10 MiB';return;}
+        const valid=file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf');
+        if(!valid||file.size>10*1024*1024){meta.textContent=!valid?'Please choose a PDF file.':'File exceeds the 10 MiB limit.';meta.style.color='#b42318';return;}
+        meta.textContent=file.name+' · '+(file.size/1024/1024).toFixed(2)+' MiB · ready for validation';
+        meta.style.color='';
+      });
+      form?.addEventListener('submit',event=>{
+        event.preventDefault();
+        const file=fileInput?.files?.[0];
+        if(!form.reportValidity())return;
+        if(!file){status.textContent='Choose a PDF file first.';return;}
+        if(!(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf'))){status.textContent='Only PDF files are allowed.';return;}
+        if(file.size>10*1024*1024){status.textContent='This file is larger than 10 MiB. Choose a smaller PDF.';return;}
+        status.textContent='Validation passed for "'+file.name+'". Nothing was uploaded or published because secure storage is not connected yet.';
+      });
+      byId('zw-resource-reset')?.addEventListener('click',()=>{form?.reset();meta.textContent='PDF only · maximum 10 MiB';if(status)status.textContent='';});
+    };
     vp().innerHTML=header('Admin Portal','Administrator access')+`
       <section class="teacher-form" style="max-width:720px">
         <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
         <h3>Admin access</h3>
-        <p>Sign in to open the administrator preview.</p>
+        <p>Sign in to open the administrator workspace.</p>
         <form id="zw-admin-login-form" class="teacher-grid" novalidate>
-          <div class="form-group teacher-grid-full">
-            <label for="zw-admin-email">Admin email</label>
-            <input id="zw-admin-email" name="email" type="email" autocomplete="username" required maxlength="254" placeholder="Your email">
-          </div>
-          <div class="form-group teacher-grid-full">
-            <label for="zw-admin-password">Password</label>
-            <input id="zw-admin-password" name="password" type="password" autocomplete="current-password" required maxlength="128" placeholder="Enter password">
-          </div>
-          <div class="form-group teacher-grid-full">
-            <button class="lms-btn primary" type="submit">Sign in</button>
-          </div>
+          <div class="form-group teacher-grid-full"><label for="zw-admin-email">Admin email</label><input id="zw-admin-email" name="email" type="email" autocomplete="username" required maxlength="254" placeholder="Your email"></div>
+          <div class="form-group teacher-grid-full"><label for="zw-admin-password">Password</label><input id="zw-admin-password" name="password" type="password" autocomplete="current-password" required maxlength="128" placeholder="Enter password"></div>
+          <div class="form-group teacher-grid-full"><button class="lms-btn primary" type="submit">Sign in</button></div>
           <p id="zw-admin-login-error" class="hidden" role="alert"></p>
         </form>
       </section>`;
-    const form=byId('zw-admin-login-form');
-    const emailInput=byId('zw-admin-email');
-    const passwordInput=byId('zw-admin-password');
-    const error=byId('zw-admin-login-error');
+    const form=byId('zw-admin-login-form'), emailInput=byId('zw-admin-email'), passwordInput=byId('zw-admin-password'), error=byId('zw-admin-login-error');
     if(!form)return;
     form.addEventListener('submit',event=>{
       event.preventDefault();
-      const email=(emailInput?.value||'').trim().toLowerCase();
-      const password=passwordInput?.value||'';
-      if(email!==ADMIN_EMAIL||password!==ADMIN_PASSWORD){
-        if(error){error.textContent='Email or password is incorrect. Try again.';error.classList.remove('hidden')}
-        return;
+      if((emailInput?.value||'').trim().toLowerCase()!==ADMIN_EMAIL||(passwordInput?.value||'')!==ADMIN_PASSWORD){
+        if(error){error.textContent='Email or password is incorrect. Try again.';error.classList.remove('hidden')} return;
       }
-      vp().innerHTML=header('Admin Portal','Administrator access')+`
-        <div class="lms-hero"><h3>Welcome to the Admin Portal</h3><p>Administrator preview opened successfully.</p></div>
-        <div class="empty-state" role="status" style="margin-top:18px"><strong>Resource management is not connected.</strong><br>Uploading, publishing, protected downloads, and deletion remain unavailable until server-side authentication, authorization, and private storage are configured.</div>
-        <div class="lms-toolbar"><button class="lms-btn" onclick="window.ZLMS.go('dashboard')">Return to dashboard</button></div>`;
+      renderUpload();
     });
   }
   function studentDashboard(){
