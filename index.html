@@ -3789,21 +3789,63 @@
             const selectedBoard = String(appState.selectedBoard || "");
             const selectedSchool = String(appState.selectedSchool || "");
 
-            return (result.items || []).filter(function(item) {
-                const classOK =
-                    !item.className ||
-                    item.className === selectedClass;
-
-                const boardOK =
-                    !item.board ||
-                    item.board === selectedBoard;
-
-                const schoolOK =
-                    !item.school ||
-                    item.school === selectedSchool;
-
+            const apiItems = (result.items || []).filter(function(item) {
+                const classOK = !item.className || item.className === selectedClass;
+                const boardOK = !item.board || item.board === selectedBoard;
+                const schoolOK = !item.school || item.school === selectedSchool;
                 return classOK && boardOK && schoolOK;
             });
+
+            // Admin uploads are stored in resource_library. Include published
+            // Notes there as well as the existing /api/content catalogue.
+            if (type === "notes" && window.zwSupabaseReady) {
+                try {
+                    const supabase = await window.zwSupabaseReady;
+                    const { data: resources, error } = await supabase
+                        .from("resource_library")
+                        .select("id,title,description,class_level,subject,file_name,file_path,published,created_at")
+                        .eq("published", true)
+                        .order("created_at", { ascending: false });
+
+                    if (error) throw error;
+
+                    const noteItems = (resources || [])
+                        .filter(function(resource) {
+                            const classLevel = String(resource.class_level || "");
+                            const chosenClass = String(selectedClass || "");
+                            return !chosenClass ||
+                                classLevel.toLowerCase().replace(/^class\\s*/, "") ===
+                                chosenClass.toLowerCase().replace(/^class\\s*/, "") ||
+                                classLevel.toLowerCase() === chosenClass.toLowerCase();
+                        })
+                        .map(function(resource) {
+                            return {
+                                id: resource.id,
+                                title: resource.title,
+                                description: resource.description || "",
+                                subject: resource.subject || "General",
+                                fileName: resource.file_name,
+                                // Private PDFs are deliberately not given public URLs.
+                                url: "",
+                                privateResource: true
+                            };
+                        });
+
+                    const knownTitles = new Set(apiItems.map(function(item) {
+                        return String(item.title || "").trim().toLowerCase();
+                    }));
+                    noteItems.forEach(function(item) {
+                        if (!knownTitles.has(String(item.title || "").trim().toLowerCase())) {
+                            apiItems.push(item);
+                        }
+                    });
+                } catch (error) {
+                    // Preserve the existing catalogue if Supabase is temporarily unavailable.
+                    console.error("Supabase Notes catalogue error:", error);
+                }
+            }
+
+            return apiItems;
         }
 
         function contentTypeLabel(type) {
@@ -3878,14 +3920,21 @@
                                 </div>
 
                                 <div class="content-card-actions">
-                                    <button
-                                        type="button"
-                                        class="paper-open"
-                                        onclick="openCloudPdf(${JSON.stringify(item.url)}, ${JSON.stringify(item.title || item.fileName || 'PDF')})"
-                                    >
-                                        <i class="fa-solid fa-file-pdf"></i>
-                                        Open
-                                    </button>
+                                    ${item.privateResource ? `
+                                        <button type="button" class="paper-open" disabled title="The PDF is private; secure student download access must be enabled first.">
+                                            <i class="fa-solid fa-lock"></i>
+                                            Download access pending
+                                        </button>
+                                    ` : `
+                                        <button
+                                            type="button"
+                                            class="paper-open"
+                                            onclick="openCloudPdf(${JSON.stringify(item.url)}, ${JSON.stringify(item.title || item.fileName || 'PDF')})"
+                                        >
+                                            <i class="fa-solid fa-file-pdf"></i>
+                                            Open
+                                        </button>
+                                    `}
                                 </div>
                             </article>
                         `;
