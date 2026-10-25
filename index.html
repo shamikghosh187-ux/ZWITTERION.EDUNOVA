@@ -3822,8 +3822,8 @@
                             const classLevel = String(resource.class_level || "");
                             const chosenClass = String(selectedClass || "");
                             return !chosenClass ||
-                                classLevel.toLowerCase().replace(/^class\\s*/, "") ===
-                                chosenClass.toLowerCase().replace(/^class\\s*/, "") ||
+                                classLevel.toLowerCase().replace(/^class\s*/, "") ===
+                                chosenClass.toLowerCase().replace(/^class\s*/, "") ||
                                 classLevel.toLowerCase() === chosenClass.toLowerCase();
                         })
                         .map(function(resource) {
