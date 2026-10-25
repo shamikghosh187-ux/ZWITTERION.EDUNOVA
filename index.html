@@ -1856,7 +1856,17 @@
                 null,
 
             currentTheme:
-                "light"
+                (function () {
+                    try {
+                        const saved = localStorage.getItem("zwitterion-theme");
+                        if (saved === "dark" || saved === "light") return saved;
+                        return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+                            ? "dark"
+                            : "light";
+                    } catch (_) {
+                        return "light";
+                    }
+                })()
 
         };
 
@@ -4653,55 +4663,34 @@
            THEME
         ========================================================== */
 
+        function applyTheme(theme) {
+            const safeTheme = theme === "dark" ? "dark" : "light";
+            appState.currentTheme = safeTheme;
+            document.documentElement.setAttribute("data-theme", safeTheme);
+
+            const icon = document.getElementById("theme-icon");
+            if (icon) {
+                icon.className = safeTheme === "dark"
+                    ? "fa-solid fa-moon"
+                    : "fa-solid fa-sun";
+            }
+
+            try {
+                localStorage.setItem("zwitterion-theme", safeTheme);
+            } catch (_) {
+                // The theme still works for this page even if storage is unavailable.
+            }
+        }
+
         function toggleTheme() {
+            applyTheme(appState.currentTheme === "dark" ? "light" : "dark");
+        }
 
-            const html =
-                document.documentElement;
-
-
-            const icon =
-                document.getElementById(
-                    "theme-icon"
-                );
-
-
-            if (
-                appState.currentTheme ===
-                "dark"
-            ) {
-
-                appState.currentTheme =
-                    "light";
-
-
-                html.setAttribute(
-                    "data-theme",
-                    "light"
-                );
-
-
-                icon.className =
-                    "fa-solid fa-sun";
-
-            }
-
-            else {
-
-                appState.currentTheme =
-                    "dark";
-
-
-                html.setAttribute(
-                    "data-theme",
-                    "dark"
-                );
-
-
-                icon.className =
-                    "fa-solid fa-moon";
-
-            }
-
+        // Restore the saved appearance without changing any student, PDF, or admin state.
+        try {
+            applyTheme(appState.currentTheme);
+        } catch (_) {
+            // Keep the page usable if theme initialization runs before the app state exists.
         }
 
 
