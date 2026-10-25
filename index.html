@@ -3938,7 +3938,8 @@
                                         <button
                                             type="button"
                                             class="paper-open"
-                                            onclick="openPublishedResourcePdf(${JSON.stringify(item.filePath)}, ${JSON.stringify(item.title || item.fileName || 'PDF')})"
+                                            data-published-file-path="${escapeHtml(item.filePath || "")}"
+                                            data-published-file-title="${escapeHtml(item.title || item.fileName || "PDF")}"
                                         >
                                             <i class="fa-solid fa-file-pdf"></i>
                                             View PDF
@@ -3957,6 +3958,17 @@
                             </article>
                         `;
                     }).join("");
+
+                    // Bind PDF buttons after rendering. Avoid inline onclick attributes:
+                    // JSON strings inside HTML attributes can be split by quotes and break clicks.
+                    list.querySelectorAll("[data-published-file-path]").forEach(function(button) {
+                        button.addEventListener("click", function() {
+                            openPublishedResourcePdf(
+                                button.dataset.publishedFilePath,
+                                button.dataset.publishedFileTitle || "PDF"
+                            );
+                        });
+                    });
                 })
                 .catch(function(error) {
                     console.error("Content library error:", error);
