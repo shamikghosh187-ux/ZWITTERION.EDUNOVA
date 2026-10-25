@@ -2843,9 +2843,8 @@
             }
         );
 
-        byId(
-            "student-otp-verify-form"
-        ).addEventListener(
+        const studentOtpVerifyForm = byId("student-otp-verify-form");
+        if (studentOtpVerifyForm) studentOtpVerifyForm.addEventListener(
             "submit",
             async function(event) {
 
@@ -2990,9 +2989,8 @@
             }
         );
 
-        byId(
-            "student-otp-resend"
-        ).addEventListener(
+        const studentOtpResendButton = byId("student-otp-resend");
+        if (studentOtpResendButton) studentOtpResendButton.addEventListener(
             "click",
             async function() {
 
