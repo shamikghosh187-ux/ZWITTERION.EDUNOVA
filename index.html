@@ -5138,29 +5138,43 @@
     : null;
 
   window.launchApp = function () {
-    if (originalLaunch) {
-      originalLaunch();
-    } else {
-      // Safe fallback: reveal the authenticated workspace without throwing.
-      [
-        'screen-student-login',
-        'screen-teacher-login',
-        'screen-access-select',
-        'screen-role-select',
-        'screen-student-profile',
-        'screen-teacher-profile'
-      ].forEach(function (id) {
-        const screen = document.getElementById(id);
-        if (screen) screen.classList.add('hidden');
-      });
+    // A later script or extension may overwrite the original global handler.
+    // Never let a missing handler prevent the authenticated workspace opening.
+    try {
+      if (typeof originalLaunch === 'function' && originalLaunch !== window.launchApp) {
+        originalLaunch();
+      } else {
+        [
+          'screen-student-login',
+          'screen-teacher-login',
+          'screen-access-select',
+          'screen-role-select',
+          'screen-student-profile',
+          'screen-teacher-profile'
+        ].forEach(function (id) {
+          const screen = document.getElementById(id);
+          if (screen) {
+            screen.classList.add('hidden');
+            screen.setAttribute('aria-hidden', 'true');
+          }
+        });
 
-      const workspace = document.getElementById('app-workspace');
+        const workspace = document.getElementById('app-workspace');
+        if (workspace) {
+          workspace.classList.remove('hidden');
+          workspace.style.display = '';
+          workspace.setAttribute('aria-hidden', 'false');
+        }
+
+        if (typeof buildNavigation === 'function') buildNavigation();
+      }
+    } catch (error) {
+      console.error('Workspace launch failed:', error);
+      const workspace = byId('app-workspace');
       if (workspace) {
         workspace.classList.remove('hidden');
         workspace.style.display = '';
       }
-
-      if (typeof buildNavigation === 'function') buildNavigation();
     }
 
     const tag = byId('meta-class-board');
