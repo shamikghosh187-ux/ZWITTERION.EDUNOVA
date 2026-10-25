@@ -4079,7 +4079,8 @@
                 document.body.style.overflow = "hidden";
             } catch (error) {
                 console.error("Published PDF download failed:", error);
-                alert("This published PDF could not be opened. Please refresh the page and try again.");
+                const detail = error && error.message ? error.message : "Unknown storage error";
+                alert("Could not open this PDF: " + detail + "\\n\\nCheck that the resource is published and that the class-resources storage policy allows published PDFs.");
             } finally {
                 if (button && button instanceof HTMLButtonElement) {
                     button.disabled = false;
@@ -4096,6 +4097,10 @@
             if (!modal || !frame) return;
 
             frame.src = "";
+            if (frame.dataset.generatedBlobUrl) {
+                URL.revokeObjectURL(frame.dataset.generatedBlobUrl);
+                delete frame.dataset.generatedBlobUrl;
+            }
             modal.classList.remove("active");
             modal.setAttribute("aria-hidden", "true");
             document.body.style.overflow = "";
@@ -5896,7 +5901,7 @@ html[data-theme="dark"] .zw-access-card p{color:#9ba9c1!important}
       console.warn("Could not restore saved PDF access:",e);
     }
   }
-  form.addEventListener("submit",async function(event){
+  if(form) form.addEventListener("submit",async function(event){
     event.preventDefault();
     message.textContent="";
     button.disabled=true;
