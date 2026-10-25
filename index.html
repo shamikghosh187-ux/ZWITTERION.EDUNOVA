@@ -5130,9 +5130,60 @@
   function announcements(){vp().innerHTML=header('Announcements','Communicate important updates to your learners')+`<form class="lms-form" onsubmit="window.ZLMS.publishAnnouncement(event)"><div class="lms-form-grid"><div><label>Title</label><input id="ann-title" required></div><div><label>Date</label><input id="ann-date" type="date" value="${new Date().toISOString().slice(0,10)}"></div><div class="full"><label>Message</label><textarea id="ann-text" required></textarea></div><div class="full"><button class="lms-btn primary">Publish Announcement</button></div></div></form><div style="margin-top:20px">${db.announcements.map(a=>`<div class="notice"><b>${esc(a.title)}</b><br>${esc(a.text)}<br><small>${esc(a.date)}</small></div>`).join('')}</div>`}
   window.ZLMS.publishAnnouncement=e=>{e.preventDefault();db.announcements.unshift({id:Date.now(),title:byId('ann-title').value,text:byId('ann-text').value,date:byId('ann-date').value});save();announcements()};
 
-  /* Refresh workspace labels for role-aware UI. */
-  const oldLaunch=window.launchApp;
-  window.launchApp=function(){oldLaunch();const tag=byId('meta-class-board');if(tag&&role()==='TEACHER')tag.textContent='Teacher Workspace';const meta=byId('meta-student');if(meta&&role()==='TEACHER')meta.textContent=appState.currentUser+' • Teacher';};
+  /* Refresh workspace labels for role-aware UI.
+     Keep the login flow alive even if the original launch handler is not
+     exposed on window by the browser/script scope. */
+  const originalLaunch = typeof window.launchApp === 'function'
+    ? window.launchApp
+    : null;
+
+  window.launchApp = function () {
+    // A later script or extension may overwrite the original global handler.
+    // Never let a missing handler prevent the authenticated workspace opening.
+    try {
+      if (typeof originalLaunch === 'function' && originalLaunch !== window.launchApp) {
+        originalLaunch();
+      } else {
+        [
+          'screen-student-login',
+          'screen-teacher-login',
+          'screen-access-select',
+          'screen-role-select',
+          'screen-student-profile',
+          'screen-teacher-profile'
+        ].forEach(function (id) {
+          const screen = document.getElementById(id);
+          if (screen) {
+            screen.classList.add('hidden');
+            screen.setAttribute('aria-hidden', 'true');
+          }
+        });
+
+        const workspace = document.getElementById('app-workspace');
+        if (workspace) {
+          workspace.classList.remove('hidden');
+          workspace.style.display = '';
+          workspace.setAttribute('aria-hidden', 'false');
+        }
+
+        if (typeof buildNavigation === 'function') buildNavigation();
+      }
+    } catch (error) {
+      console.error('Workspace launch failed:', error);
+      const workspace = byId('app-workspace');
+      if (workspace) {
+        workspace.classList.remove('hidden');
+        workspace.style.display = '';
+      }
+    }
+
+    const tag = byId('meta-class-board');
+    if (tag && role() === 'TEACHER') tag.textContent = 'Teacher Workspace';
+
+    const meta = byId('meta-student');
+    if (meta && role() === 'TEACHER') meta.textContent = appState.currentUser + ' • Teacher';
+  };
+
   save();
 })();
 </script>
