@@ -3774,15 +3774,23 @@
         }
 
         async function fetchContent(type) {
-            const response = await fetch(
-                apiUrl("/api/content?type=" + encodeURIComponent(type)),
-                { cache: "no-store" }
-            );
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.error || "Could not load content.");
+            // The legacy catalogue endpoint may be unavailable in some deployments.
+            // Do not let that prevent published Supabase Notes from appearing.
+            let result = { items: [] };
+            let legacyError = null;
+            try {
+                const response = await fetch(
+                    apiUrl("/api/content?type=" + encodeURIComponent(type)),
+                    { cache: "no-store" }
+                );
+                const payload = await response.json().catch(function() { return {}; });
+                if (!response.ok) {
+                    throw new Error(payload.error || "Could not load the existing content catalogue.");
+                }
+                result = payload || { items: [] };
+            } catch (error) {
+                legacyError = error;
+                console.warn("Legacy content catalogue unavailable:", error);
             }
 
             const selectedClass = String(appState.selectedClass || "");
@@ -3842,6 +3850,14 @@
                 } catch (error) {
                     // Preserve the existing catalogue if Supabase is temporarily unavailable.
                     console.error("Supabase Notes catalogue error:", error);
+                }
+            }
+
+            if (legacyError && apiItems.length === 0) {
+                // For non-Notes sections, surface the existing endpoint failure.
+                // Notes may still load successfully from Supabase above.
+                if (type !== "notes" || !window.zwSupabaseReady) {
+                    throw legacyError;
                 }
             }
 
