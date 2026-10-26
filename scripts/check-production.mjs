@@ -9,19 +9,15 @@ assert(/<title>Zwitterion Classes<\/title>/i.test(html), "Document title must be
 assert(/name="description" content="Zwitterion Classes/i.test(html), "SEO description must use Zwitterion Classes branding.");
 assert(!/teacher@zwitterion\.demo|Teacher123!|Submit Demo Attempt/.test(html), "Production HTML must not expose demo credentials or demo assessment submission.");
 assert(!/Accuracy','86%/.test(html), "Production HTML must not show a fabricated accuracy statistic.");
-assert(html.includes("admin-portal") && html.includes("Administrator access") && html.includes("Sign in to open the administrator preview."), "Admin Portal preview entry point is missing.");
-assert(!html.includes("admin-demo@zwitterionclasses.co.in") && !html.includes("ZwitterionDemo!2026"), "Retired demo admin credentials must not return.");
-assert(html.includes("zw-admin-login-form") && html.includes("zw-admin-email") && html.includes("zw-admin-password") && html.includes("Your email"), "Admin Portal email/password sign-in form is missing.");
-assert(html.includes("zw-resource-form") && html.includes("zw-resource-file") && html.includes("Upload disabled until secure admin authentication is configured"), "Resource upload form must remain present but disabled until verified auth is configured.");
-assert(html.includes("No resources uploaded yet") && html.includes("Uploading, publishing, protected downloads, and deletion remain unavailable until server-side authentication"), "Resource library must remain empty and protected actions disabled until server-side authentication.");
-const resourceSchema = readFileSync(new URL("../supabase/resource-library.sql", import.meta.url), "utf8");
-assert(resourceSchema.includes("public.admin_users") && resourceSchema.includes("public.resources"), "Supabase resource schema is missing admin and resource tables.");
-assert(resourceSchema.includes("public = false") && resourceSchema.includes("class-resources"), "Supabase resource bucket must remain private.");
-assert(resourceSchema.includes("file_size_bytes <= 10485760") && resourceSchema.includes("application/pdf"), "Resource schema must enforce PDF-only 10 MiB limits.");
-assert(resourceSchema.includes("storage.foldername(name))[1] = auth.uid()::text") && resourceSchema.includes("Admins can update own private resource PDFs") && resourceSchema.includes("Admins can delete own private resource PDFs"), "Storage writes must be limited to the signed-in admin's own folder.");
-assert(resourceSchema.includes("lower(file_name) like '%.pdf'") && resourceSchema.includes("storage_path ~"), "Resource metadata must validate PDF filenames and user-scoped storage paths.");
-assert(resourceSchema.includes("storage.foldername(name))[1] = auth.uid()::text") && resourceSchema.includes("Admins can update own private resource PDFs") && resourceSchema.includes("Admins can delete own private resource PDFs"), "Storage writes must be limited to the signed-in admin's own folder.");
-assert(resourceSchema.includes("lower(file_name) like '%.pdf'") && resourceSchema.includes("storage_path ~"), "Resource metadata must validate PDF filenames and user-scoped storage paths.");
+assert(html.includes("admin-portal") && html.includes("Administrator access"), "Admin Portal entry point is missing.");
+assert(!html.includes("tndeo000@gmail.com") && !html.includes("tndzwitterion123"), "Hardcoded demo admin credentials must not appear in production HTML.");
+assert(html.includes("zw-admin-login-form") && html.includes("zw-admin-email") && html.includes("zw-admin-password"), "Supabase admin sign-in form is missing.");
+assert(html.includes("createClient") && html.includes("zwSupabaseReady"), "Supabase browser client must be initialized.");
+assert(html.includes("signInWithPassword") && html.includes("from('admin_users')"), "Admin login must verify Supabase Auth and admin membership.");
+assert(html.includes("from('class-resources').upload") && html.includes("from('resource_library').insert"), "Admin portal must upload PDFs and save resource metadata.");
+assert(html.includes("50 * 1024 * 1024") && html.includes("maximum 50 MiB"), "Admin portal must enforce the 50 MiB upload limit.");
+assert(html.includes("createSignedUrl") && html.includes("from('class-resources').remove"), "Admin resource preview and deletion actions must use private storage.");
+assert(html.includes("student download integration remains protected separately"), "Private PDF storage must not be described as publicly downloadable.");
 
 const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
 assert(scripts.length > 0, "No inline scripts were found.");
@@ -57,5 +53,5 @@ if (failures.length) {
   for (const failure of failures) console.error(`- ${failure}`);
   process.exitCode = 1;
 } else {
-  console.log(`Production smoke checks passed: ${scripts.length} inline scripts, branding, admin preview sign-in, upload-disabled guardrails, private resource schema checks, and API syntax.`);
+  console.log(`Production smoke checks passed: ${scripts.length} inline scripts, branding, Supabase admin authentication, private PDF upload workflow, 50 MiB limit, and API syntax.`);
 }

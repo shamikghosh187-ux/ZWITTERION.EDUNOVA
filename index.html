@@ -11,6 +11,15 @@
 
     <title>Zwitterion Classes</title>
 
+    <script type="module">
+      import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+      const SUPABASE_URL = "https://myeiojsclyburoicnglp.supabase.co";
+      const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_r981XMc9N_pteQ6LKJqsoQ_7Ck4Mlak";
+      window.zwSupabaseReady = Promise.resolve(createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+      }));
+    </script>
+
     <!-- Icons -->
     <link
         rel="stylesheet"
@@ -1625,6 +1634,47 @@
 
 </style>
 
+    <style id="zw-mobile-polish">
+
+    /* Mobile-first polish: safer spacing, readable controls, and no sideways scrolling. */
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body { overscroll-behavior-x: none; }
+    img, video, canvas, svg { max-width: 100%; }
+    input, select, textarea, button { max-width: 100%; }
+    @media (max-width: 700px) {
+      html, body { min-width: 0; }
+      body { overflow-x: hidden; }
+      main, section, article, .container, .main-content, .content, .dashboard-content {
+        min-width: 0;
+        max-width: 100%;
+      }
+      button, [role="button"], input[type="button"], input[type="submit"], input[type="reset"] {
+        min-height: 44px;
+      }
+      input, select, textarea {
+        font-size: 16px !important;
+        max-width: 100%;
+      }
+      table { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      pre, code { overflow-wrap: anywhere; }
+      img { height: auto; }
+      #zw-pdf-lock-notice {
+        bottom: max(16px, env(safe-area-inset-bottom)) !important;
+        width: calc(100vw - 28px) !important;
+        max-width: 460px !important;
+      }
+      #zw-access-gate { padding: 16px !important; }
+      #zw-access-gate .zw-access-card { width: 100%; max-width: 440px; }
+    }
+    @media (max-width: 380px) {
+      h1 { overflow-wrap: anywhere; }
+      .zw-dashboard-hero h1 { font-size: 25px !important; }
+      .zw-stat-grid { grid-template-columns: 1fr !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; }
+    }
+    </style>
 </head>
 
 <body>
@@ -1715,7 +1765,7 @@
         class="app-container hidden"
     >
 
-        <aside class="sidebar">
+        <aside class="sidebar" id="zw-mobile-sidebar">
 
             <div>
 
@@ -1781,6 +1831,10 @@
         <div class="main-wrapper">
 
             <header class="top-header">
+
+                <button type="button" id="zw-mobile-menu-toggle" class="zw-mobile-menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="zw-mobile-sidebar">
+                    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                </button>
 
                 <div class="header-search">
 
@@ -2676,9 +2730,8 @@
 
         }
 
-        byId(
-            "student-otp-request-form"
-        ).addEventListener(
+        const studentOtpRequestForm = byId("student-otp-request-form");
+        if (studentOtpRequestForm) studentOtpRequestForm.addEventListener(
             "submit",
             async function(event) {
 
@@ -2835,9 +2888,8 @@
             }
         );
 
-        byId(
-            "student-otp-verify-form"
-        ).addEventListener(
+        const studentOtpVerifyForm = byId("student-otp-verify-form");
+        if (studentOtpVerifyForm) studentOtpVerifyForm.addEventListener(
             "submit",
             async function(event) {
 
@@ -2982,9 +3034,8 @@
             }
         );
 
-        byId(
-            "student-otp-resend"
-        ).addEventListener(
+        const studentOtpResendButton = byId("student-otp-resend");
+        if (studentOtpResendButton) studentOtpResendButton.addEventListener(
             "click",
             async function() {
 
@@ -3754,10 +3805,10 @@
                 ? "https://zwitterionclasses.co.in"
                 : "";
 
-        const ZWITTERION_API_BASE = window.ZWITTERION_API_BASE;
-
         function apiUrl(path) {
-            return ZWITTERION_API_BASE + path;
+            // Read from window at call time: this script can be invoked before
+            // the cloud-library section has finished initializing.
+            return (window.ZWITTERION_API_BASE || "") + path;
         }
 
         function teacherToken() {
@@ -3765,36 +3816,96 @@
         }
 
         async function fetchContent(type) {
-            const response = await fetch(
-                apiUrl("/api/content?type=" + encodeURIComponent(type)),
-                { cache: "no-store" }
-            );
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.error || "Could not load content.");
+            // The legacy catalogue endpoint may be unavailable in some deployments.
+            // Do not let that prevent published Supabase Notes from appearing.
+            let result = { items: [] };
+            let legacyError = null;
+            try {
+                const response = await fetch(
+                    apiUrl("/api/content?type=" + encodeURIComponent(type)),
+                    { cache: "no-store" }
+                );
+                const payload = await response.json().catch(function() { return {}; });
+                if (!response.ok) {
+                    throw new Error(payload.error || "Could not load the existing content catalogue.");
+                }
+                result = payload || { items: [] };
+            } catch (error) {
+                legacyError = error;
+                console.warn("Legacy content catalogue unavailable:", error);
             }
 
             const selectedClass = String(appState.selectedClass || "");
             const selectedBoard = String(appState.selectedBoard || "");
             const selectedSchool = String(appState.selectedSchool || "");
 
-            return (result.items || []).filter(function(item) {
-                const classOK =
-                    !item.className ||
-                    item.className === selectedClass;
-
-                const boardOK =
-                    !item.board ||
-                    item.board === selectedBoard;
-
-                const schoolOK =
-                    !item.school ||
-                    item.school === selectedSchool;
-
+            const apiItems = (result.items || []).filter(function(item) {
+                const classOK = !item.className || item.className === selectedClass;
+                const boardOK = !item.board || item.board === selectedBoard;
+                const schoolOK = !item.school || item.school === selectedSchool;
                 return classOK && boardOK && schoolOK;
             });
+
+            // Admin uploads are stored in resource_library. Include published
+            // Notes there as well as the existing /api/content catalogue.
+            if (type === "notes" && window.zwSupabaseReady) {
+                try {
+                    const supabase = await window.zwSupabaseReady;
+                    const { data: resources, error } = await supabase
+                        .from("resource_library")
+                        .select("id,title,description,class_level,subject,file_name,file_path,published,is_locked,created_at")
+                        .eq("published", true)
+                        .order("created_at", { ascending: false });
+
+                    if (error) throw error;
+
+                    const noteItems = (resources || [])
+                        .filter(function(resource) {
+                            const classLevel = String(resource.class_level || "");
+                            const chosenClass = String(selectedClass || "");
+                            return !chosenClass ||
+                                classLevel.toLowerCase().replace(/^class\s*/, "") ===
+                                chosenClass.toLowerCase().replace(/^class\s*/, "") ||
+                                classLevel.toLowerCase() === chosenClass.toLowerCase();
+                        })
+                        .map(function(resource) {
+                            return {
+                                id: resource.id,
+                                title: resource.title,
+                                description: resource.description || "",
+                                subject: resource.subject || "General",
+                                fileName: resource.file_name,
+                                filePath: resource.file_path,
+                                isLocked: Boolean(resource.is_locked),
+                                // Access is granted only when this exact resource is published and unlocked.
+                                url: "",
+                                privateResource: true
+                            };
+                        });
+
+                    const knownTitles = new Set(apiItems.map(function(item) {
+                        return String(item.title || "").trim().toLowerCase();
+                    }));
+                    noteItems.forEach(function(item) {
+                        if (!knownTitles.has(String(item.title || "").trim().toLowerCase())) {
+                            apiItems.push(item);
+                        }
+                    });
+                } catch (error) {
+                    // Preserve the existing catalogue if Supabase is temporarily unavailable.
+                    console.error("Supabase Notes catalogue error:", error);
+                }
+            }
+
+            if (legacyError && apiItems.length === 0) {
+                // For non-Notes sections, surface the existing endpoint failure.
+                // Notes may still load successfully from Supabase above.
+                if (type !== "notes" || !window.zwSupabaseReady) {
+                    throw legacyError;
+                }
+            }
+
+            return apiItems;
         }
 
         function contentTypeLabel(type) {
@@ -3869,18 +3980,63 @@
                                 </div>
 
                                 <div class="content-card-actions">
-                                    <button
-                                        type="button"
-                                        class="paper-open"
-                                        onclick="openCloudPdf(${JSON.stringify(item.url)}, ${JSON.stringify(item.title || item.fileName || 'PDF')})"
-                                    >
-                                        <i class="fa-solid fa-file-pdf"></i>
-                                        Open
-                                    </button>
+                                    ${item.privateResource ? `
+                                        <button
+                                            type="button"
+                                            class="paper-open"
+                                            data-published-file-path="${escapeHtml(item.filePath || "")}"
+                                            data-published-file-title="${escapeHtml(item.title || item.fileName || "PDF")}"
+                                            data-published-file-locked="${item.isLocked ? "true" : "false"}"
+                                        >
+                                            ${item.isLocked ? '<i class="fa-solid fa-lock"></i> PDF Locked' : '<i class="fa-solid fa-file-pdf"></i> View PDF'}
+                                        </button>
+                                    ` : `
+                                        <button
+                                            type="button"
+                                            class="paper-open"
+                                            onclick="openCloudPdf(${JSON.stringify(item.url)}, ${JSON.stringify(item.title || item.fileName || 'PDF')})"
+                                        >
+                                            <i class="fa-solid fa-file-pdf"></i>
+                                            Open
+                                        </button>
+                                    `}
                                 </div>
                             </article>
                         `;
                     }).join("");
+
+                    // Bind PDF buttons after rendering. Avoid inline onclick attributes:
+                    // JSON strings inside HTML attributes can be split by quotes and break clicks.
+                    list.querySelectorAll("[data-published-file-path]").forEach(function(button) {
+                        button.addEventListener("click", function() {
+                            if (button.dataset.publishedFileLocked === 'true') {
+                                const existingNotice = document.getElementById("zw-pdf-lock-notice");
+                                if (existingNotice) existingNotice.remove();
+                                const notice = document.createElement("div");
+                                notice.id = "zw-pdf-lock-notice";
+                                notice.setAttribute("role", "status");
+                                notice.setAttribute("aria-live", "polite");
+                                notice.innerHTML = '<span style="font-size:1.2rem" aria-hidden="true">🔒</span><div><strong>PDF Locked</strong><p style="margin:4px 0 0">This PDF is locked by your teacher.</p></div><button type="button" aria-label="Dismiss message" style="margin-left:auto;background:transparent;border:0;color:inherit;font-size:1.2rem;cursor:pointer;padding:0 4px">×</button>';
+                                notice.style.cssText = "position:fixed;z-index:99999;left:50%;bottom:24px;transform:translateX(-50%);width:min(92vw,460px);display:flex;align-items:flex-start;gap:12px;padding:16px 18px;background:var(--card-bg,#111827);color:var(--text-color,#f9fafb);border:1px solid #f59e0b;border-radius:14px;box-shadow:0 12px 36px rgba(0,0,0,.28);font:inherit";
+                                notice.querySelector("button").addEventListener("click", function() { notice.remove(); });
+                                document.body.appendChild(notice);
+                                notice.animate([
+                                    { transform: "translateX(-50%) translateX(0)" },
+                                    { transform: "translateX(-50%) translateX(-5px)" },
+                                    { transform: "translateX(-50%) translateX(5px)" },
+                                    { transform: "translateX(-50%) translateX(-3px)" },
+                                    { transform: "translateX(-50%) translateX(3px)" },
+                                    { transform: "translateX(-50%) translateX(0)" }
+                                ], { duration: 280, easing: "ease-in-out" });
+                                window.setTimeout(function() { if (notice.isConnected) notice.remove(); }, 6000);
+                                return;
+                            }
+                            openPublishedResourcePdf(
+                                button.dataset.publishedFilePath,
+                                button.dataset.publishedFileTitle || "PDF"
+                            );
+                        });
+                    });
                 })
                 .catch(function(error) {
                     console.error("Content library error:", error);
@@ -3969,6 +4125,49 @@
             document.body.style.overflow = "hidden";
         }
 
+        async function openPublishedResourcePdf(filePath, title) {
+            const modal = document.getElementById("pdf-viewer-modal");
+            const frame = document.getElementById("pdf-viewer-frame");
+            const heading = document.getElementById("pdf-viewer-title");
+            if (!modal || !frame || !heading || !filePath) return;
+
+            const button = document.activeElement;
+            if (button && button instanceof HTMLButtonElement) {
+                button.disabled = true;
+                button.dataset.originalText = button.textContent;
+                button.textContent = "Loading PDF...";
+            }
+
+            try {
+                const supabase = await window.zwSupabaseReady;
+                const { data, error } = await supabase.storage
+                    .from("class-resources")
+                    .download(filePath);
+                if (error) throw error;
+
+                const blobUrl = URL.createObjectURL(data);
+                if (frame.dataset.generatedBlobUrl) {
+                    URL.revokeObjectURL(frame.dataset.generatedBlobUrl);
+                }
+                frame.dataset.generatedBlobUrl = blobUrl;
+                heading.textContent = title || "PDF";
+                frame.src = blobUrl;
+                modal.classList.add("active");
+                modal.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
+            } catch (error) {
+                console.error("Published PDF download failed:", error);
+                const detail = error && error.message ? error.message : "Unknown storage error";
+                alert("Could not open this PDF: " + detail + "\\n\\nCheck that the resource is published and that the class-resources storage policy allows published PDFs.");
+            } finally {
+                if (button && button instanceof HTMLButtonElement) {
+                    button.disabled = false;
+                    button.textContent = button.dataset.originalText || "View PDF";
+                    delete button.dataset.originalText;
+                }
+            }
+        }
+
         function closeCloudPdf() {
             const modal = document.getElementById("pdf-viewer-modal");
             const frame = document.getElementById("pdf-viewer-frame");
@@ -3976,6 +4175,10 @@
             if (!modal || !frame) return;
 
             frame.src = "";
+            if (frame.dataset.generatedBlobUrl) {
+                URL.revokeObjectURL(frame.dataset.generatedBlobUrl);
+                delete frame.dataset.generatedBlobUrl;
+            }
             modal.classList.remove("active");
             modal.setAttribute("aria-hidden", "true");
             document.body.style.overflow = "";
@@ -4978,78 +5181,185 @@
   function header(title,sub){return `<div class="page-header"><h2>${esc(title)}</h2><p>${esc(sub)}</p></div>`}
   function stats(items){return `<div class="lms-stats">${items.map(x=>`<div class="lms-stat"><span>${esc(x[0])}</span><strong>${esc(x[1])}</strong></div>`).join('')}</div>`}
   function adminPortal(){
-    // Client-side preview gate only; this is not secure production authentication.
-    const ADMIN_EMAIL = 'tndeo000@gmail.com';
-    const ADMIN_PASSWORD = 'tndzwitterion123';
-    const renderUpload = () => {
+    const MAX_PDF_BYTES = 50 * 1024 * 1024;
+    let adminClient = null;
+    let adminUser = null;
+    const setStatus = (message, isError = false) => {
+      const node = byId('zw-resource-upload-status');
+      if (node) { node.textContent = message; node.style.color = isError ? '#b42318' : ''; }
+    };
+    const getClient = async () => {
+      if (!window.zwSupabaseReady) throw new Error('Secure storage client is not ready. Refresh and try again.');
+      const client = await window.zwSupabaseReady;
+      if (!client) throw new Error('Supabase configuration is unavailable. Please contact the site administrator.');
+      return client;
+    };
+    const verifyAdmin = async (client, user) => {
+      const { data, error } = await client.from('admin_users').select('user_id').eq('user_id', user.id).maybeSingle();
+      if (error) throw new Error('Could not verify administrator permissions. Please try again.');
+      if (!data) throw new Error('This account is not authorised for the administrator portal.');
+    };
+    const loadResources = async () => {
+      const list = byId('zw-resource-list');
+      if (!list || !adminClient || !adminUser) return;
+      list.innerHTML = '<p>Loading resources…</p>';
+      const { data, error } = await adminClient.from('resource_library')
+        .select('id,title,description,class_level,subject,file_path,file_name,file_size_bytes,published,is_locked,created_at')
+        .order('created_at', { ascending: false });
+      if (error) { list.textContent = 'Could not load resources: ' + error.message; return; }
+      if (!data || !data.length) { list.innerHTML = '<div class="empty-state">No resources uploaded yet.</div>'; return; }
+      list.innerHTML = '';
+      for (const item of data) {
+        const row = document.createElement('article');
+        row.className = 'lms-stat';
+        const title = document.createElement('strong');
+        title.textContent = item.title || item.file_name;
+        const detail = document.createElement('p');
+        detail.textContent = [item.class_level, item.subject, item.published ? 'Published metadata' : 'Draft', item.is_locked ? '🔒 PDF LOCKED' : '🔓 PDF UNLOCKED', (Number(item.file_size_bytes || 0) / 1048576).toFixed(2) + ' MiB'].join(' · ');
+        const actions = document.createElement('div');
+        actions.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:10px';
+        const open = document.createElement('button');
+        open.type = 'button'; open.className = 'lms-btn'; open.textContent = 'Preview PDF';
+        open.addEventListener('click', async () => {
+          const { data: signed, error: signError } = await adminClient.storage.from('class-resources').createSignedUrl(item.file_path, 120);
+          if (signError || !signed?.signedUrl) { setStatus('Could not create a secure preview link.', true); return; }
+          window.open(signed.signedUrl, '_blank', 'noopener,noreferrer');
+        });
+        const toggle = document.createElement('button');
+        toggle.type = 'button'; toggle.className = 'lms-btn primary'; toggle.textContent = item.published ? 'Unpublish' : 'Publish';
+        toggle.addEventListener('click', async () => {
+          toggle.disabled = true;
+          const { error: updateError } = await adminClient.from('resource_library').update({ published: !item.published }).eq('id', item.id);
+          toggle.disabled = false;
+          if (updateError) { setStatus('Could not update publication status: ' + updateError.message, true); return; }
+          setStatus('Resource status updated.');
+          await loadResources();
+        });
+        const remove = document.createElement('button');
+        remove.type = 'button'; remove.className = 'lms-btn'; remove.textContent = 'Delete';
+        remove.addEventListener('click', async () => {
+          if (!window.confirm('Delete this resource and its stored PDF?')) return;
+          remove.disabled = true;
+          const { error: storageError } = await adminClient.storage.from('class-resources').remove([item.file_path]);
+          if (storageError) { remove.disabled = false; setStatus('Could not delete stored PDF: ' + storageError.message, true); return; }
+          const { error: rowError } = await adminClient.from('resource_library').delete().eq('id', item.id);
+          if (rowError) { setStatus('PDF removed, but metadata cleanup failed. Contact support.', true); return; }
+          setStatus('Resource deleted.');
+          await loadResources();
+        });
+        const lock = document.createElement('button');
+        lock.type = 'button'; lock.className = 'lms-btn'; lock.textContent = item.is_locked ? 'Unlock PDF' : 'Lock PDF';
+        lock.setAttribute('aria-label', (item.is_locked ? 'Unlock ' : 'Lock ') + (item.title || item.file_name));
+        lock.addEventListener('click', async () => {
+          lock.disabled = true;
+          const nextLocked = !item.is_locked;
+          const { error: lockError } = await adminClient.from('resource_library').update({ is_locked: nextLocked }).eq('id', item.id);
+          if (lockError) { lock.disabled = false; setStatus('Could not ' + (nextLocked ? 'lock' : 'unlock') + ' PDF: ' + lockError.message, true); return; }
+          setStatus(nextLocked ? 'PDF locked. Students can still see it, but cannot open it.' : 'PDF unlocked. Students can open it again.');
+          await loadResources();
+        });
+        actions.append(open, toggle, lock, remove);
+        row.append(title, detail, actions);
+        list.append(row);
+      }
+    };
+    const renderUpload = async () => {
       vp().innerHTML=header('Admin Portal','Resource management')+`
-        <section class="lms-hero" style="margin-bottom:22px">
-          <div><span class="dashboard-kicker">ADMIN WORKSPACE</span><h2 style="margin:8px 0">Study material manager</h2><p>Prepare PDFs for the student library. Uploading and publishing will activate once secure server-side admin authentication and storage are connected.</p></div>
-        </section>
-        <div class="lms-stats dashboard-stats" style="margin-bottom:22px">
-          <article class="lms-stat"><div class="stat-icon stat-blue"><i class="fa-solid fa-file-pdf"></i></div><span>Resources listed</span><strong>0</strong><small>Connected library required</small></article>
-          <article class="lms-stat"><div class="stat-icon stat-violet"><i class="fa-solid fa-cloud-arrow-up"></i></div><span>Upload status</span><strong style="font-size:18px">Not connected</strong><small>No files have been uploaded</small></article>
-          <article class="lms-stat"><div class="stat-icon stat-amber"><i class="fa-solid fa-shield-halved"></i></div><span>Access control</span><strong style="font-size:18px">Pending</strong><small>Server-side verification required</small></article>
-        </div>
+        <section class="lms-hero" style="margin-bottom:22px"><div><span class="dashboard-kicker">ADMIN WORKSPACE</span><h2 style="margin:8px 0">Study material manager</h2><p>Upload PDFs to private Supabase Storage. Only verified administrators can manage these files.</p></div></section>
         <section class="teacher-form" style="max-width:100%">
-          <div class="card-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-          <h3>Upload a study resource</h3>
-          <p>PDF files up to 10 MiB are accepted by this form for preparation. This preview does not transmit or save files.</p>
+          <div class="card-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><h3>Upload a study resource</h3>
+          <p>PDF only · maximum 50 MiB. Files are stored privately; metadata can be published separately.</p>
           <form id="zw-resource-upload-form" class="teacher-grid">
             <div class="form-group"><label for="zw-resource-title">Resource title *</label><input id="zw-resource-title" required maxlength="120" placeholder="e.g. Class 11 Physics — Kinematics"></div>
             <div class="form-group"><label for="zw-resource-subject">Subject *</label><select id="zw-resource-subject" required><option value="">Choose subject</option><option>Physics</option><option>Chemistry</option><option>Mathematics</option><option>Biology</option><option>English</option><option>Other</option></select></div>
             <div class="form-group"><label for="zw-resource-class">Class *</label><select id="zw-resource-class" required><option value="">Choose class</option><option>Class 6</option><option>Class 7</option><option>Class 8</option><option>Class 9</option><option>Class 10</option><option>Class 11</option><option>Class 12</option><option>JEE</option><option>NEET</option></select></div>
             <div class="form-group"><label for="zw-resource-category">Category *</label><select id="zw-resource-category" required><option value="">Choose category</option><option>Notes</option><option>Question Papers</option><option>Previous Year Questions</option><option>Sample Papers</option><option>Assignments</option><option>Other</option></select></div>
             <div class="form-group teacher-grid-full"><label for="zw-resource-description">Description (optional)</label><textarea id="zw-resource-description" rows="3" maxlength="500" placeholder="What will students learn from this resource?"></textarea></div>
-            <div class="form-group teacher-grid-full"><label for="zw-resource-file">PDF file *</label><input id="zw-resource-file" type="file" accept="application/pdf,.pdf" required><small id="zw-resource-file-meta">PDF only · maximum 10 MiB</small></div>
-            <div class="form-group teacher-grid-full"><label class="form-check" style="display:flex;align-items:center;gap:10px"><input id="zw-resource-published" type="checkbox" style="width:auto"> Mark as published (will take effect only after storage is connected)</label></div>
-            <div class="form-group teacher-grid-full" style="display:flex;gap:10px;flex-wrap:wrap"><button class="lms-btn primary" id="zw-resource-prepare" type="submit"><i class="fa-solid fa-clipboard-check"></i> Validate resource</button><button class="lms-btn" type="button" id="zw-resource-reset">Clear form</button></div>
+            <div class="form-group teacher-grid-full"><label for="zw-resource-file">PDF file *</label><input id="zw-resource-file" type="file" accept="application/pdf,.pdf" required><small id="zw-resource-file-meta">PDF only · maximum 50 MiB</small></div>
+            <div class="form-group teacher-grid-full"><label class="form-check" style="display:flex;align-items:center;gap:10px"><input id="zw-resource-published" type="checkbox" style="width:auto"> Publish resource metadata after upload</label><small>Publishing metadata does not make the private PDF public. Student download integration remains protected separately.</small></div>
+            <div class="form-group teacher-grid-full" style="display:flex;gap:10px;flex-wrap:wrap"><button class="lms-btn primary" id="zw-resource-prepare" type="submit"><i class="fa-solid fa-cloud-arrow-up"></i> Upload PDF</button><button class="lms-btn" id="zw-resource-reset" type="button">Clear form</button><button class="lms-btn" id="zw-admin-signout" type="button">Sign out</button></div>
             <p id="zw-resource-upload-status" class="teacher-grid-full" role="status" aria-live="polite"></p>
           </form>
-          <div class="empty-state" style="margin-top:18px"><strong><i class="fa-solid fa-lock"></i> Uploads are not live yet.</strong><br>This screen currently validates your selected PDF locally. A secure server-side admin session, private Supabase Storage upload, metadata save, and publish/unpublish API must be connected before any file can be saved or shown to students.</div>
         </section>
+        <section class="teacher-form" style="max-width:100%;margin-top:22px"><h3>Paper Scanning Centre</h3><p>Admin-only intake. Upload page photos in page order (JPEG, PNG, WebP; max 10 MiB each).</p><form id="zw-paper-intake-form" class="teacher-grid"><div class="form-group"><label>Exam *</label><select id="zw-paper-exam" required><option value="">Loading exams…</option></select></div><div class="form-group"><label>Document type *</label><select id="zw-paper-kind" required><option value="question_paper">Question paper</option><option value="marking_scheme">Marking scheme</option><option value="answer_sheet">Student answer sheet</option></select></div><div class="form-group" id="zw-paper-student-wrap"><label>Student name *</label><input id="zw-paper-student" maxlength="160"></div><div class="form-group" id="zw-paper-roll-wrap"><label>Roll / ID *</label><input id="zw-paper-roll" maxlength="80"></div><div class="form-group teacher-grid-full"><label>Scanned page images *</label><input id="zw-paper-files" type="file" accept="image/jpeg,image/png,image/webp" multiple required></div><div class="form-group teacher-grid-full"><label>Admin note</label><textarea id="zw-paper-notes" rows="2" maxlength="1000"></textarea></div><div class="form-group teacher-grid-full"><button class="lms-btn primary" id="zw-paper-submit" type="submit">Upload scanned pages</button></div><p id="zw-paper-status" class="teacher-grid-full" role="status"></p></form><hr style="margin:22px 0"><h3>Register checker</h3><p>Create the checker account in Supabase Auth first, then enter its Auth user UUID here.</p><form id="zw-checker-form" class="teacher-grid"><div class="form-group"><label>Checker name *</label><input id="zw-checker-name" required maxlength="120"></div><div class="form-group"><label>Auth user UUID *</label><input id="zw-checker-id" required pattern="[0-9a-fA-F-]{36}"></div><div class="form-group teacher-grid-full"><button class="lms-btn" type="submit">Register checker</button></div><p id="zw-checker-status" class="teacher-grid-full" role="status"></p></form><h3 style="margin-top:20px">Assign unchecked sheet</h3><form id="zw-assign-form" class="teacher-grid"><div class="form-group"><label>Unchecked sheet *</label><select id="zw-assign-session" required><option value="">Loading…</option></select></div><div class="form-group"><label>Active checker *</label><select id="zw-assign-checker" required><option value="">Loading…</option></select></div><div class="form-group teacher-grid-full"><button class="lms-btn primary" type="submit">Assign sheet</button></div><p id="zw-assign-status" class="teacher-grid-full" role="status"></p></form><div id="zw-paper-admin-queue"></div></section><section class="teacher-form" style="max-width:100%;margin-top:20px"><h3>Stored resources</h3><p>Preview links are short-lived and only created for the signed-in administrator.</p><div id="zw-resource-list" class="lms-stats"></div></section>
         <div class="lms-toolbar" style="margin-top:18px"><button class="lms-btn" type="button" onclick="window.ZLMS.go('dashboard')"><i class="fa-solid fa-arrow-left"></i> Return to dashboard</button></div>`;
-      const form=byId('zw-resource-upload-form'), fileInput=byId('zw-resource-file'), meta=byId('zw-resource-file-meta'), status=byId('zw-resource-upload-status');
+      const paperKind=byId('zw-paper-kind');
+      const paperStatus=(m,bad=false)=>{const n=byId('zw-paper-status');if(n){n.textContent=m;n.style.color=bad?'#b42318':'';}};
+      const paperKindToggle=()=>{const a=paperKind.value==='answer_sheet';byId('zw-paper-student-wrap').style.display=a?'':'none';byId('zw-paper-roll-wrap').style.display=a?'':'none';byId('zw-paper-student').required=a;byId('zw-paper-roll').required=a;};paperKind.addEventListener('change',paperKindToggle);paperKindToggle();
+      const loadPaperAdminData=async()=>{const es=byId('zw-paper-exam'),ss=byId('zw-assign-session'),cs=byId('zw-assign-checker'),q=byId('zw-paper-admin-queue');const {data:exams,error:ee}=await adminClient.from('exams').select('id,title,class_level,subject').order('created_at',{ascending:false});es.innerHTML='<option value="">Choose exam</option>';if(ee){es.innerHTML='<option value="">Could not load exams</option>';paperStatus(ee.message,true);}else(exams||[]).forEach(e=>es.add(new Option(e.title+' · '+(e.class_level||'')+' '+(e.subject||''),e.id)));const {data:sheets,error:se}=await adminClient.from('paper_scan_sessions').select('id,student_name,student_roll,status,created_at').neq('status','checked').order('created_at',{ascending:true}).limit(200);ss.innerHTML='<option value="">Choose sheet</option>';if(!se)(sheets||[]).forEach(s=>ss.add(new Option((s.student_name||'Student')+' · '+(s.student_roll||'')+' · '+s.status,s.id)));const {data:ks,error:ke}=await adminClient.from('exam_checkers').select('user_id,display_name').eq('active',true).order('display_name');cs.innerHTML='<option value="">Choose checker</option>';if(!ke)(ks||[]).forEach(k=>cs.add(new Option(k.display_name+' · '+k.user_id,k.user_id)));q.innerHTML=se?'Could not load sheets: '+esc(se.message):(sheets||[]).map(s=>'<div class="lms-stat" style="margin:8px 0"><strong>'+esc(s.student_name||'Student')+' · '+esc(s.student_roll||'')+'</strong><span>'+esc(s.status)+' · '+esc(new Date(s.created_at).toLocaleString())+'</span></div>').join('')||'<p>No unchecked sheets yet.</p>';};
+      byId('zw-paper-intake-form').addEventListener('submit',async ev=>{ev.preventDefault();const f=ev.currentTarget;if(!f.reportValidity())return;const exam=byId('zw-paper-exam').value,kind=paperKind.value,files=Array.from(byId('zw-paper-files').files||[]);if(!files.length)return paperStatus('Choose page images first.',true);if(files.some(x=>!['image/jpeg','image/png','image/webp'].includes(x.type)||x.size>10*1024*1024))return paperStatus('Each page must be JPEG, PNG, or WebP under 10 MiB.',true);const b=byId('zw-paper-submit'),paths=[];b.disabled=true;paperStatus('Uploading pages securely…');try{for(let i=0;i<files.length;i++){const x=files[i],name=x.name.replace(/[^a-zA-Z0-9._-]+/g,'-').slice(-80)||('page-'+i+'.jpg'),path=adminUser.id+'/intake/'+exam+'/'+Date.now()+'-'+i+'-'+name;const {error}=await adminClient.storage.from('exam-scans').upload(path,x,{contentType:x.type,upsert:false});if(error)throw error;paths.push(path);}let error;if(kind==='answer_sheet'){({error}=await adminClient.from('paper_scan_sessions').insert({exam_id:exam,student_name:byId('zw-paper-student').value.trim(),student_roll:byId('zw-paper-roll').value.trim(),page_paths:paths,status:'ready_for_review',teacher_notes:byId('zw-paper-notes').value.trim(),created_by:adminUser.id}));}else{({error}=await adminClient.from('exam_documents').upsert({exam_id:exam,document_type:kind,page_paths:paths,uploaded_by:adminUser.id,updated_at:new Date().toISOString()},{onConflict:'exam_id,document_type'}));}if(error)throw error;paperStatus('Saved '+paths.length+' page(s). '+(kind==='answer_sheet'?'Sheet is in the unchecked queue.':'Exam document saved.'));f.reset();paperKindToggle();await loadPaperAdminData();}catch(e){paperStatus('Could not save intake: '+e.message,true);}finally{b.disabled=false;}});
+      byId('zw-checker-form').addEventListener('submit',async ev=>{ev.preventDefault();const f=ev.currentTarget;if(!f.reportValidity())return;try{const {error}=await adminClient.from('exam_checkers').upsert({user_id:byId('zw-checker-id').value.trim(),display_name:byId('zw-checker-name').value.trim(),active:true,created_by:adminUser.id},{onConflict:'user_id'});if(error)throw error;byId('zw-checker-status').textContent='Checker registered.';f.reset();await loadPaperAdminData();}catch(e){byId('zw-checker-status').textContent='Error: '+e.message;}});
+      byId('zw-assign-form').addEventListener('submit',async ev=>{ev.preventDefault();try{const {error}=await adminClient.from('paper_scan_sessions').update({assigned_checker:byId('zw-assign-checker').value}).eq('id',byId('zw-assign-session').value).neq('status','checked');if(error)throw error;byId('zw-assign-status').textContent='Assignment saved.';await loadPaperAdminData();}catch(e){byId('zw-assign-status').textContent='Error: '+e.message;}});
+      await loadPaperAdminData();
+      const form=byId('zw-resource-upload-form'), fileInput=byId('zw-resource-file'), meta=byId('zw-resource-file-meta');
       fileInput?.addEventListener('change',()=>{
         const file=fileInput.files?.[0];
-        if(!file){meta.textContent='PDF only · maximum 10 MiB';return;}
-        const valid=file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf');
-        if(!valid||file.size>10*1024*1024){meta.textContent=!valid?'Please choose a PDF file.':'File exceeds the 10 MiB limit.';meta.style.color='#b42318';return;}
-        meta.textContent=file.name+' · '+(file.size/1024/1024).toFixed(2)+' MiB · ready for validation';
+        if(!file){meta.textContent='PDF only · maximum 50 MiB';return;}
+        const valid=file.type==='application/pdf'&&file.name.toLowerCase().endsWith('.pdf');
+        if(!valid||file.size>MAX_PDF_BYTES){meta.textContent=!valid?'Please choose a valid PDF file.':'File exceeds the 50 MiB limit.';meta.style.color='#b42318';return;}
+        meta.textContent=file.name+' · '+(file.size/1048576).toFixed(2)+' MiB · ready';
         meta.style.color='';
       });
-      form?.addEventListener('submit',event=>{
+      form?.addEventListener('submit',async event=>{
         event.preventDefault();
-        const file=fileInput?.files?.[0];
         if(!form.reportValidity())return;
-        if(!file){status.textContent='Choose a PDF file first.';return;}
-        if(!(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf'))){status.textContent='Only PDF files are allowed.';return;}
-        if(file.size>10*1024*1024){status.textContent='This file is larger than 10 MiB. Choose a smaller PDF.';return;}
-        status.textContent='Validation passed for "'+file.name+'". Nothing was uploaded or published because secure storage is not connected yet.';
+        const file=fileInput?.files?.[0];
+        if(!file){setStatus('Choose a PDF file first.',true);return;}
+        if(file.type!=='application/pdf'||!file.name.toLowerCase().endsWith('.pdf')){setStatus('Only valid PDF files are allowed.',true);return;}
+        if(file.size>MAX_PDF_BYTES){setStatus('This file is larger than 50 MiB.',true);return;}
+        const button=byId('zw-resource-prepare'); button.disabled=true; setStatus('Uploading securely…');
+        const safeBase=file.name.normalize('NFKD').replace(/[^a-zA-Z0-9._-]+/g,'-').replace(/^-+|-+$/g,'').slice(-100)||'resource.pdf';
+        const storagePath=adminUser.id+'/'+Date.now()+'-'+safeBase;
+        try{
+          const {error:uploadError}=await adminClient.storage.from('class-resources').upload(storagePath,file,{contentType:'application/pdf',upsert:false});
+          if(uploadError)throw new Error('PDF upload failed: '+uploadError.message);
+          const record={title:byId('zw-resource-title').value.trim(),description:byId('zw-resource-description').value.trim(),class_level:byId('zw-resource-class').value,subject:byId('zw-resource-subject').value,file_path:storagePath,file_name:file.name,file_size_bytes:file.size,published:byId('zw-resource-published').checked,created_by:adminUser.id};
+          const {error:metaError}=await adminClient.from('resource_library').insert(record);
+          if(metaError){
+            await adminClient.storage.from('class-resources').remove([storagePath]);
+            throw new Error('PDF uploaded but metadata save failed; the uploaded file was rolled back. '+metaError.message);
+          }
+          setStatus('Upload complete. The PDF is stored privately and resource metadata was saved.');
+          form.reset();meta.textContent='PDF only · maximum 50 MiB';await loadResources();
+        }catch(error){console.error('Admin resource upload failed:',error);setStatus(error.message||'Upload failed. Please try again.',true);}
+        finally{button.disabled=false;}
       });
-      byId('zw-resource-reset')?.addEventListener('click',()=>{form?.reset();meta.textContent='PDF only · maximum 10 MiB';if(status)status.textContent='';});
+      byId('zw-resource-reset')?.addEventListener('click',()=>{form?.reset();meta.textContent='PDF only · maximum 50 MiB';setStatus('');});
+      byId('zw-admin-signout')?.addEventListener('click',async()=>{await adminClient.auth.signOut();adminClient=null;adminUser=null;adminPortal();});
+      await loadResources();
     };
-    vp().innerHTML=header('Admin Portal','Administrator access')+`
-      <section class="teacher-form" style="max-width:720px">
-        <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
-        <h3>Admin access</h3>
-        <p>Sign in to open the administrator workspace.</p>
-        <form id="zw-admin-login-form" class="teacher-grid" novalidate>
-          <div class="form-group teacher-grid-full"><label for="zw-admin-email">Admin email</label><input id="zw-admin-email" name="email" type="email" autocomplete="username" required maxlength="254" placeholder="Your email"></div>
-          <div class="form-group teacher-grid-full"><label for="zw-admin-password">Password</label><input id="zw-admin-password" name="password" type="password" autocomplete="current-password" required maxlength="128" placeholder="Enter password"></div>
-          <div class="form-group teacher-grid-full"><button class="lms-btn primary" type="submit">Sign in</button></div>
-          <p id="zw-admin-login-error" class="hidden" role="alert"></p>
-        </form>
-      </section>`;
-    const form=byId('zw-admin-login-form'), emailInput=byId('zw-admin-email'), passwordInput=byId('zw-admin-password'), error=byId('zw-admin-login-error');
-    if(!form)return;
-    form.addEventListener('submit',event=>{
-      event.preventDefault();
-      if((emailInput?.value||'').trim().toLowerCase()!==ADMIN_EMAIL||(passwordInput?.value||'')!==ADMIN_PASSWORD){
-        if(error){error.textContent='Email or password is incorrect. Try again.';error.classList.remove('hidden')} return;
-      }
-      renderUpload();
-    });
+    const renderLogin = (message='') => {
+      vp().innerHTML=header('Admin Portal','Administrator access')+`
+        <section class="teacher-form" style="max-width:720px"><div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div><h3>Admin access</h3><p>Sign in using the administrator account configured in Supabase.</p>
+          <form id="zw-admin-login-form" class="teacher-grid" novalidate>
+            <div class="form-group teacher-grid-full"><label for="zw-admin-email">Admin email</label><input id="zw-admin-email" name="email" type="email" autocomplete="username" required maxlength="254" placeholder="Your email"></div>
+            <div class="form-group teacher-grid-full"><label for="zw-admin-password">Password</label><input id="zw-admin-password" name="password" type="password" autocomplete="current-password" required maxlength="128" placeholder="Enter password"></div>
+            <div class="form-group teacher-grid-full"><button class="lms-btn primary" id="zw-admin-login-submit" type="submit">Sign in securely</button></div>
+            <p id="zw-admin-login-error" role="alert" style="color:#b42318">${esc(message)}</p>
+          </form></section>`;
+      const form=byId('zw-admin-login-form'), emailInput=byId('zw-admin-email'), passwordInput=byId('zw-admin-password'), error=byId('zw-admin-login-error'), submit=byId('zw-admin-login-submit');
+      form?.addEventListener('submit',async event=>{
+        event.preventDefault(); if(!form.reportValidity())return;
+        submit.disabled=true;error.textContent='Signing in…';
+        try{
+          adminClient=await getClient();
+          const {data,error:loginError}=await adminClient.auth.signInWithPassword({email:emailInput.value.trim(),password:passwordInput.value});
+          if(loginError||!data?.user)throw new Error('Email or password is incorrect.');
+          adminUser=data.user;
+          try{await verifyAdmin(adminClient,adminUser);}catch(authzError){await adminClient.auth.signOut();adminUser=null;throw authzError;}
+          await renderUpload();
+        }catch(err){error.textContent=err.message||'Could not sign in. Please try again.';}
+        finally{submit.disabled=false;}
+      });
+    };
+    renderLogin();
+    (async()=>{
+      try{
+        const client=await getClient();
+        const {data:{session}}=await client.auth.getSession();
+        if(session?.user){adminClient=client;adminUser=session.user;await verifyAdmin(client,session.user);await renderUpload();}
+      }catch(err){console.warn('Admin session restore:',err.message);}
+    })();
   }
   function studentDashboard(){
     const progressKeys=Object.keys(db.progress);
@@ -5097,7 +5407,7 @@
   window.ZLMS.openCourse=id=>{const c=course(id);if(!c)return;vp().innerHTML=header(c.title,`${c.subject} • Class ${c.className} • ${c.teacher}`)+`<div class="lms-hero"><p>${esc(c.description)}</p></div><div class="lesson-list">${c.lessons.map((l,i)=>`<div class="lesson-row"><div class="num">${i+1}</div><div class="grow"><b>${esc(l.title)}</b><br><small>${esc(l.duration)}</small></div><button class="lms-btn" onclick="window.ZLMS.completeLesson('${c.id}',${i})">${i<Math.round((db.progress[c.id]||0)/25)?'Completed ✓':'Start Lesson'}</button></div>`).join('')}</div>`};
   window.ZLMS.completeLesson=(id,i)=>{db.progress[id]=Math.min(100,Math.max(db.progress[id]||0,(i+1)*Math.round(100/course(id).lessons.length)));save();window.ZLMS.openCourse(id)};
   function studentLessons(){vp().innerHTML=header('Learning Hub','Jump directly into lessons across your courses')+`<div class="lesson-list">${db.courses.flatMap(c=>c.lessons.map((l,i)=>`<div class="lesson-row"><div class="num">${i+1}</div><div class="grow"><b>${esc(l.title)}</b><br><small>${esc(c.title)} • ${esc(l.duration)}</small></div><button class="lms-btn primary" onclick="window.ZLMS.openCourse('${c.id}')">Open</button></div>`)).join('')}</div>`}
-  function studentTests(){vp().innerHTML=header('Tests & Exams','Assessments published by your teachers')+`<div class="paper-list">${db.tests.map(t=>{const c=course(t.course);return `<div class="paper-card"><div class="paper-title">${esc(t.title)}</div><div class="paper-meta"><span class="paper-tag">${t.questions} Questions</span><span class="paper-tag">${t.time} min</span><span class="paper-tag">${t.marks} Marks</span></div><p class="paper-description">${esc(c?.title||'Course assessment')}</p><button class="lms-btn primary" onclick="window.ZLMS.startTest('${t.id}')">Start Test</button></div>`}).join('')}</div>`}
+  function studentTests(){vp().innerHTML=header('Tests & Exams','Automatic checking • JEE-style marking • verified results')+`<div class="lms-hero"><h2>Ready for a real assessment?</h2><p>Take published exams, get objective answers checked automatically, and track your results. Subjective answers can be reviewed by your teacher for partial credit.</p><div class="lms-toolbar"><a class="lms-btn primary" href="/exams.html" style="display:inline-flex;align-items:center;text-decoration:none">Open Exams & Results ↗</a></div></div><div class="paper-list">${db.tests.map(t=>{const c=course(t.course);return `<div class="paper-card"><div class="paper-title">${esc(t.title)}</div><div class="paper-meta"><span class="paper-tag">${t.questions} Questions</span><span class="paper-tag">${t.time} min</span><span class="paper-tag">${t.marks} Marks</span></div><p class="paper-description">${esc(c?.title||'Course assessment')}</p><a class="lms-btn primary" href="/exams.html" style="display:inline-flex;text-decoration:none">Open exam workspace</a></div>`}).join('')}</div>`}
   window.ZLMS.startTest=id=>{const t=db.tests.find(x=>x.id===id);if(!t)return;vp().innerHTML=header(t.title,'Assessment unavailable')+`<div class="empty-state" role="status">Online assessments are not enabled yet. Results will appear here when the secure assessment service is connected.</div><div class="lms-toolbar"><button class="lms-btn" onclick="window.ZLMS.go('tests')">Back to tests</button></div>`};
   window.ZLMS.submitTest=()=>{alert('Online assessments are not enabled yet. No score has been recorded.')};
   function studentResults(){vp().innerHTML=header('Results','Your verified assessment results')+`<div class="empty-state" role="status">No verified assessment results are available yet.</div>`}
@@ -5612,6 +5922,46 @@ html[data-theme="dark"] .zw-access-card p{color:#9ba9c1!important}
         @media(max-width:1100px){.zw-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.zw-hero-art{flex-basis:170px;transform:scale(.88)}}@media(max-width:680px){.zw-dashboard-hero{min-height:0;padding:24px 19px}.zw-hero-art{display:none}.zw-dashboard-hero h1{font-size:29px}.zw-hero-actions{align-items:stretch;flex-direction:column}.zw-button{width:100%}.zw-section-heading{align-items:flex-start;flex-direction:column}.zw-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.zw-stat-card{padding:13px;grid-template-columns:34px minmax(0,1fr);column-gap:9px}.zw-stat-icon{width:34px;height:34px;font-size:13px}.zw-stat-card strong{font-size:23px}.zw-stat-label{font-size:8px}.zw-stat-card small{font-size:9px}.zw-resource-grid{grid-template-columns:1fr}.zw-resource-link{padding:14px}}
 
     </style>
+    <style id="zw-mobile-navigation">
+
+        /* Mobile navigation and student-area layout */
+        .zw-mobile-menu-toggle { display:none; }
+        @media (max-width: 700px) {
+          #app-workspace { position:relative; height:100dvh; min-height:0; }
+          #zw-mobile-menu-toggle {
+            display:inline-flex; align-items:center; justify-content:center; flex:0 0 44px;
+            width:44px; height:44px; border:1px solid var(--border); border-radius:12px;
+            color:var(--text-primary); background:var(--bg-card); cursor:pointer;
+          }
+          .sidebar {
+            position:fixed; z-index:10020; top:0; bottom:0; left:0;
+            width:min(84vw,300px); max-width:300px; height:100dvh;
+            transform:translateX(-105%); transition:transform .22s ease;
+            box-shadow:none; overflow-y:auto; overscroll-behavior:contain;
+          }
+          .sidebar.zw-mobile-sidebar-open {
+            transform:translateX(0); box-shadow:18px 0 48px rgba(0,0,0,.25);
+          }
+          #app-workspace.zw-mobile-nav-open::after {
+            content:""; position:fixed; z-index:10010; inset:0;
+            background:rgba(2,6,23,.56); backdrop-filter:blur(2px);
+          }
+          .main-wrapper { width:100%; min-width:0; }
+          .top-header { height:62px; flex-basis:62px; padding:0 12px; gap:10px; }
+          .header-search { flex:1; width:auto; min-width:0; }
+          .header-search input { min-width:0; }
+          .header-actions { gap:8px; }
+          .version-pill { display:none; }
+          .content-viewport { padding:18px 14px calc(24px + env(safe-area-inset-bottom)); }
+          .page-header h2 { font-size:clamp(18px,5vw,22px); overflow-wrap:anywhere; }
+          .cards-grid { grid-template-columns:minmax(0,1fr); gap:12px; }
+          .module-card { min-width:0; padding:17px; }
+          .paper-card { min-width:0; overflow-wrap:anywhere; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .sidebar { transition:none !important; }
+        }
+    </style>
 <div id="zw-access-gate" hidden role="dialog" aria-modal="true" aria-labelledby="zw-access-title">
   <section class="zw-access-card">
     <div class="zw-access-mark"><span aria-hidden="true">✦</span> ZWITTERION CLASSES</div>
@@ -5626,6 +5976,40 @@ html[data-theme="dark"] .zw-access-card p{color:#9ba9c1!important}
     </form>
   </section>
 </div>
+<script>
+(function(){
+  const workspace=document.getElementById("app-workspace");
+  const sidebar=document.getElementById("zw-mobile-sidebar");
+  const toggle=document.getElementById("zw-mobile-menu-toggle");
+  if(!workspace||!sidebar||!toggle) return;
+  function closeMenu(){
+    sidebar.classList.remove("zw-mobile-sidebar-open");
+    workspace.classList.remove("zw-mobile-nav-open");
+    toggle.setAttribute("aria-expanded","false");
+    toggle.setAttribute("aria-label","Open navigation menu");
+    toggle.innerHTML='<i class="fa-solid fa-bars" aria-hidden="true"></i>';
+  }
+  function openMenu(){
+    sidebar.classList.add("zw-mobile-sidebar-open");
+    workspace.classList.add("zw-mobile-nav-open");
+    toggle.setAttribute("aria-expanded","true");
+    toggle.setAttribute("aria-label","Close navigation menu");
+    toggle.innerHTML='<i class="fa-solid fa-xmark" aria-hidden="true"></i>';
+  }
+  toggle.addEventListener("click",function(){
+    sidebar.classList.contains("zw-mobile-sidebar-open")?closeMenu():openMenu();
+  });
+  workspace.addEventListener("click",function(event){
+    if(workspace.classList.contains("zw-mobile-nav-open") && event.target.closest("#zw-mobile-sidebar")) {
+      if(event.target.closest("button,a,[role='button']")) closeMenu();
+    } else if(workspace.classList.contains("zw-mobile-nav-open") && !event.target.closest("#zw-mobile-menu-toggle")) {
+      closeMenu();
+    }
+  });
+  document.addEventListener("keydown",function(event){if(event.key==="Escape") closeMenu();});
+  window.addEventListener("resize",function(){if(window.innerWidth>700) closeMenu();});
+})();
+</script>
 <script>
 (function(){
   "use strict";
@@ -5688,7 +6072,7 @@ html[data-theme="dark"] .zw-access-card p{color:#9ba9c1!important}
       console.warn("Could not restore saved PDF access:",e);
     }
   }
-  form.addEventListener("submit",async function(event){
+  if(form) form.addEventListener("submit",async function(event){
     event.preventDefault();
     message.textContent="";
     button.disabled=true;
