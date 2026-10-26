@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>SmartScan Text-to-PDF | ZWITTERION CLASSES</title>
+<style>
+:root{color-scheme:dark;--bg:#07090d;--panel:#10141b;--line:#252c37;--muted:#9ba6b5;--green:#b7f34a;--white:#f5f7fa}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 10% 0,#17221a 0,transparent 38%),var(--bg);color:var(--white);font:15px/1.55 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1100px;margin:auto;padding:32px 18px 60px}.brand{font-size:12px;letter-spacing:.16em;color:var(--green);font-weight:800}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.pill{border:1px solid var(--line);border-radius:99px;padding:7px 12px;color:var(--muted);font-size:12px}
+h1{font-size:clamp(30px,5vw,48px);letter-spacing:-.04em;line-height:1.05;margin:24px 0 12px}h1 span{color:var(--green)}.sub{color:var(--muted);max-width:720px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:26px}.card{background:rgba(16,20,27,.92);border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0}.card h2{font-size:17px;margin:0 0 8px}.hint{font-size:13px;color:var(--muted);margin:0 0 14px}
+input[type=file]{display:block;width:100%;padding:14px;border:1px dashed #46515f;border-radius:12px;background:#0b0e13;color:var(--muted)}
+button,.btn{border:0;border-radius:10px;padding:11px 15px;font-weight:750;cursor:pointer;background:var(--green);color:#10150a}button:disabled{opacity:.45;cursor:wait}.secondary{background:#222a34;color:var(--white);border:1px solid #394250}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+#status{margin-top:12px;color:var(--muted);font-size:13px;white-space:pre-wrap}.pages{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:14px}.thumb{border:1px solid var(--line);padding:8px;border-radius:10px;font-size:12px;color:var(--muted);overflow:hidden}.thumb img{width:100%;height:110px;object-fit:contain;background:#fff;border-radius:5px}
+textarea{width:100%;min-height:320px;resize:vertical;background:#090c11;color:var(--white);border:1px solid #343d4a;border-radius:12px;padding:14px;font:14px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace}
+select{background:#090c11;color:var(--white);border:1px solid #343d4a;border-radius:9px;padding:10px;max-width:100%}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}.small{font-size:12px;color:var(--muted)}.error{color:#ff9a9a!important}.success{color:var(--green)!important}
+footer{margin-top:22px;color:var(--muted);font-size:12px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}main{padding:22px 13px 40px}.card{padding:15px}}
+</style>
+</head>
+<body><main>
+<div class="top"><div class="brand">ZWITTERION CLASSES</div><div class="pill">SMARTSCAN · OCR WORKSPACE</div></div>
+<h1>Paper in.<br><span>Digital text out.</span></h1>
+<p class="sub">Extract printed questions and handwritten answers from scanned pages with Google Cloud Vision. Review and correct the text, then export a clean typed PDF or a text-plus-original-pages PDF.</p>
+<div class="grid">
+<section class="card">
+<h2>01 / Add scanned pages</h2><p class="hint">Upload JPG, PNG, WEBP or BMP images from the existing scanner. Each image must be 8 MB or smaller.</p>
+<input id="files" type="file" accept="image/jpeg,image/png,image/webp,image/bmp" multiple>
+<div class="actions"><button id="extract">Extract text with Vision</button><button id="clear" class="secondary">Clear</button></div>
+<div id="status" role="status" aria-live="polite">Choose one or more scanned page images to begin.</div><div id="pages" class="pages"></div>
+</section>
+<section class="card">
+<h2>02 / Review extracted text</h2><p class="hint">Text stays editable. OCR can misread handwriting, equations, symbols and page order—please review before exporting.</p>
+<textarea id="text" placeholder="Your extracted text will appear here. You can edit it before creating the PDF." spellcheck="true"></textarea>
+<div class="row"><label for="format" class="small">PDF format</label><select id="format"><option value="clean">Clean typed text PDF</option><option value="layout">Typed text + original scanned pages</option></select></div>
+<div class="actions"><button id="pdf">Generate PDF</button><button id="txt" class="secondary">Download TXT</button></div>
+<p class="small">The second format includes editable OCR text first, followed by the original page images for visual reference. It does not perfectly recreate the original page geometry.</p>
+</section>
+</div>
+<footer>OCR requests are sent to the configured ZWITTERION server endpoint and Google Cloud Vision. Do not upload sensitive student documents unless you have authorization and appropriate privacy safeguards.</footer>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js" referrerpolicy="no-referrer"></script>
+<script>
+(function(){
+const filesEl=document.getElementById('files'),extractBtn=document.getElementById('extract'),clearBtn=document.getElementById('clear'),status=document.getElementById('status'),pagesEl=document.getElementById('pages'),textEl=document.getElementById('text'),pdfBtn=document.getElementById('pdf'),txtBtn=document.getElementById('txt');
+let pages=[];
+function say(message,kind){status.textContent=message;status.className=kind||''}
+function mime(file){return file.type||'image/jpeg'}
+function readData(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result));r.onerror=()=>reject(new Error('Could not read '+file.name));r.readAsDataURL(file)})}
+function renderPages(){pagesEl.replaceChildren();pages.forEach((p,i)=>{const el=document.createElement('div');el.className='thumb';const img=document.createElement('img');img.src=p.url;img.alt='Uploaded scan page '+(i+1);const label=document.createElement('div');label.textContent=(i+1)+'. '+p.file.name;el.append(img,label);pagesEl.append(el)})}
+function splitLines(doc, text, x, y, maxWidth, lineHeight, bottom){const paragraphs=String(text||'').replace(/\r/g,'').split('\n');for(const para of paragraphs){if(!para.trim()){y+=lineHeight*.65;continue}const lines=doc.splitTextToSize(para,maxWidth);for(const line of lines){if(y>bottom){doc.addPage();y=20}doc.text(line,x,y);y+=lineHeight}}return y}
+extractBtn.addEventListener('click',async()=>{const selected=Array.from(filesEl.files||[]);if(!selected.length){say('Choose at least one page image first.','error');return}if(selected.some(f=>!['image/jpeg','image/png','image/webp','image/bmp'].includes(mime(f)))){say('One or more files have an unsupported image format.','error');return}if(selected.some(f=>f.size>8*1024*1024)){say('Each image must be 8 MB or smaller.','error');return}
+extractBtn.disabled=true;pages=[];renderPages();let results=[];try{for(let i=0;i<selected.length;i++){say('Extracting page '+(i+1)+' of '+selected.length+'…');const file=selected[i];const data=await readData(file);const base64=data.slice(data.indexOf(',')+1);const response=await fetch('/api/vision-ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mimeType:mime(file),imageBase64:base64})});let payload={};try{payload=await response.json()}catch(e){}if(!response.ok)throw new Error(payload.error||'OCR failed for page '+(i+1));const page={file,url:URL.createObjectURL(file),text:payload.text||''};pages.push(page);results.push('PAGE '+(i+1)+'\n'+(page.text||'[No text detected]'));renderPages()}textEl.value=results.join('\n\n────────────────────────\n\n');say('Done. '+pages.length+' page(s) processed. Review the text before exporting.','success')}catch(e){say(e.message||'OCR failed. Please try again.','error')}finally{extractBtn.disabled=false}});
+clearBtn.addEventListener('click',()=>{pages.forEach(p=>URL.revokeObjectURL(p.url));pages=[];filesEl.value='';textEl.value='';renderPages();say('Cleared. Choose new scanned pages to begin.')});
+pdfBtn.addEventListener('click',async()=>{const content=textEl.value.trim();if(!content){say('Extract or enter some text before generating a PDF.','error');return}if(!window.jspdf?.jsPDF){say('PDF library did not load. Check your connection and reload the page.','error');return}pdfBtn.disabled=true;try{const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});doc.setFont('helvetica','bold');doc.setFontSize(17);doc.text('ZWITTERION CLASSES',18,19);doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(90);doc.text('SmartScan · OCR text export',18,26);doc.setTextColor(25);doc.setDrawColor(180,190,180);doc.line(18,31,192,31);doc.setFontSize(11);let y=40;y=splitLines(doc,content,18,y,174,6,278);
+if(document.getElementById('format').value==='layout'&&pages.length){for(let i=0;i<pages.length;i++){doc.addPage();doc.setFontSize(12);doc.setFont('helvetica','bold');doc.text('Original scanned page '+(i+1),18,18);const p=pages[i];const data=await readData(p.file);const props=doc.getImageProperties(data);const maxW=174,maxH=250,scale=Math.min(maxW/props.width,maxH/props.height);const w=props.width*scale,h=props.height*scale;doc.addImage(data,props.fileType||'JPEG',18,25,w,h,undefined,'FAST')}}doc.save('zwitterion-smartscan-'+(document.getElementById('format').value==='clean'?'clean-text':'with-original-pages')+'.pdf');say('PDF generated. Please open it and check the formatting.','success')}catch(e){say('Could not generate PDF: '+(e.message||'unknown error'),'error')}finally{pdfBtn.disabled=false}});
+txtBtn.addEventListener('click',()=>{if(!textEl.value.trim()){say('There is no text to download yet.','error');return}const blob=new Blob([textEl.value],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='zwitterion-smartscan.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+window.addEventListener('beforeunload',()=>pages.forEach(p=>URL.revokeObjectURL(p.url)));
+})();
+</script></body></html>
