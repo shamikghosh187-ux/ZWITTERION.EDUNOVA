@@ -18,7 +18,7 @@
 <div class="card"><h2>3 · Export your typed PDF</h2><p>Both exports contain real selectable text, not a photograph of the page.</p><div class="formats"><div><h3>Clean text PDF</h3><p>Consistent typography, clear spacing, easy to read and print.</p><button id="clean" disabled>Download clean PDF</button></div><div><h3>Layout-style PDF</h3><p>Preserves page breaks and text order per scanned page as closely as OCR text allows.</p><button id="layout" disabled>Download layout-style PDF</button></div></div></div>
 <p class="hint">Privacy: uploaded page images are sent to Google Cloud Vision for text recognition. Avoid uploading sensitive documents unless you have permission.</p>
 </main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js" integrity="sha512-x6jsk1aV8p0Xv0bM7X8Gx2s4x4sM4h9W2u4L7Z1yG9b8y6Jzv5bqJzZ3Jz0c7M3j1yq5Zf8G4G2m0y9u7Y9yA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js" referrerpolicy="no-referrer"></script>
 <script>
 (function(){
 const input=document.getElementById('files'), previews=document.getElementById('previews'), status=document.getElementById('status'), editor=document.getElementById('text'), extract=document.getElementById('extract'), clean=document.getElementById('clean'), layout=document.getElementById('layout');
