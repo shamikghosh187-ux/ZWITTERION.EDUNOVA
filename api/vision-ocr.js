@@ -27,10 +27,17 @@ export default async function handler(req, res) {
     });
     if (!userResponse.ok) return res.status(401).json({ error: "Your session is invalid or expired. Sign in again." });
     const user = await userResponse.json();
-    const appMeta = user.app_metadata || {};
-    const roles = Array.isArray(appMeta.roles) ? appMeta.roles : [];
-    const isAdmin = appMeta.role === "admin" || appMeta.role === "ADMIN" || roles.some(role => ["admin", "ADMIN"].includes(role));
-    if (!isAdmin) return res.status(403).json({ error: "SmartScan OCR is restricted to administrator accounts." });
+    const adminCheck = await fetch("https://myeiojsclyburoicnglp.supabase.co/rest/v1/admin_users?select=user_id&user_id=eq." + encodeURIComponent(user.id), {
+      headers: {
+        Authorization: `Bearer ${match[1]}`,
+        apikey: "sb_publishable_r981XMc9N_pteQ6LKJqsoQ_7Ck4Mlak"
+      }
+    });
+    if (!adminCheck.ok) return res.status(403).json({ error: "Could not verify administrator permissions. Please contact the site administrator." });
+    const adminRows = await adminCheck.json();
+    if (!Array.isArray(adminRows) || !adminRows.some(row => row.user_id === user.id)) {
+      return res.status(403).json({ error: "SmartScan OCR is restricted to administrator accounts." });
+    }
 
     const body = req.body || {};
     const imageBase64 = String(body.imageBase64 || "");
