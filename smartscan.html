@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>SmartScan — ZWITTERION CLASSES</title>
+<style>
+:root{color-scheme:dark;--bg:#030712;--panel:#111827;--line:#263244;--text:#f8fafc;--muted:#94a3b8;--green:#a3e635}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 Inter,system-ui,Segoe UI,sans-serif}main{max-width:1050px;margin:auto;padding:32px 18px 60px}.brand{color:var(--green);font-weight:800;letter-spacing:.08em;font-size:.82rem}.hero{margin:12px 0 24px}.hero h1{font-size:clamp(2rem,5vw,3rem);margin:0;letter-spacing:-.04em}.hero p{color:var(--muted);max-width:700px}.card{border:1px solid var(--line);background:var(--panel);border-radius:18px;padding:20px;margin:16px 0}.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}label{display:block;font-weight:650;margin-bottom:8px}.hint{color:var(--muted);font-size:.9rem}.btn{border:1px solid #475569;border-radius:10px;padding:11px 15px;background:#1f2937;color:var(--text);font-weight:700;cursor:pointer}.btn.primary{background:var(--green);color:#17210a;border-color:var(--green)}.btn:disabled{opacity:.45;cursor:wait}input[type=file]{max-width:100%}select{padding:10px;border-radius:9px;background:#0b1220;color:var(--text);border:1px solid #475569}#files{margin:8px 0 16px}#status{min-height:1.5em;color:var(--green)}textarea{width:100%;min-height:360px;resize:vertical;background:#f8fafc;color:#111827;border:1px solid #cbd5e1;border-radius:12px;padding:16px;font:16px/1.65 ui-serif,Georgia,serif}#pages{display:grid;gap:14px}.page-title{color:var(--green);font-weight:700}.note{border-left:3px solid var(--green);padding:8px 12px;color:var(--muted)}.actions{margin-top:12px}a{color:var(--green)}@media(min-width:700px){.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}}
+</style>
+</head>
+<body><main>
+<div class="brand">ZWITTERION CLASSES · DOCUMENT TO TEXT</div>
+<header class="hero"><h1>SmartScan <span style="color:var(--green)">→ PDF</span></h1><p>Turn scanned printed questions and handwritten answers into editable text, review the recognition, then export a clean PDF or a page-organized PDF.</p></header>
+<div class="card">
+<label for="files">1. Choose scanned pages</label>
+<input id="files" type="file" accept="image/jpeg,image/png,image/webp,image/bmp" multiple>
+<div class="hint">Use clear, upright images. For best results, keep each image under 8 MB. This first version accepts images, not multi-page PDF uploads.</div>
+<div class="row actions"><button class="btn primary" id="run">Extract text with Google Vision</button><span id="status" role="status"></span></div>
+</div>
+<div class="card">
+<label for="documentTitle">2. Review and edit extracted text</label>
+<input id="documentTitle" value="Scanned Questions and Answers" aria-label="Document title" style="width:100%;padding:11px;border-radius:9px;border:1px solid #475569;background:#0b1220;color:white;margin-bottom:12px">
+<div id="pages"></div>
+<textarea id="editor" placeholder="Extracted text will appear here. You can correct OCR mistakes before exporting." aria-label="Editable extracted text"></textarea>
+<div class="note">OCR may misread handwriting, equations, or diagrams. Check and correct the text before generating the final PDF. Text extraction does not automatically identify which lines are questions versus answers.</div>
+<div class="row actions"><label style="margin:0" for="format">PDF format</label><select id="format"><option value="clean">Clean typed text</option><option value="structured">Page-organized text (preserve page order)</option></select><button class="btn primary" id="pdf">Download PDF</button></div>
+</div>
+<p class="hint">Your chosen images are sent to Google Cloud Vision for OCR. Avoid uploading sensitive personal information. This tool does not grade answers.</p>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js" integrity="sha512-xODc8kY5nQ9s2D7c7vV2z7H8Vh1lG8d0V7fP5Y0n6R1FQ5s5e6K9V8K7n6l5g4p3" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+const $=id=>document.getElementById(id);let extractedPages=[];
+function status(s){$("status").textContent=s}
+$("run").addEventListener("click",async()=>{
+ const files=[...$("files").files];if(!files.length){status("Choose one or more image files first.");return}
+ $("run").disabled=true;extractedPages=[];$("editor").value="";$("pages").innerHTML="";
+ try{
+  for(let i=0;i<files.length;i++){
+   const file=files[i];if(file.size>8*1024*1024)throw new Error(file.name+" is larger than 8 MB.");
+   if(!/^image\/(jpeg|png|webp|bmp)$/.test(file.type))throw new Error(file.name+" is not a supported image.");
+   status("Reading page "+(i+1)+" of "+files.length+"…");
+   const base64=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(",")[1]);reader.onerror=()=>reject(new Error("Could not read "+file.name));reader.readAsDataURL(file)});
+   const response=await fetch("/api/vision-ocr",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image:base64,mimeType:file.type})});
+   const data=await response.json();if(!response.ok)throw new Error(data.error||"OCR request failed.");
+   extractedPages.push({name:file.name,text:data.text||""});
+  }
+  $("pages").innerHTML=extractedPages.map((p,i)=>'<div class="page-title">Page '+(i+1)+' · '+escapeHtml(p.name)+'</div>').join("");
+  $("editor").value=extractedPages.map((p,i)=>extractedPages.length>1?'[Page '+(i+1)+']\n'+p.text:p.text).join("\n\n");
+  status("Extraction complete. Review the text before exporting.");
+ }catch(e){status(e.message||"OCR failed.");}
+ finally{$("run").disabled=false}
+});
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+$("pdf").addEventListener("click",()=>{
+ if(!window.jspdf?.jsPDF){status("PDF library failed to load. Check your connection and retry.");return}
+ const text=$("editor").value.trim();if(!text){status("Extract text first, then review it.");return}
+ const doc=new window.jspdf.jsPDF({unit:"pt",format:"a4"});
+ const margin=48,width=doc.internal.pageSize.getWidth()-96,height=doc.internal.pageSize.getHeight()-96;
+ const title=$("documentTitle").value.trim()||"Scanned Document";let y=margin;
+ doc.setFont("helvetica","bold");doc.setFontSize(17);
+ for(const line of doc.splitTextToSize(title,width)){if(y>height){doc.addPage();y=margin}doc.text(line,margin,y);y+=22}
+ doc.setFont("helvetica","normal");doc.setFontSize(11);
+ const mode=$("format").value;
+ const lines=text.split("\n");
+ for(const line of lines){
+  if(mode==="structured" && /^\[Page \d+\]$/.test(line)){if(y>margin){doc.addPage();y=margin}doc.setFont("helvetica","bold");doc.setFontSize(13);doc.text(line.replace(/[\[\]]/g,""),margin,y);y+=22;doc.setFont("helvetica","normal");doc.setFontSize(11);continue}
+  const wrapped=doc.splitTextToSize(line||" ",width);
+  for(const chunk of wrapped){if(y>doc.internal.pageSize.getHeight()-margin){doc.addPage();y=margin}doc.text(chunk,margin,y);y+=16}
+ }
+ const safe=title.replace(/[^a-z0-9-_]+/gi,"-").replace(/^-|-$/g,"")||"scanned-document";
+ doc.save(safe+(mode==="structured"?"-pages.pdf":"-clean.pdf"));status("PDF downloaded.");
+});
+</script></body></html>
