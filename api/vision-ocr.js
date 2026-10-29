@@ -40,7 +40,7 @@ export default async function handler(req, res) {
     }
 
     const body = req.body || {};
-    const imageBase64 = String(body.imageBase64 || "");
+    const imageBase64 = String(body.imageBase64 || body.base64 || "");
     const mimeType = String(body.mimeType || "");
     if (!ALLOWED_TYPES.has(mimeType)) return res.status(400).json({ error: "Use a JPG, PNG, or WebP image." });
     const normalized = imageBase64.replace(/^data:image\/[^;]+;base64,/, "");
