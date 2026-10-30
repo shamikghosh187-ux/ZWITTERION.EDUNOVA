@@ -4144,37 +4144,48 @@
             if (button && button instanceof HTMLButtonElement) {
                 button.disabled = true;
                 button.dataset.originalText = button.textContent;
-                button.textContent = "Loading PDF...";
+                button.textContent = "Preparing secure PDF link...";
             }
 
             try {
                 const supabase = await window.zwSupabaseReady;
+                const filename = (title || "class-notes")
+                    .replace(/[^a-z0-9._-]+/gi, "_")
+                    .replace(/\.pdf$/i, "") + ".pdf";
+
+                // Use a short-lived signed URL instead of a blob URL. Mobile browsers
+                // can open the real PDF response, while the Storage bucket stays private.
                 const { data, error } = await supabase.storage
                     .from("class-resources")
-                    .download(filePath);
+                    .createSignedUrl(filePath, 3600, { download: filename });
                 if (error) throw error;
+                if (!data || !data.signedUrl) throw new Error("Supabase did not return a secure PDF link.");
 
-                const blobUrl = URL.createObjectURL(data);
-                if (frame.dataset.generatedBlobUrl) {
-                    URL.revokeObjectURL(frame.dataset.generatedBlobUrl);
-                }
-                frame.dataset.generatedBlobUrl = blobUrl;
-                heading.textContent = title || "PDF";
-                frame.src = blobUrl;
+                const signedUrl = data.signedUrl;
                 const openTab = document.getElementById("pdf-open-new-tab");
                 const downloadLink = document.getElementById("pdf-download-link");
-                if (openTab) openTab.href = blobUrl;
-                if (downloadLink) {
-                    downloadLink.href = blobUrl;
-                    downloadLink.download = (title || "class-notes").replace(/[^a-z0-9._-]+/gi, "_") + ".pdf";
+
+                heading.textContent = title || "PDF";
+                frame.src = signedUrl;
+                if (openTab) {
+                    openTab.href = signedUrl;
+                    openTab.target = "_blank";
+                    openTab.rel = "noopener noreferrer";
                 }
+                if (downloadLink) {
+                    downloadLink.href = signedUrl;
+                    downloadLink.target = "_blank";
+                    downloadLink.rel = "noopener noreferrer";
+                    downloadLink.removeAttribute("download");
+                }
+
                 modal.classList.add("active");
                 modal.setAttribute("aria-hidden", "false");
                 document.body.style.overflow = "hidden";
             } catch (error) {
-                console.error("Published PDF download failed:", error);
+                console.error("Published PDF link creation failed:", error);
                 const detail = error && error.message ? error.message : "Unknown storage error";
-                alert("Could not open this PDF: " + detail + "\\n\\nCheck that the resource is published and that the class-resources storage policy allows published PDFs.");
+                alert("Could not open this PDF: " + detail + "\\n\\nPlease check your connection and whether your account can access this published resource.");
             } finally {
                 if (button && button instanceof HTMLButtonElement) {
                     button.disabled = false;
