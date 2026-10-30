@@ -4134,75 +4134,38 @@
             document.body.style.overflow = "hidden";
         }
 
-        async function ensurePdfJsLoaded() {
-            if (window.pdfjsLib) return window.pdfjsLib;
-            if (window.__zwPdfJsLoading) return window.__zwPdfJsLoading;
-            window.__zwPdfJsLoading = new Promise((resolve, reject) => {
-                const script = document.createElement("script");
-                script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
-                script.onload = () => {
-                    if (!window.pdfjsLib) { reject(new Error("PDF viewer library failed to initialize.")); return; }
-                    window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-                    resolve(window.pdfjsLib);
-                };
-                script.onerror = () => reject(new Error("Could not load the in-app PDF viewer. Check your internet connection."));
-                document.head.appendChild(script);
-            });
-            return window.__zwPdfJsLoading;
-        }
-
         async function openPublishedResourcePdf(filePath, title) {
             if (!filePath) return;
             const modal = document.getElementById("pdf-viewer-modal");
             const frame = document.getElementById("pdf-viewer-frame");
-            const pages = document.getElementById("pdf-viewer-canvas-container");
             const heading = document.getElementById("pdf-viewer-title");
-            if (!modal || !frame || !pages || !heading) return;
+            if (!modal || !frame || !heading) return;
 
             const button = document.activeElement;
             if (button && button instanceof HTMLButtonElement) {
                 button.disabled = true;
                 button.dataset.originalText = button.textContent;
-                button.textContent = "Opening PDF...";
+                button.textContent = "Loading PDF...";
             }
-
-            modal.classList.add("active");
-            modal.setAttribute("aria-hidden", "false");
-            document.body.style.overflow = "hidden";
-            heading.textContent = title || "PDF";
-            frame.style.display = "none";
-            frame.src = "";
-            pages.style.display = "block";
-            pages.innerHTML = '<div style="max-width:600px;margin:40px auto;padding:20px;text-align:center;font:600 15px system-ui;color:#111827">Loading PDF in Zwitterion…</div>';
 
             try {
                 const supabase = await window.zwSupabaseReady;
-                const { data, error } = await supabase.storage.from("class-resources").createSignedUrl(filePath, 3600);
+                const { data, error } = await supabase.storage
+                    .from("class-resources")
+                    .createSignedUrl(filePath, 3600);
                 if (error) throw error;
                 if (!data || !data.signedUrl) throw new Error("Could not create a secure PDF link.");
 
-                const pdfjs = await ensurePdfJsLoaded();
-                const pdf = await pdfjs.getDocument({ url: data.signedUrl }).promise;
-                pages.innerHTML = "";
-                for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
-                    const page = await pdf.getPage(pageNumber);
-                    const availableWidth = Math.max(280, pages.clientWidth - 24);
-                    const baseViewport = page.getViewport({ scale: 1 });
-                    const scale = Math.min(2, availableWidth / baseViewport.width);
-                    const viewport = page.getViewport({ scale });
-                    const canvas = document.createElement("canvas");
-                    const context = canvas.getContext("2d", { alpha: false });
-                    canvas.width = Math.floor(viewport.width);
-                    canvas.height = Math.floor(viewport.height);
-                    canvas.style.cssText = "display:block;width:100%;height:auto;max-width:900px;margin:0 auto 14px;background:white;box-shadow:0 2px 10px rgba(0,0,0,.18)";
-                    canvas.setAttribute("aria-label", "Page " + pageNumber);
-                    pages.appendChild(canvas);
-                    await page.render({ canvasContext: context, viewport }).promise;
-                }
-                if (!pdf.numPages) pages.innerHTML = '<p style="text-align:center;padding:30px;color:#111">This PDF has no pages.</p>';
+                heading.textContent = title || "PDF";
+                frame.src = data.signedUrl;
+                frame.style.display = "block";
+                modal.classList.add("active");
+                modal.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
             } catch (error) {
-                console.error("In-app PDF rendering failed:", error);
-                pages.innerHTML = '<div role="alert" style="max-width:600px;margin:30px auto;padding:20px;background:white;border-radius:12px;color:#111827;font:15px system-ui"><strong>Could not display this PDF inside Zwitterion.</strong><p>' + String(error && error.message || "Unknown error").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])) + '</p><p>Check your connection and try again.</p></div>';
+                console.error("Published PDF opening failed:", error);
+                const detail = error && error.message ? error.message : "Unknown storage error";
+                alert("Could not open this PDF: " + detail);
             } finally {
                 if (button && button instanceof HTMLButtonElement) {
                     button.disabled = false;
@@ -4214,15 +4177,13 @@
         function closeCloudPdf() {
             const modal = document.getElementById("pdf-viewer-modal");
             const frame = document.getElementById("pdf-viewer-frame");
-            const pages = document.getElementById("pdf-viewer-canvas-container");
             if (!modal || !frame) return;
             frame.src = "";
-            if (pages) { pages.innerHTML = ""; pages.style.display = "none"; }
-            frame.style.display = "block";
             modal.classList.remove("active");
             modal.setAttribute("aria-hidden", "true");
             document.body.style.overflow = "";
         }
+
 
         /* =========================================================
            SUGGESTIONS
@@ -5098,10 +5059,6 @@
             <div id="pdf-viewer-title">
                 PDF Viewer
             </div>
-            <div class="pdf-mobile-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin-left:auto">
-                <a id="pdf-open-new-tab" href="#" target="_blank" rel="noopener noreferrer" class="lms-btn" style="display:inline-flex;align-items:center;text-decoration:none;background:#fff;color:#030712;padding:10px 12px;border-radius:10px;font-weight:800">Open PDF</a>
-                <a id="pdf-download-link" href="#" download="class-notes.pdf" class="lms-btn" style="display:inline-flex;align-items:center;text-decoration:none;background:#d1fae5;color:#064e3b;padding:10px 12px;border-radius:10px;font-weight:800">Download</a>
-            </div>
         </div>
 
         <iframe
@@ -5110,7 +5067,6 @@
             loading="eager"
             allow="fullscreen"
         ></iframe>
-        <div id="pdf-viewer-canvas-container" aria-label="PDF document pages" style="display:none;flex:1;overflow:auto;background:#e5e7eb;padding:12px;overscroll-behavior:contain"></div>
     </div>
 
 
