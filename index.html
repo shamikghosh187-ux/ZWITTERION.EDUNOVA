@@ -4135,57 +4135,48 @@
         }
 
         async function openPublishedResourcePdf(filePath, title) {
-            const modal = document.getElementById("pdf-viewer-modal");
-            const frame = document.getElementById("pdf-viewer-frame");
-            const heading = document.getElementById("pdf-viewer-title");
-            if (!modal || !frame || !heading || !filePath) return;
+            if (!filePath) return;
+
+            // Open a tab immediately from the user's tap so mobile browsers don't
+            // block it after the asynchronous Supabase request.
+            const pdfTab = window.open("about:blank", "_blank");
+            if (pdfTab) {
+                pdfTab.document.title = title || "PDF";
+                pdfTab.document.body.style.cssText = "font:16px system-ui;padding:24px;color:#111";
+                pdfTab.document.body.textContent = "Opening PDF…";
+            }
 
             const button = document.activeElement;
             if (button && button instanceof HTMLButtonElement) {
                 button.disabled = true;
                 button.dataset.originalText = button.textContent;
-                button.textContent = "Preparing secure PDF link...";
+                button.textContent = "Opening PDF...";
             }
 
             try {
                 const supabase = await window.zwSupabaseReady;
-                const filename = (title || "class-notes")
-                    .replace(/[^a-z0-9._-]+/gi, "_")
-                    .replace(/\.pdf$/i, "") + ".pdf";
 
-                // Use a short-lived signed URL instead of a blob URL. Mobile browsers
-                // can open the real PDF response, while the Storage bucket stays private.
+                // Do NOT set the download option here: it sets Content-Disposition
+                // to attachment and can trigger a generic download/open screen on mobile.
+                // A short-lived signed URL keeps the bucket private while allowing
+                // the browser's native PDF viewer to render the document inline.
                 const { data, error } = await supabase.storage
                     .from("class-resources")
-                    .createSignedUrl(filePath, 3600, { download: filename });
+                    .createSignedUrl(filePath, 3600);
                 if (error) throw error;
                 if (!data || !data.signedUrl) throw new Error("Supabase did not return a secure PDF link.");
 
-                const signedUrl = data.signedUrl;
-                const openTab = document.getElementById("pdf-open-new-tab");
-                const downloadLink = document.getElementById("pdf-download-link");
-
-                heading.textContent = title || "PDF";
-                frame.src = signedUrl;
-                if (openTab) {
-                    openTab.href = signedUrl;
-                    openTab.target = "_blank";
-                    openTab.rel = "noopener noreferrer";
+                if (pdfTab && !pdfTab.closed) {
+                    pdfTab.location.replace(data.signedUrl);
+                } else {
+                    // Fallback for browsers that block new tabs.
+                    window.location.assign(data.signedUrl);
                 }
-                if (downloadLink) {
-                    downloadLink.href = signedUrl;
-                    downloadLink.target = "_blank";
-                    downloadLink.rel = "noopener noreferrer";
-                    downloadLink.removeAttribute("download");
-                }
-
-                modal.classList.add("active");
-                modal.setAttribute("aria-hidden", "false");
-                document.body.style.overflow = "hidden";
             } catch (error) {
-                console.error("Published PDF link creation failed:", error);
+                if (pdfTab && !pdfTab.closed) pdfTab.close();
+                console.error("Published PDF opening failed:", error);
                 const detail = error && error.message ? error.message : "Unknown storage error";
-                alert("Could not open this PDF: " + detail + "\\n\\nPlease check your connection and whether your account can access this published resource.");
+                alert("Could not open this PDF: " + detail + "\\n\\nPlease check your connection and access to this published resource.");
             } finally {
                 if (button && button instanceof HTMLButtonElement) {
                     button.disabled = false;
