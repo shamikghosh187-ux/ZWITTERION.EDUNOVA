@@ -1675,6 +1675,15 @@
       *, *::before, *::after { scroll-behavior: auto !important; }
     }
     </style>
+<style id="zw-mobile-pdf-fallback">@media (max-width: 600px) {
+  #pdf-viewer-modal .pdf-viewer-toolbar { flex-wrap: wrap; align-items: flex-start; gap: 8px; padding: 10px; }
+  #pdf-viewer-modal #pdf-viewer-title { flex: 1 1 100%; order: 2; white-space: normal; overflow-wrap: anywhere; }
+  #pdf-viewer-modal .pdf-mobile-actions { width: 100%; margin-left: 0 !important; order: 3; }
+  #pdf-viewer-modal .pdf-mobile-actions a { flex: 1 1 auto; justify-content: center; min-height: 42px; font-size: 14px; }
+  #pdf-viewer-modal .pdf-viewer-toolbar > button { max-width: 100%; min-height: 42px; }
+  #pdf-viewer-frame { min-height: 0; height: calc(100dvh - 170px); }
+}
+</style>
 </head>
 
 <body>
@@ -4152,6 +4161,13 @@
                 frame.dataset.generatedBlobUrl = blobUrl;
                 heading.textContent = title || "PDF";
                 frame.src = blobUrl;
+                const openTab = document.getElementById("pdf-open-new-tab");
+                const downloadLink = document.getElementById("pdf-download-link");
+                if (openTab) openTab.href = blobUrl;
+                if (downloadLink) {
+                    downloadLink.href = blobUrl;
+                    downloadLink.download = (title || "class-notes").replace(/[^a-z0-9._-]+/gi, "_") + ".pdf";
+                }
                 modal.classList.add("active");
                 modal.setAttribute("aria-hidden", "false");
                 document.body.style.overflow = "hidden";
@@ -5058,11 +5074,17 @@
             <div id="pdf-viewer-title">
                 PDF Viewer
             </div>
+            <div class="pdf-mobile-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin-left:auto">
+                <a id="pdf-open-new-tab" href="#" target="_blank" rel="noopener noreferrer" class="lms-btn" style="display:inline-flex;align-items:center;text-decoration:none;background:#fff;color:#030712;padding:10px 12px;border-radius:10px;font-weight:800">Open PDF</a>
+                <a id="pdf-download-link" href="#" download="class-notes.pdf" class="lms-btn" style="display:inline-flex;align-items:center;text-decoration:none;background:#d1fae5;color:#064e3b;padding:10px 12px;border-radius:10px;font-weight:800">Download</a>
+            </div>
         </div>
 
         <iframe
             id="pdf-viewer-frame"
             title="ZWITTERION PDF Viewer"
+            loading="eager"
+            allow="fullscreen"
         ></iframe>
     </div>
 
