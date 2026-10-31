@@ -5206,13 +5206,15 @@
       const list = byId('zw-resource-list');
       if (!list || !adminClient || !adminUser) return;
       list.innerHTML = '<p>Loading resources…</p>';
+      const classFilter = byId('zw-admin-class-filter')?.value || 'all';
       const { data, error } = await adminClient.from('resource_library')
         .select('id,title,description,class_level,subject,file_path,file_name,file_size_bytes,published,is_locked,created_at')
         .order('created_at', { ascending: false });
       if (error) { list.textContent = 'Could not load resources: ' + error.message; return; }
-      if (!data || !data.length) { list.innerHTML = '<div class="empty-state">No resources uploaded yet.</div>'; return; }
+      const filteredData = (data || []).filter(item => classFilter === 'all' || String(item.class_level || '').toLowerCase().replace(/^class\\s*/, '') === classFilter);
+      if (!filteredData.length) { list.innerHTML = '<div class="empty-state">No resources for this class yet.</div>'; return; }
       list.innerHTML = '';
-      for (const item of data) {
+      for (const item of filteredData) {
         const row = document.createElement('article');
         row.className = 'lms-stat';
         const title = document.createElement('strong');
@@ -5271,6 +5273,7 @@
         <section class="lms-hero" style="margin-bottom:22px"><div><span class="dashboard-kicker">ADMIN WORKSPACE</span><h2 style="margin:8px 0">Study material manager</h2><p>Upload PDFs to private Supabase Storage. Only verified administrators can manage these files.</p></div></section>
         <section class="teacher-form" style="max-width:100%">
           <div class="card-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><h3>Upload a study resource</h3>
+          <div class="form-group" style="max-width:320px"><label for="zw-admin-class-filter">Manage resources by class</label><select id="zw-admin-class-filter"><option value="all">All classes</option><option value="11">Class 11</option><option value="12">Class 12</option></select><small>Use this filter to keep Class 11 and Class 12 resources separate.</small></div>
           <p>PDF only · maximum 50 MiB. Files are stored privately; metadata can be published separately.</p>
           <form id="zw-resource-upload-form" class="teacher-grid">
             <div class="form-group"><label for="zw-resource-title">Resource title *</label><input id="zw-resource-title" required maxlength="120" placeholder="e.g. Class 11 Physics — Kinematics"></div>
@@ -5321,6 +5324,7 @@
         }catch(error){console.error('Admin resource upload failed:',error);setStatus(error.message||'Upload failed. Please try again.',true);}
         finally{button.disabled=false;}
       });
+      byId('zw-admin-class-filter')?.addEventListener('change',loadResources);
       byId('zw-resource-reset')?.addEventListener('click',()=>{form?.reset();meta.textContent='PDF only · maximum 50 MiB';setStatus('');});
       byId('zw-admin-signout')?.addEventListener('click',async()=>{await adminClient.auth.signOut();adminClient=null;adminUser=null;adminPortal();});
       await loadResources();
@@ -6091,5 +6095,70 @@ html[data-theme="dark"] .zw-access-card p{color:#9ba9c1!important}
 })();
 </script>
 
+
+<script id="zw-class-portal-separation">
+(function(){
+  "use strict";
+  let pendingPortal = null;
+  function ensureClassModal(){
+    if(document.getElementById("zw-class-portal-modal")) return;
+    const style=document.createElement("style");
+    style.textContent=`
+      #zw-class-portal-modal{position:fixed;inset:0;z-index:100500;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(2,6,23,.72);backdrop-filter:blur(9px)}
+      #zw-class-portal-modal.is-open{display:flex}
+      .zw-class-modal-card{width:min(100%,520px);padding:clamp(22px,4vw,34px);border:1px solid var(--border,rgba(148,163,184,.25));border-radius:24px;background:var(--bg-sidebar,#0b0f19);color:var(--text-primary,#f8fafc);box-shadow:0 30px 90px rgba(0,0,0,.38)}
+      .zw-class-modal-kicker{font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--accent-cyan,#06b6d4)}
+      .zw-class-modal-card h2{margin:10px 0 8px;font-size:clamp(23px,4vw,30px);letter-spacing:-.04em}
+      .zw-class-modal-card p{font-size:13px;line-height:1.7;color:var(--text-secondary,#94a3b8)}
+      .zw-class-modal-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:24px}
+      .zw-class-choice{min-height:150px;padding:20px 14px;border:1px solid var(--border,rgba(148,163,184,.25));border-radius:17px;background:var(--bg-card,rgba(17,24,39,.82));color:var(--text-primary,#f8fafc);text-align:left;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s}
+      .zw-class-choice:hover{transform:translateY(-3px);border-color:var(--accent-cyan,#06b6d4);box-shadow:0 12px 30px var(--accent-glow,rgba(6,182,212,.15))}
+      .zw-class-choice .zw-class-number{display:block;font-size:32px;font-weight:850;letter-spacing:-.06em}
+      .zw-class-choice .zw-class-label{display:block;margin-top:8px;font-size:12px;font-weight:750}
+      .zw-class-choice small{display:block;margin-top:7px;color:var(--text-secondary,#94a3b8);font-size:10px;line-height:1.5}
+      .zw-class-modal-cancel{margin-top:14px;width:100%;min-height:42px;border:1px solid var(--border,rgba(148,163,184,.25));border-radius:11px;background:transparent;color:var(--text-secondary,#94a3b8);cursor:pointer}
+      @media(max-width:440px){.zw-class-modal-options{gap:9px}.zw-class-choice{min-height:130px;padding:15px 11px}}
+    `;
+    document.head.appendChild(style);
+    const modal=document.createElement("div");
+    modal.id="zw-class-portal-modal";
+    modal.setAttribute("role","dialog");modal.setAttribute("aria-modal","true");modal.setAttribute("aria-labelledby","zw-class-modal-title");
+    modal.innerHTML=`<section class="zw-class-modal-card"><span class="zw-class-modal-kicker">ZWITTERION CLASSES</span><h2 id="zw-class-modal-title">Choose your class</h2><p id="zw-class-modal-description">Select the class you want to open. Class 11 and Class 12 resources stay separate.</p><div class="zw-class-modal-options"><button type="button" class="zw-class-choice" data-zw-class="11"><span class="zw-class-number">11</span><span class="zw-class-label">Class 11</span><small>Open Class 11 materials</small></button><button type="button" class="zw-class-choice" data-zw-class="12"><span class="zw-class-number">12</span><span class="zw-class-label">Class 12</span><small>Open Class 12 materials</small></button></div><button type="button" class="zw-class-modal-cancel">Cancel</button></section>`;
+    document.body.appendChild(modal);
+    modal.addEventListener("click",function(event){
+      if(event.target===modal||event.target.closest(".zw-class-modal-cancel")){modal.classList.remove("is-open");pendingPortal=null;return;}
+      const choice=event.target.closest("[data-zw-class]");if(!choice||!pendingPortal)return;
+      const selected=choice.dataset.zwClass;
+      if(window.appState) window.appState.selectedClass="Class "+selected;
+      try{localStorage.setItem("zwitterion-selected-library-class",selected);}catch(_){}
+      const label=document.getElementById("selected-class-label");if(label)label.textContent="Class "+selected;
+      const page=pendingPortal;pendingPortal=null;modal.classList.remove("is-open");
+      if(window.ZLMS&&typeof window.ZLMS.go==="function") window.ZLMS.go(page);
+      else if(typeof window.loadPage==="function") window.loadPage(page);
+      else if(typeof window.navigateToPage==="function") window.navigateToPage(page);
+    });
+    document.addEventListener("keydown",function(event){if(event.key==="Escape"&&modal.classList.contains("is-open")){modal.classList.remove("is-open");pendingPortal=null;}});
+  }
+  function openChooser(page){
+    ensureClassModal();pendingPortal=page;
+    const modal=document.getElementById("zw-class-portal-modal");
+    const title=document.getElementById("zw-class-modal-title");
+    const description=document.getElementById("zw-class-modal-description");
+    const names={"notes":"Class Notes","question-papers":"Question Paper Portal","pyqs":"Previous Year Questions","sample-papers":"Sample Papers"};
+    if(title)title.textContent="Choose a class for "+(names[page]||"this portal");
+    if(description)description.textContent="Choose Class 11 or Class 12. The portal will show resources for that class only.";
+    modal.classList.add("is-open");
+    const first=modal.querySelector("[data-zw-class='11']");if(first)first.focus();
+  }
+  document.addEventListener("click",function(event){
+    const target=event.target.closest("[data-page]");
+    if(!target)return;
+    const page=target.dataset.page;
+    if(!["notes","question-papers","pyqs","sample-papers"].includes(page))return;
+    event.preventDefault();event.stopImmediatePropagation();openChooser(page);
+  },true);
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",ensureClassModal,{once:true});else ensureClassModal();
+})();
+</script>
 </body>
 </html>
