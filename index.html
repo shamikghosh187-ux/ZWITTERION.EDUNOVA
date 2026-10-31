@@ -6129,7 +6129,7 @@ html[data-theme="dark"] .zw-access-card p{color:#9ba9c1!important}
       if(event.target===modal||event.target.closest(".zw-class-modal-cancel")){modal.classList.remove("is-open");pendingPortal=null;return;}
       const choice=event.target.closest("[data-zw-class]");if(!choice||!pendingPortal)return;
       const selected=choice.dataset.zwClass;
-      if(window.appState) window.appState.selectedClass="Class "+selected;
+      try{appState.selectedClass="Class "+selected;}catch(_){}
       try{localStorage.setItem("zwitterion-selected-library-class",selected);}catch(_){}
       const label=document.getElementById("selected-class-label");if(label)label.textContent="Class "+selected;
       const page=pendingPortal;pendingPortal=null;modal.classList.remove("is-open");
