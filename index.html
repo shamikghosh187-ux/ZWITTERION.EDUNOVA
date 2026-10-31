@@ -5208,7 +5208,7 @@
       list.innerHTML = '<p>Loading resources…</p>';
       const classFilter = byId('zw-admin-class-filter')?.value || '11';
       const { data, error } = await adminClient.from('resource_library')
-        .select('id,title,description,class_level,subject,file_path,file_name,file_size_bytes,published,is_locked,created_at')
+        .select('id,title,description,class_level,category,subject,file_path,file_name,file_size_bytes,published,is_locked,created_at')
         .order('created_at', { ascending: false });
       if (error) { list.textContent = 'Could not load resources: ' + error.message; return; }
       const filteredData = (data || []).filter(item => String(item.class_level || '').toLowerCase().replace(/^class\\s*/, '') === classFilter);
@@ -5220,7 +5220,7 @@
         const title = document.createElement('strong');
         title.textContent = item.title || item.file_name;
         const detail = document.createElement('p');
-        detail.textContent = [item.class_level, item.subject, item.published ? 'Published metadata' : 'Draft', item.is_locked ? '🔒 PDF LOCKED' : '🔓 PDF UNLOCKED', (Number(item.file_size_bytes || 0) / 1048576).toFixed(2) + ' MiB'].join(' · ');
+        detail.textContent = [item.class_level, ({notes:'Notes',question_papers:'Question Papers',pyqs:'Previous Year Questions',sample_papers:'Sample Papers',assignments:'Assignments',other:'Other'}[item.category] || item.category || 'Notes'), item.subject, item.published ? 'Published metadata' : 'Draft', item.is_locked ? '🔒 PDF LOCKED' : '🔓 PDF UNLOCKED', (Number(item.file_size_bytes || 0) / 1048576).toFixed(2) + ' MiB'].join(' · ');
         const actions = document.createElement('div');
         actions.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:10px';
         const open = document.createElement('button');
@@ -5313,7 +5313,7 @@
         try{
           const {error:uploadError}=await adminClient.storage.from('class-resources').upload(storagePath,file,{contentType:'application/pdf',upsert:false});
           if(uploadError)throw new Error('PDF upload failed: '+uploadError.message);
-          const record={title:byId('zw-resource-title').value.trim(),description:byId('zw-resource-description').value.trim(),class_level:byId('zw-resource-class').value,subject:byId('zw-resource-subject').value,file_path:storagePath,file_name:file.name,file_size_bytes:file.size,published:byId('zw-resource-published').checked,created_by:adminUser.id};
+          const categoryMap={'Notes':'notes','Question Papers':'question_papers','Previous Year Questions':'pyqs','Sample Papers':'sample_papers','Assignments':'assignments','Other':'other'}; const record={title:byId('zw-resource-title').value.trim(),description:byId('zw-resource-description').value.trim(),class_level:byId('zw-resource-class').value,category:categoryMap[byId('zw-resource-category').value]||'other',subject:byId('zw-resource-subject').value,file_path:storagePath,file_name:file.name,file_size_bytes:file.size,published:byId('zw-resource-published').checked,created_by:adminUser.id};
           const {error:metaError}=await adminClient.from('resource_library').insert(record);
           if(metaError){
             await adminClient.storage.from('class-resources').remove([storagePath]);
