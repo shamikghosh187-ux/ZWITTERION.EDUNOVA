@@ -5206,12 +5206,12 @@
       const list = byId('zw-resource-list');
       if (!list || !adminClient || !adminUser) return;
       list.innerHTML = '<p>Loading resources…</p>';
-      const classFilter = byId('zw-admin-class-filter')?.value || 'all';
+      const classFilter = byId('zw-admin-class-filter')?.value || '11';
       const { data, error } = await adminClient.from('resource_library')
         .select('id,title,description,class_level,subject,file_path,file_name,file_size_bytes,published,is_locked,created_at')
         .order('created_at', { ascending: false });
       if (error) { list.textContent = 'Could not load resources: ' + error.message; return; }
-      const filteredData = (data || []).filter(item => classFilter === 'all' || String(item.class_level || '').toLowerCase().replace(/^class\\s*/, '') === classFilter);
+      const filteredData = (data || []).filter(item => String(item.class_level || '').toLowerCase().replace(/^class\\s*/, '') === classFilter);
       if (!filteredData.length) { list.innerHTML = '<div class="empty-state">No resources for this class yet.</div>'; return; }
       list.innerHTML = '';
       for (const item of filteredData) {
@@ -5273,12 +5273,12 @@
         <section class="lms-hero" style="margin-bottom:22px"><div><span class="dashboard-kicker">ADMIN WORKSPACE</span><h2 style="margin:8px 0">Study material manager</h2><p>Upload PDFs to private Supabase Storage. Only verified administrators can manage these files.</p></div></section>
         <section class="teacher-form" style="max-width:100%">
           <div class="card-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><h3>Upload a study resource</h3>
-          <div class="form-group" style="max-width:320px"><label for="zw-admin-class-filter">Manage resources by class</label><select id="zw-admin-class-filter"><option value="all">All classes</option><option value="11">Class 11</option><option value="12">Class 12</option></select><small>Use this filter to keep Class 11 and Class 12 resources separate.</small></div>
+          <div class="form-group" style="max-width:320px"><label for="zw-admin-class-filter">Manage resources by class</label><select id="zw-admin-class-filter"><option value="11">Class 11</option><option value="12">Class 12</option></select><small>Use this filter to keep Class 11 and Class 12 resources separate.</small></div>
           <p>PDF only · maximum 50 MiB. Files are stored privately; metadata can be published separately.</p>
           <form id="zw-resource-upload-form" class="teacher-grid">
             <div class="form-group"><label for="zw-resource-title">Resource title *</label><input id="zw-resource-title" required maxlength="120" placeholder="e.g. Class 11 Physics — Kinematics"></div>
             <div class="form-group"><label for="zw-resource-subject">Subject *</label><select id="zw-resource-subject" required><option value="">Choose subject</option><option>Physics</option><option>Chemistry</option><option>Mathematics</option><option>Biology</option><option>English</option><option>Other</option></select></div>
-            <div class="form-group"><label for="zw-resource-class">Class *</label><select id="zw-resource-class" required><option value="">Choose class</option><option>Class 6</option><option>Class 7</option><option>Class 8</option><option>Class 9</option><option>Class 10</option><option>Class 11</option><option>Class 12</option><option>JEE</option><option>NEET</option></select></div>
+            <div class="form-group"><label for="zw-resource-class">Class *</label><select id="zw-resource-class" required><option value="">Choose class</option><option>Class 11</option><option>Class 12</option></select></div>
             <div class="form-group"><label for="zw-resource-category">Category *</label><select id="zw-resource-category" required><option value="">Choose category</option><option>Notes</option><option>Question Papers</option><option>Previous Year Questions</option><option>Sample Papers</option><option>Assignments</option><option>Other</option></select></div>
             <div class="form-group teacher-grid-full"><label for="zw-resource-description">Description (optional)</label><textarea id="zw-resource-description" rows="3" maxlength="500" placeholder="What will students learn from this resource?"></textarea></div>
             <div class="form-group teacher-grid-full"><label for="zw-resource-file">PDF file *</label><input id="zw-resource-file" type="file" accept="application/pdf,.pdf" required><small id="zw-resource-file-meta">PDF only · maximum 50 MiB</small></div>
