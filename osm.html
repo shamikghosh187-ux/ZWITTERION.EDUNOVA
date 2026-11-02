@@ -308,8 +308,10 @@ function startLiveSync(sheetId){
    buildQuestionRows();updateTotals();$('save-indicator').textContent='Live update received · '+new Date().toLocaleTimeString();
   })
   .on('postgres_changes',{event:'*',schema:'public',table:'paper_scan_page_annotations',filter:'scan_session_id=eq.'+sheetId},async(payload)=>{
-   if(state.selected?.id!==sheetId||Number(payload.new?.page_number)!==Number(state.page))return;
+   if(state.selected?.id!==sheetId)return;
    if(canEditSheet(state.selected)&&state.dirty)return;
+   try{await refreshRegionTotals();}catch(e){console.warn('Live region totals refresh failed',e);}
+   if(Number(payload.new?.page_number)!==Number(state.page))return;
    const {data,error}=await supabase.from('paper_scan_page_annotations').select('annotations').eq('scan_session_id',sheetId).eq('page_number',state.page).maybeSingle();
    if(error){console.warn('Live annotation refresh failed',error);return;}
    state.inkMarks=Array.isArray(data?.annotations)?data.annotations:[];
