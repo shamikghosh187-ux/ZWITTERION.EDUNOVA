@@ -1,0 +1,449 @@
+{
+  "paperId": "CBSE11-CHEM-P01",
+  "class": 11,
+  "subject": "Chemistry",
+  "paperNumber": 1,
+  "title": "Foundation Paper",
+  "durationMinutes": 40,
+  "totalMarks": 30,
+  "marksPerQuestion": 2,
+  "negativeMarks": 0,
+  "questionCount": 15,
+  "questions": [
+    {
+      "id": "11-01-01",
+      "chapter": "Some Basic Concepts of Chemistry",
+      "topic": "Mole concept",
+      "difficulty": "foundation",
+      "question": "How many molecules are present in 0.50 mol of O₂?",
+      "options": [
+        {
+          "label": "A",
+          "text": "3.011 × 10²³"
+        },
+        {
+          "label": "B",
+          "text": "6.022 × 10²³"
+        },
+        {
+          "label": "C",
+          "text": "1.204 × 10²⁴"
+        },
+        {
+          "label": "D",
+          "text": "1.505 × 10²³"
+        }
+      ],
+      "correct": 0,
+      "explanation": "N = nNₐ = 0.50 × 6.022 × 10²³ = 3.011 × 10²³.",
+      "correctOption": "A",
+      "marks": 2
+    },
+    {
+      "id": "11-01-02",
+      "chapter": "Some Basic Concepts of Chemistry",
+      "topic": "Limiting reagent",
+      "difficulty": "foundation",
+      "question": "For 2H₂ + O₂ → 2H₂O, 3 mol H₂ and 2 mol O₂ are mixed. Which is the limiting reagent?",
+      "options": [
+        {
+          "label": "A",
+          "text": "H₂"
+        },
+        {
+          "label": "B",
+          "text": "O₂"
+        },
+        {
+          "label": "C",
+          "text": "H₂O"
+        },
+        {
+          "label": "D",
+          "text": "Neither"
+        }
+      ],
+      "correct": 0,
+      "explanation": "3 mol H₂ requires 1.5 mol O₂; 2 mol O₂ is available, so H₂ limits.",
+      "correctOption": "A",
+      "marks": 2
+    },
+    {
+      "id": "11-01-03",
+      "chapter": "Structure of Atom",
+      "topic": "Quantum numbers",
+      "difficulty": "foundation",
+      "question": "Which set of quantum numbers is allowed for an electron in a 3p orbital?",
+      "options": [
+        {
+          "label": "A",
+          "text": "n=3, l=1, mₗ=0"
+        },
+        {
+          "label": "B",
+          "text": "n=3, l=3, mₗ=0"
+        },
+        {
+          "label": "C",
+          "text": "n=2, l=2, mₗ=1"
+        },
+        {
+          "label": "D",
+          "text": "n=3, l=1, mₗ=2"
+        }
+      ],
+      "correct": 0,
+      "explanation": "For 3p, n=3 and l=1; mₗ may be −1, 0, or +1.",
+      "correctOption": "A",
+      "marks": 2
+    },
+    {
+      "id": "11-01-04",
+      "chapter": "Structure of Atom",
+      "topic": "Photon energy",
+      "difficulty": "foundation",
+      "question": "The energy of a photon is directly proportional to its:",
+      "options": [
+        {
+          "label": "A",
+          "text": "Wavelength"
+        },
+        {
+          "label": "B",
+          "text": "Frequency"
+        },
+        {
+          "label": "C",
+          "text": "Amplitude"
+        },
+        {
+          "label": "D",
+          "text": "Speed in vacuum squared"
+        }
+      ],
+      "correct": 1,
+      "explanation": "E = hν.",
+      "correctOption": "B",
+      "marks": 2
+    },
+    {
+      "id": "11-01-05",
+      "chapter": "Classification of Elements and Periodicity in Properties",
+      "topic": "Atomic radius",
+      "difficulty": "foundation",
+      "question": "Which atom has the largest atomic radius?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Li"
+        },
+        {
+          "label": "B",
+          "text": "Be"
+        },
+        {
+          "label": "C",
+          "text": "B"
+        },
+        {
+          "label": "D",
+          "text": "C"
+        }
+      ],
+      "correct": 0,
+      "explanation": "Atomic radius generally decreases across a period as effective nuclear charge increases.",
+      "correctOption": "A",
+      "marks": 2
+    },
+    {
+      "id": "11-01-06",
+      "chapter": "Classification of Elements and Periodicity in Properties",
+      "topic": "Ionisation enthalpy",
+      "difficulty": "foundation",
+      "question": "Which has the highest first ionisation enthalpy among Na, Mg, Al and Si?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Na"
+        },
+        {
+          "label": "B",
+          "text": "Mg"
+        },
+        {
+          "label": "C",
+          "text": "Al"
+        },
+        {
+          "label": "D",
+          "text": "Si"
+        }
+      ],
+      "correct": 3,
+      "explanation": "Across Period 3 the general trend increases; Si is highest among these choices.",
+      "correctOption": "D",
+      "marks": 2
+    },
+    {
+      "id": "11-01-07",
+      "chapter": "Chemical Bonding and Molecular Structure",
+      "topic": "Molecular shape",
+      "difficulty": "foundation",
+      "question": "The molecular shape of NH₃ is:",
+      "options": [
+        {
+          "label": "A",
+          "text": "Trigonal planar"
+        },
+        {
+          "label": "B",
+          "text": "Trigonal pyramidal"
+        },
+        {
+          "label": "C",
+          "text": "Tetrahedral"
+        },
+        {
+          "label": "D",
+          "text": "Linear"
+        }
+      ],
+      "correct": 1,
+      "explanation": "Three bond pairs and one lone pair produce a trigonal-pyramidal shape.",
+      "correctOption": "B",
+      "marks": 2
+    },
+    {
+      "id": "11-01-08",
+      "chapter": "Chemical Bonding and Molecular Structure",
+      "topic": "Hybridisation",
+      "difficulty": "foundation",
+      "question": "The hybridisation of carbon in CH₄ is:",
+      "options": [
+        {
+          "label": "A",
+          "text": "sp"
+        },
+        {
+          "label": "B",
+          "text": "sp²"
+        },
+        {
+          "label": "C",
+          "text": "sp³"
+        },
+        {
+          "label": "D",
+          "text": "dsp²"
+        }
+      ],
+      "correct": 2,
+      "explanation": "Methane has four equivalent tetrahedral σ bonds, corresponding to sp³ hybridisation.",
+      "correctOption": "C",
+      "marks": 2
+    },
+    {
+      "id": "11-01-09",
+      "chapter": "Some Basic Concepts of Chemistry",
+      "topic": "Empirical formula",
+      "difficulty": "foundation",
+      "question": "A compound contains 40.0% C, 6.67% H and 53.33% O by mass. Its empirical formula is:",
+      "options": [
+        {
+          "label": "A",
+          "text": "CH₂O"
+        },
+        {
+          "label": "B",
+          "text": "C₂H₄O"
+        },
+        {
+          "label": "C",
+          "text": "CHO"
+        },
+        {
+          "label": "D",
+          "text": "C₂H₂O₂"
+        }
+      ],
+      "correct": 0,
+      "explanation": "For 100 g: C≈3.33 mol, H≈6.67 mol, O≈3.33 mol; ratio 1:2:1.",
+      "correctOption": "A",
+      "marks": 2
+    },
+    {
+      "id": "11-01-10",
+      "chapter": "Structure of Atom",
+      "topic": "Shell capacity",
+      "difficulty": "foundation",
+      "question": "The maximum number of electrons in the shell n=3 is:",
+      "options": [
+        {
+          "label": "A",
+          "text": "8"
+        },
+        {
+          "label": "B",
+          "text": "18"
+        },
+        {
+          "label": "C",
+          "text": "32"
+        },
+        {
+          "label": "D",
+          "text": "9"
+        }
+      ],
+      "correct": 1,
+      "explanation": "Maximum capacity = 2n² = 18.",
+      "correctOption": "B",
+      "marks": 2
+    },
+    {
+      "id": "11-01-11",
+      "chapter": "Classification of Elements and Periodicity in Properties",
+      "topic": "Electronegativity",
+      "difficulty": "foundation",
+      "question": "Which element has the highest electronegativity?",
+      "options": [
+        {
+          "label": "A",
+          "text": "O"
+        },
+        {
+          "label": "B",
+          "text": "N"
+        },
+        {
+          "label": "C",
+          "text": "F"
+        },
+        {
+          "label": "D",
+          "text": "Cl"
+        }
+      ],
+      "correct": 2,
+      "explanation": "Fluorine has the highest electronegativity.",
+      "correctOption": "C",
+      "marks": 2
+    },
+    {
+      "id": "11-01-12",
+      "chapter": "Chemical Bonding and Molecular Structure",
+      "topic": "Bond polarity",
+      "difficulty": "foundation",
+      "question": "Which bond is most polar?",
+      "options": [
+        {
+          "label": "A",
+          "text": "H–H"
+        },
+        {
+          "label": "B",
+          "text": "H–Cl"
+        },
+        {
+          "label": "C",
+          "text": "H–F"
+        },
+        {
+          "label": "D",
+          "text": "Cl–Cl"
+        }
+      ],
+      "correct": 2,
+      "explanation": "H–F has the largest electronegativity difference among these bonds.",
+      "correctOption": "C",
+      "marks": 2
+    },
+    {
+      "id": "11-01-13",
+      "chapter": "Chemical Bonding and Molecular Structure",
+      "topic": "Molecular orbital theory",
+      "difficulty": "foundation",
+      "question": "The bond order of N₂ is:",
+      "options": [
+        {
+          "label": "A",
+          "text": "1"
+        },
+        {
+          "label": "B",
+          "text": "2"
+        },
+        {
+          "label": "C",
+          "text": "2.5"
+        },
+        {
+          "label": "D",
+          "text": "3"
+        }
+      ],
+      "correct": 3,
+      "explanation": "MO theory gives bond order (N_b−N_a)/2 = 3.",
+      "correctOption": "D",
+      "marks": 2
+    },
+    {
+      "id": "11-01-14",
+      "chapter": "Some Basic Concepts of Chemistry",
+      "topic": "Molarity",
+      "difficulty": "foundation",
+      "question": "What is the molarity of 0.20 mol solute in 500 mL of solution?",
+      "options": [
+        {
+          "label": "A",
+          "text": "0.10 M"
+        },
+        {
+          "label": "B",
+          "text": "0.20 M"
+        },
+        {
+          "label": "C",
+          "text": "0.40 M"
+        },
+        {
+          "label": "D",
+          "text": "2.5 M"
+        }
+      ],
+      "correct": 2,
+      "explanation": "M = 0.20/0.500 = 0.40 mol L⁻¹.",
+      "correctOption": "C",
+      "marks": 2
+    },
+    {
+      "id": "11-01-15",
+      "chapter": "Chemical Bonding and Molecular Structure",
+      "topic": "Lone pairs",
+      "difficulty": "foundation",
+      "question": "How many lone pairs are present on oxygen in H₂O?",
+      "options": [
+        {
+          "label": "A",
+          "text": "0"
+        },
+        {
+          "label": "B",
+          "text": "1"
+        },
+        {
+          "label": "C",
+          "text": "2"
+        },
+        {
+          "label": "D",
+          "text": "3"
+        }
+      ],
+      "correct": 2,
+      "explanation": "Oxygen has two O–H bonds and two lone pairs.",
+      "correctOption": "C",
+      "marks": 2
+    }
+  ]
+}
