@@ -174,7 +174,25 @@ body{background:radial-gradient(ellipse at 8% -8%,color-mix(in srgb,var(--accent
  .grading-student{grid-template-columns:1fr 1fr}
 }
 
-.region-modal{position:fixed;inset:0;z-index:100010;background:#0009;display:grid;place-items:center;padding:16px}.region-modal.hidden{display:none}.region-modal-card{width:min(420px,100%);padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:0 24px 80px #0008;display:grid;gap:14px}.region-modal-head,.region-modal-actions{display:flex;align-items:center;justify-content:space-between;gap:10px}.region-modal-card label{display:grid;gap:6px;font-size:12px;font-weight:800}.region-modal-card input,.region-modal-card select{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text)}.region-modal-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.region-modal-actions{justify-content:flex-end}</style>
+.region-modal{position:fixed;inset:0;z-index:100010;background:#0009;display:grid;place-items:center;padding:16px}.region-modal.hidden{display:none}.region-modal-card{width:min(420px,100%);padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:0 24px 80px #0008;display:grid;gap:14px}.region-modal-head,.region-modal-actions{display:flex;align-items:center;justify-content:space-between;gap:10px}.region-modal-card label{display:grid;gap:6px;font-size:12px;font-weight:800}.region-modal-card input,.region-modal-card select{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text)}.region-modal-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.region-modal-actions{justify-content:flex-end}
+/* OSM fullscreen: keep both PDF panes visible (the legacy fullscreen rules hid the reference pane). */
+.workspace.osm-fullscreen #marking-workspace{display:flex!important;flex:1 1 auto!important;min-height:0!important;height:100%!important;flex-direction:column!important}
+.workspace.osm-fullscreen #marking-workspace .pdf-pair{display:grid!important;grid-template-columns:minmax(0,1fr) 10px minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr)!important;gap:0!important;flex:1 1 auto!important;min-height:0!important;height:100%!important;width:calc(100% - 300px)!important;margin:0 300px 0 0!important}
+.workspace.osm-fullscreen #marking-workspace .pdf-pair:not(.has-reference){grid-template-columns:minmax(0,1fr)!important}
+.workspace.osm-fullscreen #marking-workspace .pdf-pair>.viewer:first-child{display:flex!important;grid-column:1!important;grid-row:1!important;min-width:0!important;min-height:0!important;height:100%!important}
+.workspace.osm-fullscreen #marking-workspace .pdf-pair>.pdf-pane-resizer{display:none!important}
+.workspace.osm-fullscreen #marking-workspace .pdf-pair.has-reference>.pdf-pane-resizer{display:flex!important;grid-column:2!important;grid-row:1!important}
+.workspace.osm-fullscreen #marking-workspace .pdf-pair>.viewer.question-paper-viewer,
+.workspace.osm-fullscreen #marking-workspace .pdf-pair.has-reference>.viewer.question-paper-viewer{display:flex!important;position:relative!important;inset:auto!important;grid-column:3!important;grid-row:1!important;min-width:0!important;min-height:0!important;width:100%!important;height:100%!important;max-width:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;z-index:1!important;overflow:hidden!important}
+.workspace.osm-fullscreen #marking-workspace .question-paper-viewer .question-pdf-toolbar{display:flex!important;flex:0 0 auto!important;flex-wrap:wrap!important;gap:5px!important;padding:6px!important;background:var(--panel)!important}
+.workspace.osm-fullscreen #marking-workspace .question-paper-viewer .question-pdf-toolbar .btn,
+.workspace.osm-fullscreen #marking-workspace .question-paper-viewer .question-pdf-toolbar input{min-height:30px!important;padding:5px 7px!important;font-size:11px!important}
+.workspace.osm-fullscreen #marking-workspace .question-paper-viewer .pdf-scroll{display:flex!important;flex:1 1 auto!important;min-height:0!important;height:auto!important;overflow:auto!important;align-items:flex-start!important;justify-content:center!important;padding:8px!important}
+.workspace.osm-fullscreen #marking-workspace .question-paper-viewer .pdf-scroll canvas{max-width:100%!important;height:auto!important}
+.workspace.osm-fullscreen #marking-workspace .question-paper-viewer .reference-dock{display:flex!important;flex:0 0 auto!important;position:relative!important;bottom:auto!important;flex-wrap:wrap!important;gap:5px!important;padding:7px!important;background:var(--panel)!important}
+.workspace.osm-fullscreen #marking-workspace .question-paper-viewer .reference-dock .btn{padding:6px 8px!important;font-size:11px!important}
+@media(max-width:850px){.workspace.osm-fullscreen #marking-workspace .pdf-pair{width:calc(100% - 245px)!important;margin-right:245px!important;grid-template-columns:minmax(0,1fr) 8px minmax(0,1fr)!important}.workspace.osm-fullscreen #marking-workspace .pdf-pair:not(.has-reference){grid-template-columns:minmax(0,1fr)!important}}
+</style>
 </head>
 <body>
 <div class="app">
