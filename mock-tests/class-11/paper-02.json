@@ -1,0 +1,479 @@
+{
+  "paperId": "CBSE11-CHEM-P02",
+  "class": 11,
+  "subject": "Chemistry",
+  "paperNumber": 2,
+  "title": "Foundation–Moderate Paper",
+  "durationMinutes": 40,
+  "totalMarks": 30,
+  "marksPerQuestion": 2,
+  "negativeMarks": 0,
+  "questionCount": 15,
+  "questions": [
+    {
+      "id": "11-02-01",
+      "chapter": "Some Basic Concepts of Chemistry",
+      "topic": "Stoichiometry",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "For 2Al + 3Cl₂ → 2AlCl₃, how many moles of Cl₂ are needed for 4 mol Al?",
+      "options": [
+        {
+          "label": "A",
+          "text": "2 mol"
+        },
+        {
+          "label": "B",
+          "text": "3 mol"
+        },
+        {
+          "label": "C",
+          "text": "4 mol"
+        },
+        {
+          "label": "D",
+          "text": "6 mol"
+        }
+      ],
+      "correctOption": "D",
+      "explanation": "The stoichiometric ratio Al:Cl₂ is 2:3, so 4 mol Al needs 6 mol Cl₂.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-02",
+      "chapter": "Some Basic Concepts of Chemistry",
+      "topic": "Concentration",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "A solution has 5 g NaOH in 250 mL solution. Its molarity is (Molar mass 40 g mol⁻¹):",
+      "options": [
+        {
+          "label": "A",
+          "text": "0.25 M"
+        },
+        {
+          "label": "B",
+          "text": "0.50 M"
+        },
+        {
+          "label": "C",
+          "text": "1.00 M"
+        },
+        {
+          "label": "D",
+          "text": "2.00 M"
+        }
+      ],
+      "correctOption": "B",
+      "explanation": "Moles = 5/40 = 0.125; volume = 0.250 L; M = 0.50 M.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-03",
+      "chapter": "Structure of Atom",
+      "topic": "De Broglie wavelength",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "The de Broglie wavelength of a particle is inversely proportional to its:",
+      "options": [
+        {
+          "label": "A",
+          "text": "Mass only"
+        },
+        {
+          "label": "B",
+          "text": "Momentum"
+        },
+        {
+          "label": "C",
+          "text": "Kinetic energy only"
+        },
+        {
+          "label": "D",
+          "text": "Charge"
+        }
+      ],
+      "correctOption": "B",
+      "explanation": "λ = h/p.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-04",
+      "chapter": "Structure of Atom",
+      "topic": "Bohr model",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "For a hydrogen atom, the radius of the second Bohr orbit is:",
+      "options": [
+        {
+          "label": "A",
+          "text": "a₀"
+        },
+        {
+          "label": "B",
+          "text": "2a₀"
+        },
+        {
+          "label": "C",
+          "text": "4a₀"
+        },
+        {
+          "label": "D",
+          "text": "8a₀"
+        }
+      ],
+      "correctOption": "C",
+      "explanation": "For hydrogen rₙ = n²a₀; at n=2, r=4a₀.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-05",
+      "chapter": "Classification of Elements and Periodicity in Properties",
+      "topic": "Electron affinity",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "Which halogen has the most negative electron-gain enthalpy?",
+      "options": [
+        {
+          "label": "A",
+          "text": "F"
+        },
+        {
+          "label": "B",
+          "text": "Cl"
+        },
+        {
+          "label": "C",
+          "text": "Br"
+        },
+        {
+          "label": "D",
+          "text": "I"
+        }
+      ],
+      "correctOption": "B",
+      "explanation": "Cl has more negative electron-gain enthalpy than F because the compact 2p shell of F has greater repulsion.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-06",
+      "chapter": "Classification of Elements and Periodicity in Properties",
+      "topic": "Periodic trend",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "Which species has the smallest radius?",
+      "options": [
+        {
+          "label": "A",
+          "text": "Na⁺"
+        },
+        {
+          "label": "B",
+          "text": "Mg²⁺"
+        },
+        {
+          "label": "C",
+          "text": "Al³⁺"
+        },
+        {
+          "label": "D",
+          "text": "F⁻"
+        }
+      ],
+      "correctOption": "C",
+      "explanation": "These are isoelectronic (10 electrons); greater nuclear charge gives smaller radius, so Al³⁺ is smallest.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-07",
+      "chapter": "Chemical Bonding and Molecular Structure",
+      "topic": "VSEPR",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "The shape of SF₄ is:",
+      "options": [
+        {
+          "label": "A",
+          "text": "Tetrahedral"
+        },
+        {
+          "label": "B",
+          "text": "See-saw"
+        },
+        {
+          "label": "C",
+          "text": "Square planar"
+        },
+        {
+          "label": "D",
+          "text": "Trigonal bipyramidal"
+        }
+      ],
+      "correctOption": "B",
+      "explanation": "SF₄ has five electron domains including one lone pair; molecular shape is see-saw.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-08",
+      "chapter": "Chemical Bonding and Molecular Structure",
+      "topic": "Formal charge",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "The formal charge on nitrogen in NH₄⁺ is:",
+      "options": [
+        {
+          "label": "A",
+          "text": "−1"
+        },
+        {
+          "label": "B",
+          "text": "0"
+        },
+        {
+          "label": "C",
+          "text": "+1"
+        },
+        {
+          "label": "D",
+          "text": "+2"
+        }
+      ],
+      "correctOption": "C",
+      "explanation": "Formal charge = 5 − 0 − 4 = +1.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-09",
+      "chapter": "Some Basic Concepts of Chemistry",
+      "topic": "Mass percentage",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "The mass percentage of oxygen in H₂O is approximately:",
+      "options": [
+        {
+          "label": "A",
+          "text": "11.1%"
+        },
+        {
+          "label": "B",
+          "text": "50.0%"
+        },
+        {
+          "label": "C",
+          "text": "88.9%"
+        },
+        {
+          "label": "D",
+          "text": "94.1%"
+        }
+      ],
+      "correctOption": "C",
+      "explanation": "Oxygen percentage = 16/18 × 100 ≈ 88.9%.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-10",
+      "chapter": "Structure of Atom",
+      "topic": "Subshell capacity",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "The maximum number of electrons in a d subshell is:",
+      "options": [
+        {
+          "label": "A",
+          "text": "2"
+        },
+        {
+          "label": "B",
+          "text": "6"
+        },
+        {
+          "label": "C",
+          "text": "10"
+        },
+        {
+          "label": "D",
+          "text": "14"
+        }
+      ],
+      "correctOption": "C",
+      "explanation": "A d subshell has five orbitals, each holding two electrons: 10.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-11",
+      "chapter": "Classification of Elements and Periodicity in Properties",
+      "topic": "Oxidation state",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "The highest oxidation state commonly shown by chlorine in its oxides is:",
+      "options": [
+        {
+          "label": "A",
+          "text": "+1"
+        },
+        {
+          "label": "B",
+          "text": "+3"
+        },
+        {
+          "label": "C",
+          "text": "+5"
+        },
+        {
+          "label": "D",
+          "text": "+7"
+        }
+      ],
+      "correctOption": "D",
+      "explanation": "Chlorine can attain +7 oxidation state, for example in Cl₂O₇.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-12",
+      "chapter": "Chemical Bonding and Molecular Structure",
+      "topic": "Dipole moment",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "Which molecule has zero net dipole moment?",
+      "options": [
+        {
+          "label": "A",
+          "text": "NH₃"
+        },
+        {
+          "label": "B",
+          "text": "H₂O"
+        },
+        {
+          "label": "C",
+          "text": "CO₂"
+        },
+        {
+          "label": "D",
+          "text": "SO₂"
+        }
+      ],
+      "correctOption": "C",
+      "explanation": "Linear CO₂ has equal and opposite C=O bond dipoles that cancel.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-13",
+      "chapter": "Chemical Bonding and Molecular Structure",
+      "topic": "Resonance",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "The two C–O bonds in carbonate ion are equivalent mainly due to:",
+      "options": [
+        {
+          "label": "A",
+          "text": "Induction"
+        },
+        {
+          "label": "B",
+          "text": "Resonance"
+        },
+        {
+          "label": "C",
+          "text": "Hydrogen bonding"
+        },
+        {
+          "label": "D",
+          "text": "Ionic dissociation"
+        }
+      ],
+      "correctOption": "B",
+      "explanation": "Equivalent resonance structures delocalise the π bonding and equalise C–O bonds.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-14",
+      "chapter": "Some Basic Concepts of Chemistry",
+      "topic": "Gas amount",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "At the same temperature and pressure, 2 L of an ideal gas contains how many times the molecules in 0.5 L?",
+      "options": [
+        {
+          "label": "A",
+          "text": "2"
+        },
+        {
+          "label": "B",
+          "text": "3"
+        },
+        {
+          "label": "C",
+          "text": "4"
+        },
+        {
+          "label": "D",
+          "text": "5"
+        }
+      ],
+      "correctOption": "C",
+      "explanation": "At fixed T and P, amount is proportional to volume: 2/0.5 = 4.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    },
+    {
+      "id": "11-02-15",
+      "chapter": "Structure of Atom",
+      "topic": "Orbitals",
+      "difficulty": "foundation-moderate",
+      "type": "single-correct",
+      "question": "The number of orbitals in a p subshell is:",
+      "options": [
+        {
+          "label": "A",
+          "text": "1"
+        },
+        {
+          "label": "B",
+          "text": "3"
+        },
+        {
+          "label": "C",
+          "text": "5"
+        },
+        {
+          "label": "D",
+          "text": "7"
+        }
+      ],
+      "correctOption": "B",
+      "explanation": "For l=1, possible mₗ values are −1, 0, +1, giving three orbitals.",
+      "marks": 2,
+      "negativeMarks": 0,
+      "reviewed": false
+    }
+  ]
+}
