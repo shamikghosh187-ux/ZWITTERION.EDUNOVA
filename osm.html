@@ -315,11 +315,11 @@ $('question-zoom-in').addEventListener('click',()=>{state.questionScale=Math.min
 $('question-zoom-out').addEventListener('click',()=>{state.questionScale=Math.max(.5,state.questionScale-.15);renderQuestionPaperPage();});
 $('exam-paper-form').addEventListener('submit',async e=>{
  e.preventDefault();
- if(!isAdmin()||!state.user)return;
+ if(!isAdmin()||!state.user){status('exam-paper-status','Admin access is required to upload exam papers.',true);return;}
  const examId=$('paper-exam-select').value,paper=$('question-paper-file').files[0],scheme=$('marking-scheme-file').files[0],rows=allocationRows();
  if(!examId||!paper){status('exam-paper-status','Choose an exam and question paper PDF.',true);return;}
  if([paper,scheme].filter(Boolean).some(f=>f.size>50*1024*1024||!(f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf')))){status('exam-paper-status','Use PDF files up to 50 MB each.',true);return;}
- const btn=$('save-exam-paper');btn.disabled=true;
+ const btn=$('save-exam-paper');btn.disabled=true;btn.textContent='Uploading…';status('exam-paper-status','Uploading question paper…');
  try{
   const {data:existingSheets,error:sheetCheckError}=await supabase.from('paper_scan_sessions').select('id').eq('exam_id',examId).limit(1);
   if(sheetCheckError)throw sheetCheckError;
@@ -327,6 +327,7 @@ $('exam-paper-form').addEventListener('submit',async e=>{
   if(!structureLocked&&(!rows.length||rows.some(q=>!(q.question_order>0)||q.max_marks<0)||new Set(rows.map(q=>q.question_order)).size!==rows.length))throw new Error('Question numbers must be unique and marks cannot be negative.');
   for(const [type,file] of [['question_paper',paper],['marking_scheme',scheme]]){
    if(!file)continue;
+   status('exam-paper-status','Uploading '+(type==='question_paper'?'question paper':'marking scheme')+'…');
    const path=state.user.id+'/osm/'+examId+'/'+type+'-'+Date.now()+'-'+crypto.randomUUID()+'.pdf';
    const {error:up}=await supabase.storage.from('exam-scans').upload(path,file,{contentType:'application/pdf',upsert:false});
    if(up)throw up;
@@ -335,17 +336,17 @@ $('exam-paper-form').addEventListener('submit',async e=>{
    const {error:insErr}=await supabase.from('exam_documents').insert({exam_id:examId,document_type:type,page_paths:[path],uploaded_by:state.user.id});
    if(insErr)throw insErr;
   }
-  if(structureLocked){
-   status('exam-paper-status','PDF uploaded successfully. Existing student answer sheets were found, so their question/marks structure was left unchanged.',false);
-  }else{
+  if(!structureLocked){
    const {error:delErr}=await supabase.from('exam_questions').delete().eq('exam_id',examId);if(delErr)throw delErr;
    const records=rows.sort((a,b)=>a.question_order-b.question_order).map(q=>({exam_id:examId,question_order:q.question_order,question_text:'Question '+q.question_order,question_type:'subjective',max_marks:q.max_marks,marks_correct:q.max_marks}));
    const {error:qErr}=await supabase.from('exam_questions').insert(records);if(qErr)throw qErr;
-   status('exam-paper-status','Question paper saved. '+rows.length+' questions configured · '+fmt(rows.reduce((s,q)=>s+q.max_marks,0))+' total marks.');
   }
+  status('exam-paper-status','Upload complete. Loading question paper preview…');
+  await loadQuestionPaper(examId);
   await loadSheets();
- }catch(err){status('exam-paper-status','Could not upload/save exam paper: '+(err.message||String(err)),true);}
- finally{btn.disabled=false;}
+  status('exam-paper-status','Question paper uploaded and loaded in the viewer.'+(structureLocked?' Existing answer-sheet marking structure was preserved.':''));
+ }catch(err){console.error('OSM question-paper upload failed:',err);status('exam-paper-status','Question-paper upload failed: '+(err?.message||String(err)),true);}
+ finally{btn.disabled=false;btn.textContent='Upload question paper';}
 });
 $('create-exam-form').addEventListener('submit',async e=>{e.preventDefault();if(!isAdmin()||!state.user)return;const btn=$('create-exam-submit');btn.disabled=true;status('create-exam-status','Creating exam…');try{const title=$('new-exam-title').value.trim(),class_level=$('new-exam-class').value.trim()||'Class 11',subject=$('new-exam-subject').value.trim();if(!title)throw new Error('Enter an exam name.');const {data,error}=await supabase.from('exams').insert({title,class_level,subject,created_by:state.user.id,status:'draft'}).select('id,title,class_level,subject').single();if(error)throw error;await loadExams();$('exam-select').value=data.id;$('paper-exam-select').value=data.id;status('create-exam-status','Exam created. It is selected in the answer-sheet form.');$('new-exam-title').value='';}catch(err){status('create-exam-status','Could not create exam: '+err.message,true);}finally{btn.disabled=false;}});
 async function loadCheckers(){const {data,error}=await supabase.from('exam_checkers').select('user_id,display_name').eq('active',true).eq('role','examiner').order('display_name');if(error){state.checkers=[];status('upload-status','Could not load examiner list: '+error.message,true);return;}state.checkers=data||[];}
