@@ -1,0 +1,131 @@
+{
+  "bankId": "zwitterion-cbse-chemistry-2026",
+  "title": "Zwitterion Classes | CBSE Chemistry Mock Bank",
+  "status": "question-bank-in-progress",
+  "curriculum": {
+    "board": "CBSE",
+    "classes": [11, 12],
+    "scope": "Current rationalised CBSE Chemistry theory chapters; exclude deleted legacy chapters from compulsory coverage",
+    "questionType": "single-correct MCQ",
+    "optionsPerQuestion": 4,
+    "marksPerQuestion": 2,
+    "negativeMarks": 0,
+    "questionsPerPaper": 15,
+    "marksPerPaper": 30,
+    "durationMinutes": 40,
+    "papersPerClass": 10,
+    "totalPapers": 20,
+    "targetUniqueQuestions": 300,
+    "deduplicateAcrossAllPapers": true
+  },
+  "classes": {
+    "11": {
+      "chapters": [
+        "Some Basic Concepts of Chemistry",
+        "Structure of Atom",
+        "Classification of Elements and Periodicity in Properties",
+        "Chemical Bonding and Molecular Structure",
+        "Chemical Thermodynamics",
+        "Equilibrium",
+        "Redox Reactions",
+        "Organic Chemistry: Some Basic Principles and Techniques",
+        "Hydrocarbons"
+      ],
+      "paperDifficulty": [
+        "Foundation",
+        "Foundation-Moderate",
+        "Moderate",
+        "Moderate",
+        "Moderate-Hard",
+        "Hard",
+        "Hard",
+        "Very Hard",
+        "Very Hard",
+        "JEE Advanced Challenge"
+      ]
+    },
+    "12": {
+      "chapters": [
+        "Solutions",
+        "Electrochemistry",
+        "Chemical Kinetics",
+        "The d- and f-Block Elements",
+        "Coordination Compounds",
+        "Haloalkanes and Haloarenes",
+        "Alcohols, Phenols and Ethers",
+        "Aldehydes, Ketones and Carboxylic Acids",
+        "Amines",
+        "Biomolecules"
+      ],
+      "paperDifficulty": [
+        "Foundation",
+        "Foundation-Moderate",
+        "Moderate",
+        "Moderate",
+        "Moderate-Hard",
+        "Hard",
+        "Hard",
+        "Very Hard",
+        "Very Hard",
+        "JEE Advanced Challenge"
+      ]
+    }
+  },
+  "paperBlueprint": {
+    "class11": [
+      {"paper": 1, "difficulty": "Foundation", "chapterMix": ["Some Basic Concepts of Chemistry", "Structure of Atom", "Classification of Elements and Periodicity in Properties", "Chemical Bonding and Molecular Structure"]},
+      {"paper": 2, "difficulty": "Foundation-Moderate", "chapterMix": ["Chemical Bonding and Molecular Structure", "Some Basic Concepts of Chemistry", "Structure of Atom", "Classification of Elements and Periodicity in Properties"]},
+      {"paper": 3, "difficulty": "Moderate", "chapterMix": ["Chemical Thermodynamics", "Equilibrium", "Redox Reactions"]},
+      {"paper": 4, "difficulty": "Moderate", "chapterMix": ["Organic Chemistry: Some Basic Principles and Techniques", "Hydrocarbons", "Redox Reactions"]},
+      {"paper": 5, "difficulty": "Moderate-Hard", "chapterMix": ["Chemical Thermodynamics", "Equilibrium", "Chemical Bonding and Molecular Structure"]},
+      {"paper": 6, "difficulty": "Hard", "chapterMix": ["Equilibrium", "Chemical Thermodynamics", "Some Basic Concepts of Chemistry"]},
+      {"paper": 7, "difficulty": "Hard", "chapterMix": ["Organic Chemistry: Some Basic Principles and Techniques", "Hydrocarbons", "Structure of Atom"]},
+      {"paper": 8, "difficulty": "Very Hard", "chapterMix": ["Equilibrium", "Chemical Thermodynamics", "Chemical Bonding and Molecular Structure", "Redox Reactions"]},
+      {"paper": 9, "difficulty": "Very Hard", "chapterMix": ["Hydrocarbons", "Organic Chemistry: Some Basic Principles and Techniques", "Equilibrium"]},
+      {"paper": 10, "difficulty": "JEE Advanced Challenge", "chapterMix": ["All Class 11 chapters"]}
+    ],
+    "class12": [
+      {"paper": 1, "difficulty": "Foundation", "chapterMix": ["Solutions", "Chemical Kinetics", "The d- and f-Block Elements", "Biomolecules"]},
+      {"paper": 2, "difficulty": "Foundation-Moderate", "chapterMix": ["Electrochemistry", "Coordination Compounds", "Amines", "Biomolecules"]},
+      {"paper": 3, "difficulty": "Moderate", "chapterMix": ["Solutions", "Electrochemistry", "Chemical Kinetics"]},
+      {"paper": 4, "difficulty": "Moderate", "chapterMix": ["The d- and f-Block Elements", "Coordination Compounds", "Amines"]},
+      {"paper": 5, "difficulty": "Moderate-Hard", "chapterMix": ["Haloalkanes and Haloarenes", "Alcohols, Phenols and Ethers", "Aldehydes, Ketones and Carboxylic Acids"]},
+      {"paper": 6, "difficulty": "Hard", "chapterMix": ["Electrochemistry", "Chemical Kinetics", "Solutions"]},
+      {"paper": 7, "difficulty": "Hard", "chapterMix": ["Coordination Compounds", "The d- and f-Block Elements", "Amines"]},
+      {"paper": 8, "difficulty": "Very Hard", "chapterMix": ["Aldehydes, Ketones and Carboxylic Acids", "Alcohols, Phenols and Ethers", "Haloalkanes and Haloarenes"]},
+      {"paper": 9, "difficulty": "Very Hard", "chapterMix": ["Electrochemistry", "Solutions", "Chemical Kinetics", "Coordination Compounds"]},
+      {"paper": 10, "difficulty": "JEE Advanced Challenge", "chapterMix": ["All Class 12 chapters"]}
+    ]
+  },
+  "questionSchema": {
+    "id": "unique-string",
+    "class": 11,
+    "paper": 1,
+    "chapter": "chapter name",
+    "topic": "specific topic",
+    "difficulty": "foundation|moderate|hard|very-hard|advanced",
+    "type": "single-correct",
+    "question": "question text",
+    "options": {"A": "option", "B": "option", "C": "option", "D": "option"},
+    "correctOption": "A",
+    "explanation": "solution and reasoning",
+    "marks": 2,
+    "negativeMarks": 0,
+    "sourceTag": "original-curriculum-aligned",
+    "reviewed": false
+  },
+  "integrityRules": [
+    "Exactly 15 questions in every paper.",
+    "Every question is worth 2 marks; paper total is exactly 30.",
+    "Each paper duration is 40 minutes.",
+    "No duplicate question stem across the complete 300-question bank.",
+    "Each question must have four options and exactly one correct option.",
+    "Answer key and explanation are stored separately from student-facing question payload.",
+    "Questions must match the stated class and chapter.",
+    "Difficulty must increase across each class's 10-paper progression.",
+    "Do not mark the bank production-ready until all 300 questions have been written and validated."
+  ],
+  "papers": [],
+  "questionCount": 0,
+  "targetQuestionCount": 300
+}
