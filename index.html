@@ -6017,6 +6017,53 @@ a{transition:color .2s ease}
 html.zw-custom-cursor-active,html.zw-custom-cursor-active body,html.zw-custom-cursor-active body *{cursor:none!important}
 @media(pointer:coarse){#zw-custom-cursor{display:none!important}html.zw-custom-cursor-active,html.zw-custom-cursor-active body,html.zw-custom-cursor-active body *{cursor:auto!important}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Dashboard palette adjustment: graphite sidebar, black accents, black dashboard headings */
+[data-theme="light"]{
+ --bg-sidebar:#343434;
+ --text-primary:#171717;
+ --text-secondary:#d0d0d0;
+ --accent-cyan:#111111;
+ --accent-purple:#3b3b3b;
+ --accent-glow:rgba(0,0,0,.12);
+ --border:rgba(0,0,0,.22);
+}
+[data-theme="light"] #sidebar,[data-theme="light"] .sidebar,[data-theme="light"] #zw-mobile-sidebar{
+ background:#343434!important;
+ color:#f3f3f3!important;
+ border-right-color:#171717!important;
+}
+[data-theme="light"] .sidebar-brand,[data-theme="light"] .sidebar-footer{
+ border-color:#171717!important;
+}
+[data-theme="light"] .brand-text h2,[data-theme="light"] .sidebar .brand-text h2{
+ color:#f7f7f7!important;
+}
+[data-theme="light"] .brand-text span,[data-theme="light"] .sidebar .brand-text span,
+[data-theme="light"] .nav-item,[data-theme="light"] .user-meta{
+ color:#d0d0d0!important;
+}
+[data-theme="light"] .nav-item:hover{
+ background:#252525!important;color:#ffffff!important;border-color:#171717!important;
+}
+[data-theme="light"] .nav-item.active{
+ background:#111111!important;color:#ffffff!important;border-color:#050505!important;
+ box-shadow:inset 3px 0 0 #858585!important;
+}
+[data-theme="light"] .nav-item.active i{color:#ffffff!important}
+[data-theme="light"] .btn-logout{
+ border-color:#1b1b1b!important;color:#dedede!important;
+}
+[data-theme="light"] .btn-logout:hover{
+ background:#171717!important;color:#ffffff!important;border-color:#000!important;
+}
+[data-theme="light"] .page-header h1,[data-theme="light"] .page-header h2,
+[data-theme="light"] .page-header h3,[data-theme="light"] .content-viewport h1,
+[data-theme="light"] .content-viewport h2,[data-theme="light"] .content-viewport h3,
+[data-theme="light"] .section-title,[data-theme="light"] .dashboard-section h2,
+[data-theme="light"] .dashboard-section h3{
+ color:#111111!important;text-shadow:none!important;
+}
 </style>
 <div id="zw-access-gate" hidden role="dialog" aria-modal="true" aria-labelledby="zw-access-title">
   <section class="zw-access-card">
