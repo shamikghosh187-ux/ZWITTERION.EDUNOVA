@@ -6064,6 +6064,31 @@ html.zw-custom-cursor-active,html.zw-custom-cursor-active body,html.zw-custom-cu
 [data-theme="light"] .dashboard-section h3{
  color:#111111!important;text-shadow:none!important;
 }
+
+/* Final monochrome dark workspace: no blue/purple accents; white particles stay visible */
+:root,[data-theme="light"],[data-theme="dark"]{
+ --bg-main:#242424!important;--bg-sidebar:#303030!important;--bg-card:rgba(48,48,48,.96)!important;
+ --bg-card-hover:#3a3a3a!important;--text-primary:#f2f2f2!important;--text-secondary:#c0c0c0!important;
+ --accent-cyan:#d6d6d6!important;--accent-purple:#a9a9a9!important;--accent-glow:rgba(255,255,255,.08)!important;
+ --border:rgba(255,255,255,.14)!important;--header-bg:rgba(35,35,35,.97)!important;--input-bg:#292929!important;
+}
+html,body{background:#242424!important;color:#f2f2f2!important}
+body{background-image:radial-gradient(rgba(255,255,255,.16) .65px,transparent .95px),linear-gradient(135deg,#292929,#202020 58%,#303030)!important;background-size:28px 28px,100% 100%!important;background-attachment:fixed!important}
+#app-workspace,#app-root,.workspace,.main-content,.content-viewport{background:transparent!important;background-image:none!important;color:#f2f2f2!important}
+#app-workspace{isolation:isolate}
+.sidebar,#sidebar,#zw-mobile-sidebar{background:#303030!important;color:#f1f1f1!important;border-color:#111!important}
+.sidebar .nav-item,.nav-item{color:#d0d0d0!important}
+.nav-item.active,.nav-item[aria-current="page"]{background:#171717!important;color:#fff!important;border-color:#050505!important;box-shadow:inset 3px 0 #bdbdbd!important}
+header,.topbar,.app-header,.top-header{background:rgba(35,35,35,.97)!important;color:#f2f2f2!important;border-color:#444!important}
+.page-header h1,.page-header h2,.page-header h3,.content-viewport h1,.content-viewport h2,.content-viewport h3,.section-title,.dashboard-section h2,.dashboard-section h3{color:#f1f1f1!important;text-shadow:none!important}
+.card,.paper-card,.lms-stat,.course-card,.dashboard-card,.module-card{background:#303030!important;color:#f1f1f1!important;border-color:#4a4a4a!important}
+.card p,.paper-card p,.module-card p,.dashboard-card p{color:#c6c6c6!important}
+button,.btn,.primary-btn{background:#383838!important;color:#f5f5f5!important;border-color:#555!important;box-shadow:none!important}
+button:hover,.btn:hover,.primary-btn:hover{background:#454545!important;border-color:#777!important}
+input,select,textarea{background:#292929!important;color:#f1f1f1!important;border-color:#555!important}
+.zw-particle-field{z-index:0!important;opacity:1!important;pointer-events:none!important}
+.zw-particle{background:rgba(255,255,255,.82)!important;box-shadow:0 0 5px rgba(255,255,255,.45)!important;opacity:0;animation:zw-float-up var(--duration,16s) linear infinite!important;animation-delay:var(--delay,0s)!important}
+@media(prefers-reduced-motion:reduce){.zw-particle{animation:zw-float-up 24s linear infinite!important}}
 </style>
 <div id="zw-access-gate" hidden role="dialog" aria-modal="true" aria-labelledby="zw-access-title">
   <section class="zw-access-card">
