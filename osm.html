@@ -218,7 +218,7 @@ body{background:radial-gradient(ellipse at 8% -8%,color-mix(in srgb,var(--accent
           <div class="field full"><label for="paper-exam-select">Exam *</label><select id="paper-exam-select" required><option value="">Choose exam…</option></select></div>
           <div class="field full"><label for="question-paper-file">Question paper PDF *</label><input id="question-paper-file" type="file" accept="application/pdf,.pdf" required><span class="hint">This is uploaded separately from student answer sheets.</span></div>
           <div class="field full"><label for="marking-scheme-file">Official answer / marking scheme PDF (optional)</label><input id="marking-scheme-file" type="file" accept="application/pdf,.pdf"></div>
-          <div class="field full"><label for="paper-question-count">Total questions</label><div style="display:flex;gap:8px"><input id="paper-question-count" type="number" min="1" max="300" value="15"><button class="btn" id="generate-allocation" type="button">Generate rows</button></div></div>
+          <div class="field full"><label>Automatic question detection</label><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="detect-paper-questions" type="button">Read PDF & detect questions</button><button class="btn primary" id="confirm-detected-questions" type="button" disabled>Confirm detected structure</button></div><div id="pdf-detection-status" class="status" role="status">Upload a typed PDF, then detect question numbers and marks.</div><div id="pdf-detection-review" class="allocation-list"></div><div class="hint">Selectable PDF text required. Scanned/image-only papers are not supported by text extraction.</div></div><div class="field full"><label for="paper-question-count">Total questions</label><div style="display:flex;gap:8px"><input id="paper-question-count" type="number" min="1" max="300" value="15"><button class="btn" id="generate-allocation" type="button">Generate rows</button></div></div>
           <div class="field full"><label>Quick mark presets</label><div class="allocation-tools"><button class="btn" type="button" data-preset="standard">Q1–10: 1 · Q11–15: 2 · Q16–20: 3 · Q21–25: 4 · Q26–30: 5</button><button class="btn" type="button" data-preset="clear">Clear marks</button><button class="btn" type="button" id="add-allocation-row">＋ Add question</button></div></div>
           <div class="field full"><div id="allocation-list" class="allocation-list"></div><div class="allocation-total"><span>Total paper marks</span><strong id="allocation-total">0</strong></div><span class="hint">Edit any question number or maximum marks. You can use fewer questions or add custom question numbers.</span></div>
           <div class="field full"><button class="btn primary" id="save-exam-paper" type="submit">Upload paper & save marking structure</button></div>
@@ -331,6 +331,53 @@ $('question-next-page').addEventListener('click',()=>{if(state.questionPdf&&stat
 $('question-jump-page').addEventListener('change',()=>{if(state.questionPdf){state.questionPage=Math.max(1,Math.min(state.questionPdf.numPages,Number($('question-page-jump').value)||1));renderQuestionPaperPage();}});
 $('question-zoom-in').addEventListener('click',()=>{state.questionScale=Math.min(2.5,state.questionScale+.15);renderQuestionPaperPage();});
 $('question-zoom-out').addEventListener('click',()=>{state.questionScale=Math.max(.5,state.questionScale-.15);renderQuestionPaperPage();});
+
+// OSM typed question-paper text extraction and review
+let detectedPaperRows=[];
+function parsePaperQuestions(text){
+ const lines=text.replace(/\\r/g,'').split(/\\n/).map(x=>x.trim()).filter(Boolean);
+ const found=[]; const patterns=[/^(?:Q(?:uestion)?\\s*)?(\\d{1,3})\\s*[.)\-:]\\s*(.*)$/i,/^(\\d{1,3})\\s*\\)\\s*(.*)$/];
+ for(let i=0;i<lines.length;i++){
+  let m=null;for(const p of patterns){m=lines[i].match(p);if(m)break;}if(!m)continue;
+  const num=Number(m[1]);if(!(num>0&&num<=300))continue;
+  let body=m[2]||'';let joined=body;
+  if(!joined&&lines[i+1])joined=lines[i+1];
+  const marksMatch=(joined+' '+lines[i+1]+' '+lines[i+2]).match(/(?:\\[\\s*)?(\\d+(?:\\.\\d+)?)\\s*(?:marks?|mks?|pts?)\\s*(?:\\])?/i)||joined.match(/\\((\\d+(?:\\.\\d+)?)\\s*\\)/);
+  if(found.some(q=>q.question_number===num))continue;
+  found.push({question_number:num,max_marks:marksMatch?Number(marksMatch[1]):0,question_text:joined.slice(0,500)});
+ }
+ return found.sort((a,b)=>a.question_number-b.question_number);
+}
+function renderDetectedPaper(){
+ const root=$('pdf-detection-review');root.innerHTML='';
+ if(!detectedPaperRows.length){root.innerHTML='<div class="empty">No questions detected yet.</div>';return;}
+ root.innerHTML=detectedPaperRows.map((q,i)=>'<div class="allocation-row" style="display:grid;grid-template-columns:90px minmax(0,1fr);gap:8px;padding:8px"><label>Question<input type="number" min="1" max="300" data-detect-q="'+i+'" value="'+q.question_number+'"></label><label>Maximum marks<input type="number" min="0" step="0.5" data-detect-m="'+i+'" value="'+q.max_marks+'"></label><div class="hint" style="grid-column:1/-1">'+escapeHtml(q.question_text||'Text extracted; question wording not detected.')+'</div></div>').join('');
+ root.querySelectorAll('[data-detect-q]').forEach(el=>el.addEventListener('input',()=>{detectedPaperRows[Number(el.dataset.detectQ)].question_number=Number(el.value)||0;updateDetectedTotal();}));
+ root.querySelectorAll('[data-detect-m]').forEach(el=>el.addEventListener('input',()=>{detectedPaperRows[Number(el.dataset.detectM)].max_marks=Number(el.value)||0;updateDetectedTotal();}));
+ updateDetectedTotal();
+}
+function updateDetectedTotal(){const total=detectedPaperRows.reduce((a,q)=>a+Number(q.max_marks||0),0);$('pdf-detection-status').textContent='Detected '+detectedPaperRows.length+' question(s) · total '+total+' marks. Review and edit before confirming.';$('confirm-detected-questions').disabled=!detectedPaperRows.length||detectedPaperRows.some(q=>q.question_number<1||q.max_marks<0)||new Set(detectedPaperRows.map(q=>q.question_number)).size!==detectedPaperRows.length;}
+$('detect-paper-questions').addEventListener('click',async()=>{
+ const file=$('question-paper-file').files?.[0];if(!file){$('pdf-detection-status').textContent='Choose a question-paper PDF first.';return;}
+ if(!window.pdfjsLib){$('pdf-detection-status').textContent='PDF.js did not load. Refresh and retry.';return;}
+ try{$('detect-paper-questions').disabled=true;$('pdf-detection-status').textContent='Extracting selectable PDF text…';const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;let text='';
+ for(let p=1;p<=pdf.numPages;p++){const page=await pdf.getPage(p),content=await page.getTextContent();text+='\\n'+content.items.map(x=>x.str).join(' ');}
+ if(!text.trim())throw new Error('No selectable text found. This may be a scanned/image-only PDF.');
+ detectedPaperRows=parsePaperQuestions(text);renderDetectedPaper();
+ if(!detectedPaperRows.length)$('pdf-detection-status').textContent='Text extracted, but question numbering/marks could not be recognized. Add rows manually below.';
+ }catch(err){$('pdf-detection-status').textContent='PDF text extraction: '+err.message;}finally{$('detect-paper-questions').disabled=false;}
+});
+$('confirm-detected-questions').addEventListener('click',()=>{
+ if(!detectedPaperRows.length)return;
+ $('paper-question-count').value=detectedPaperRows.length;
+ renderAllocationRowsFromDetected();
+ $('pdf-detection-status').textContent='Confirmed '+detectedPaperRows.length+' questions. Review the allocation rows, then upload/save the paper.';
+});
+function renderAllocationRowsFromDetected(){
+ const root=$('allocation-list');root.innerHTML=detectedPaperRows.map((q,i)=>'<div class="allocation-row"><label>Question<input type="number" min="1" max="300" data-allocation-number="'+i+'" value="'+q.question_number+'"></label><label>Maximum marks<input type="number" min="0" step="0.5" data-allocation-marks="'+i+'" value="'+q.max_marks+'"></label></div>').join('');
+ root.querySelectorAll('[data-allocation-number]').forEach(el=>el.addEventListener('input',()=>{detectedPaperRows[Number(el.dataset.allocationNumber)].question_number=Number(el.value)||0;}));
+ root.querySelectorAll('[data-allocation-marks]').forEach(el=>el.addEventListener('input',()=>{detectedPaperRows[Number(el.dataset.allocationMarks)].max_marks=Number(el.value)||0;}));
+}
 $('exam-paper-form').addEventListener('submit',async e=>{
  e.preventDefault();
  if(!isAdmin()||!state.user){status('exam-paper-status','Admin access is required to upload exam papers.',true);return;}
