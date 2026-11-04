@@ -5988,11 +5988,12 @@ button,.btn,.primary-btn{transition:transform .22s ease,background .22s ease,bor
 button:hover,.btn:hover,.primary-btn:hover{transform:translateY(-1px)}
 input,select,textarea{background:var(--input-bg);border-color:var(--border);color:var(--text-primary)}
 a{transition:color .2s ease}
-#zw-custom-cursor{display:none;position:fixed;left:0;top:0;width:12px;height:12px;border:1px solid rgba(255,255,255,.92);border-radius:50%;background:rgba(255,255,255,.12);box-shadow:0 0 10px rgba(255,255,255,.32),0 0 24px rgba(255,255,255,.12);pointer-events:none!important;z-index:2147483647;transform:translate(-50%,-50%);transition:width .35s cubic-bezier(.2,.8,.2,1),height .35s cubic-bezier(.2,.8,.2,1),background .35s ease;mix-blend-mode:screen}
-#zw-custom-cursor:after{content:"";position:absolute;inset:-7px;border:1px solid rgba(255,255,255,.28);border-radius:50%;transition:inset .35s ease}
+#zw-custom-cursor{display:none;position:fixed;left:0;top:0;width:13px;height:13px;border:1px solid rgba(35,35,35,.82);border-radius:50%;background:linear-gradient(145deg,#171717 0%,#555 38%,#d7d7d7 62%,#3a3a3a 100%);background-size:220% 220%;box-shadow:0 0 7px rgba(40,40,40,.22),0 0 18px rgba(210,210,210,.16);pointer-events:none!important;z-index:2147483647;transform:translate(-50%,-50%);transition:width .32s cubic-bezier(.2,.8,.2,1),height .32s cubic-bezier(.2,.8,.2,1),box-shadow .32s ease;animation:zw-cursor-shades 5.5s ease-in-out infinite;mix-blend-mode:multiply}
+#zw-custom-cursor:after{content:"";position:absolute;inset:-7px;border:1px solid rgba(75,75,75,.42);border-radius:50%;transition:inset .32s ease,border-color .32s ease}
 #zw-custom-cursor.is-active{display:block}
-#zw-custom-cursor.is-hover{width:30px;height:30px;background:rgba(255,255,255,.08)}
-#zw-custom-cursor.is-hover:after{inset:-3px}
+#zw-custom-cursor.is-hover{width:29px;height:29px;box-shadow:0 0 10px rgba(45,45,45,.18),0 0 22px rgba(190,190,190,.22)}
+#zw-custom-cursor.is-hover:after{inset:-3px;border-color:rgba(30,30,30,.58)}
+@keyframes zw-cursor-shades{0%,100%{background-position:0% 50%;filter:brightness(.78)}50%{background-position:100% 50%;filter:brightness(1.12)}}
 .zw-particle-field{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .zw-particle{position:absolute;bottom:-8px;width:2px;height:2px;border-radius:50%;background:rgba(255,255,255,.78);box-shadow:0 0 5px rgba(255,255,255,.4);animation:zw-float-up var(--duration,16s) linear infinite;animation-delay:var(--delay,0s);opacity:0}
 @keyframes zw-float-up{0%{transform:translate3d(0,0,0);opacity:0}12%{opacity:.55}75%{opacity:.28}100%{transform:translate3d(var(--drift,18px),-110vh,0);opacity:0}}
