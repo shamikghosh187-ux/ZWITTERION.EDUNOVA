@@ -6089,6 +6089,25 @@ input,select,textarea{background:#292929!important;color:#f1f1f1!important;borde
 .zw-particle-field{z-index:0!important;opacity:1!important;pointer-events:none!important}
 .zw-particle{background:rgba(255,255,255,.82)!important;box-shadow:0 0 5px rgba(255,255,255,.45)!important;opacity:0;animation:zw-float-up var(--duration,16s) linear infinite!important;animation-delay:var(--delay,0s)!important}
 @media(prefers-reduced-motion:reduce){.zw-particle{animation:zw-float-up 24s linear infinite!important}}
+
+/* Lighter graphite workspace, sparse calm particles, fully monochrome accents */
+:root,[data-theme="light"],[data-theme="dark"]{
+ --bg-main:#3a3a3a!important;--bg-sidebar:#303030!important;--bg-card:rgba(54,54,54,.97)!important;
+ --bg-card-hover:#454545!important;--text-primary:#f4f4f4!important;--text-secondary:#d0d0d0!important;
+ --accent-cyan:#dedede!important;--accent-purple:#bdbdbd!important;--accent-glow:rgba(255,255,255,.06)!important;
+ --border:rgba(255,255,255,.15)!important;--header-bg:rgba(42,42,42,.97)!important;--input-bg:#353535!important;
+}
+html,body{background:#3a3a3a!important;color:#f4f4f4!important}
+body{background-image:linear-gradient(135deg,#404040,#353535 58%,#424242)!important;background-size:100% 100%!important;background-attachment:fixed!important}
+#app-workspace,#app-root,.workspace,.main-content,.content-viewport{background:transparent!important;background-image:none!important;color:#f4f4f4!important}
+.sidebar,#sidebar,#zw-mobile-sidebar{background:#303030!important;color:#f1f1f1!important;border-color:#171717!important}
+.page-header h1,.page-header h2,.page-header h3,.content-viewport h1,.content-viewport h2,.content-viewport h3,.section-title,.dashboard-section h2,.dashboard-section h3{color:#f4f4f4!important;text-shadow:none!important}
+/* Neutralize blue/purple hero accents without changing its layout */
+.hero,.hero-banner,.learning-hero,.dashboard-hero{background-color:#292929!important;background-image:linear-gradient(115deg,#252525,#343434 70%,#292929)!important;border-color:#505050!important}
+.hero h1,.hero h2,.hero-banner h1,.hero-banner h2,.learning-hero h1,.learning-hero h2,.dashboard-hero h1,.dashboard-hero h2{color:#f4f4f4!important}
+.hero .highlight,.hero .gradient-text,.hero-banner .highlight,.hero-banner .gradient-text,.learning-hero .highlight,.learning-hero .gradient-text,.dashboard-hero .highlight,.dashboard-hero .gradient-text{color:#dcdcdc!important;background:none!important;-webkit-text-fill-color:#dcdcdc!important}
+.zw-particle-field{opacity:.72!important}
+.zw-particle{background:rgba(255,255,255,.72)!important;box-shadow:0 0 3px rgba(255,255,255,.22)!important;width:2px!important;height:2px!important;animation-duration:var(--duration,22s)!important}
 </style>
 <div id="zw-access-gate" hidden role="dialog" aria-modal="true" aria-labelledby="zw-access-title">
   <section class="zw-access-card">
@@ -6288,6 +6307,6 @@ input,select,textarea{background:#292929!important;color:#f1f1f1!important;borde
 })();
 </script>
 
-<script>(()=>{let c=null,raf=0,mx=innerWidth/2,my=innerHeight/2,cx=mx,cy=my;const interactive='a,button,[role="button"],input,select,textarea,label';function ensure(){if(c||!document.body)return;c=document.createElement('div');c.id='zw-custom-cursor';c.setAttribute('aria-hidden','true');c.className='is-active';document.body.appendChild(c);const field=document.createElement('div');field.className='zw-particle-field';field.setAttribute('aria-hidden','true');for(let i=0;i<34;i++){const p=document.createElement('i');p.className='zw-particle';p.style.left=((i*37+13)%100)+'%';p.style.setProperty('--duration',(12+(i%11)*1.7)+'s');p.style.setProperty('--delay',(-((i*7)%170)/10)+'s');p.style.setProperty('--drift',(((i*19)%61)-30)+'px');p.style.width=(i%5===0?3:2)+'px';p.style.height=p.style.width;field.appendChild(p)}document.body.prepend(field);document.documentElement.classList.add('zw-custom-cursor-active');function animate(){cx+=(mx-cx)*.19;cy+=(my-cy)*.19;c.style.left=cx+'px';c.style.top=cy+'px';raf=requestAnimationFrame(animate)}animate()}document.addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;mx=e.clientX;my=e.clientY;ensure()},{passive:true});document.addEventListener('pointerover',e=>{if(e.pointerType!=='touch'){ensure();if(c&&e.target instanceof Element&&e.target.closest(interactive))c.classList.add('is-hover')}},{passive:true});document.addEventListener('pointerout',e=>{if(c&&e.target instanceof Element&&e.target.closest(interactive))c.classList.remove('is-hover')},{passive:true})})();</script>
+<script>(()=>{let c=null,raf=0,mx=innerWidth/2,my=innerHeight/2,cx=mx,cy=my;const interactive='a,button,[role="button"],input,select,textarea,label';function ensure(){if(c||!document.body)return;c=document.createElement('div');c.id='zw-custom-cursor';c.setAttribute('aria-hidden','true');c.className='is-active';document.body.appendChild(c);const field=document.createElement('div');field.className='zw-particle-field';field.setAttribute('aria-hidden','true');for(let i=0;i<12;i++){const p=document.createElement('i');p.className='zw-particle';p.style.left=((i*37+13)%100)+'%';p.style.setProperty('--duration',(12+(i%11)*1.7)+'s');p.style.setProperty('--delay',(-((i*7)%170)/10)+'s');p.style.setProperty('--drift',(((i*19)%61)-30)+'px');p.style.width=(i%5===0?3:2)+'px';p.style.height=p.style.width;field.appendChild(p)}document.body.prepend(field);document.documentElement.classList.add('zw-custom-cursor-active');function animate(){cx+=(mx-cx)*.19;cy+=(my-cy)*.19;c.style.left=cx+'px';c.style.top=cy+'px';raf=requestAnimationFrame(animate)}animate()}document.addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;mx=e.clientX;my=e.clientY;ensure()},{passive:true});document.addEventListener('pointerover',e=>{if(e.pointerType!=='touch'){ensure();if(c&&e.target instanceof Element&&e.target.closest(interactive))c.classList.add('is-hover')}},{passive:true});document.addEventListener('pointerout',e=>{if(c&&e.target instanceof Element&&e.target.closest(interactive))c.classList.remove('is-hover')},{passive:true})})();</script>
 </body>
 </html>
