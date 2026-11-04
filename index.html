@@ -5988,10 +5988,11 @@ button,.btn,.primary-btn{transition:transform .22s ease,background .22s ease,bor
 button:hover,.btn:hover,.primary-btn:hover{transform:translateY(-1px)}
 input,select,textarea{background:var(--input-bg);border-color:var(--border);color:var(--text-primary)}
 a{transition:color .2s ease}
-@media(pointer:fine){body,button,a,input,select,textarea{cursor:none!important}#zw-custom-cursor{display:block}}
-#zw-custom-cursor{display:none;position:fixed;left:0;top:0;width:13px;height:13px;border:1.5px solid #c95727;border-radius:50%;background:rgba(201,87,39,.16);pointer-events:none;z-index:2147483647;transform:translate(-50%,-50%);transition:width .18s ease,height .18s ease,background .18s ease;mix-blend-mode:multiply}
-#zw-custom-cursor.is-hover{width:34px;height:34px;background:rgba(201,87,39,.08)}
-@media(pointer:coarse){#zw-custom-cursor{display:none!important}body,button,a,input,select,textarea{cursor:auto!important}}
+#zw-custom-cursor{display:none;position:fixed;left:0;top:0;width:14px;height:14px;border:1.5px solid #c95727;border-radius:50%;background:rgba(201,87,39,.22);pointer-events:none!important;z-index:2147483647;transform:translate(-50%,-50%);transition:width .16s ease,height .16s ease,background .16s ease;mix-blend-mode:normal}
+#zw-custom-cursor.is-active{display:block}
+#zw-custom-cursor.is-hover{width:34px;height:34px;background:rgba(201,87,39,.12)}
+html.zw-custom-cursor-active,html.zw-custom-cursor-active body,html.zw-custom-cursor-active body *{cursor:none!important}
+@media(pointer:coarse){#zw-custom-cursor{display:none!important}html.zw-custom-cursor-active,html.zw-custom-cursor-active body,html.zw-custom-cursor-active body *{cursor:auto!important}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 <div id="zw-access-gate" hidden role="dialog" aria-modal="true" aria-labelledby="zw-access-title">
@@ -6193,7 +6194,7 @@ a{transition:color .2s ease}
 </script>
 
 <script>
-(()=>{if(window.matchMedia('(pointer: fine)').matches){const c=document.createElement('div');c.id='zw-custom-cursor';c.setAttribute('aria-hidden','true');document.body.appendChild(c);let x=0,y=0,raf=0;document.addEventListener('pointermove',e=>{x=e.clientX;y=e.clientY;if(!raf)raf=requestAnimationFrame(()=>{c.style.left=x+'px';c.style.top=y+'px';raf=0})},{passive:true});document.addEventListener('pointerover',e=>{if(e.target.closest('a,button,[role="button"],input,select,textarea,label'))c.classList.add('is-hover')});document.addEventListener('pointerout',e=>{if(e.target.closest('a,button,[role="button"],input,select,textarea,label'))c.classList.remove('is-hover')});}})();
+(()=>{function init(){if(!window.matchMedia('(pointer:fine)').matches||document.getElementById('zw-custom-cursor'))return;const c=document.createElement('div');c.id='zw-custom-cursor';c.setAttribute('aria-hidden','true');c.className='is-active';document.body.appendChild(c);document.documentElement.classList.add('zw-custom-cursor-active');let raf=0;document.addEventListener('pointermove',e=>{if(raf)return;const x=e.clientX,y=e.clientY;raf=requestAnimationFrame(()=>{c.style.left=x+'px';c.style.top=y+'px';raf=0})},{passive:true});document.addEventListener('pointerover',e=>{if(e.target instanceof Element&&e.target.closest('a,button,[role="button"],input,select,textarea,label'))c.classList.add('is-hover')},{passive:true});document.addEventListener('pointerout',e=>{if(e.target instanceof Element&&e.target.closest('a,button,[role="button"],input,select,textarea,label'))c.classList.remove('is-hover')},{passive:true});document.addEventListener('visibilitychange',()=>{if(document.hidden)c.style.opacity='0';else c.style.opacity='1'}); }if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();})();
 </script>
 </body>
 </html>
